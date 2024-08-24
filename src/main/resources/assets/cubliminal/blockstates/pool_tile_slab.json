@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "cubliminal:block/pool_tile_slab"
+    },
+    "type=double": {
+      "model": "cubliminal:block/pool_tiles"
+    },
+    "type=top": {
+      "model": "cubliminal:block/pool_tile_slab_top"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+	"schemaVersion": 1,
+	"id": "cubliminal",
+	"version": "${version}",
+	"name": "Cubliminal",
+	"description": "If you're not careful and you noclip out of reality in the wrong areas, you'll end up in the Backrooms, where it's nothing but the stink of old moist carpet, the madness of mono-yellow, the endless background noise of fluorescent lights at maximum hum-buzz, and approximately six hundred million square miles of randomly segmented empty rooms to be trapped in. God save you if you hear something wandering around nearby, because it sure as hell has heard you.",
+	"authors": [
+		"Northernlimit (Owner)"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/cubliminal/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.limit.cubliminal.Cubliminal"
+		],
+		"client": [
+			"net.limit.cubliminal.CubliminalClient"
+		],
+		"limlib:registrar": [
+			"net.limit.cubliminal.init.CubliminalWorlds"
+		],
+		"modmenu": [
+			"net.limit.cubliminal.config.CubliminalModmenu"
+		],
+		"fabric-datagen": [
+			"net.limit.cubliminal.CubliminalDataGenerator"
+		]
+	},
+	"mixins": [
+		"cubliminal.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*",
+		"limlib":">=11.0.0",
+		"specialmodels": "*",
+		"cloth-config": "*"
+	}
+}

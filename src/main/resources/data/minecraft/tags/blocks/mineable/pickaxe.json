@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "cubliminal:false_ceiling",
+    "cubliminal:fluorescent_light",
+    "cubliminal:deco_fluorescent_light",
+    "cubliminal:fused_fluorescent_light",
+    "cubliminal:smoke_detector",
+    "cubliminal:electrical_plug",
+    "cubliminal:emergency_exit_door_0",
+    "cubliminal:exit_sign",
+    "cubliminal:sink",
+    "cubliminal:shower"
+  ]
+}

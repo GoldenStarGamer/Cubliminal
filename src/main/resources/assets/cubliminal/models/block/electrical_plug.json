@@ -1,0 +1,23 @@
+{
+	"parent": "block/cube_all",
+	"texture_size": [32, 32],
+	"textures": {
+		"1": "cubliminal:block/electrical_plug",
+		"particle": "cubliminal:block/electrical_plug"
+	},
+	"elements": [
+		{
+			"from": [4.5, 4, 0],
+			"to": [11.5, 12.5, 0.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 3, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 3.5, 4.25], "texture": "#1"},
+				"east": {"uv": [0, 4.5, 0.25, 8.75], "texture": "#1"},
+				"south": {"uv": [3.5, 0, 7, 4.25], "texture": "#1"},
+				"west": {"uv": [0.5, 4.5, 0.75, 8.75], "texture": "#1"},
+				"up": {"uv": [4.5, 4.75, 1, 4.5], "texture": "#1"},
+				"down": {"uv": [8, 4.5, 4.5, 4.75], "texture": "#1"}
+			}
+		}
+	]
+}

@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "cubliminal:block/damaged_yellow_wallpapers/block/0"
+      },
+      {
+        "model": "cubliminal:block/damaged_yellow_wallpapers/block/1"
+      },
+      {
+        "model": "cubliminal:block/damaged_yellow_wallpapers/block/2"
+      },
+      {
+        "model": "cubliminal:block/damaged_yellow_wallpapers/block/3"
+      },
+      {
+        "model": "cubliminal:block/damaged_yellow_wallpapers/block/4"
+      },
+      {
+        "model": "cubliminal:block/damaged_yellow_wallpapers/block/5"
+      }
+    ]
+  }
+}

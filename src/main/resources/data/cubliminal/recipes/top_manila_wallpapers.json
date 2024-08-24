@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "minecraft:orange_dye"
+    },
+    {
+      "item": "cubliminal:manila_wallpapers"
+    }
+  ],
+  "result": {
+    "item": "cubliminal:top_manila_wallpapers"
+  },
+  "show_notification": true
+}

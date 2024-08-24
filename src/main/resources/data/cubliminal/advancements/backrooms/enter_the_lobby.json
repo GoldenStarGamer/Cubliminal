@@ -1,0 +1,32 @@
+{
+  "parent": "cubliminal:backrooms/backrooms",
+  "criteria": {
+    "entered_the_lobby": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "cubliminal:the_lobby"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "item": "cubliminal:yellow_wallpaper"
+    },
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.backrooms.enter_the_lobby.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.backrooms.enter_the_lobby.title"
+    }
+  },
+  "requirements": [
+    [
+      "entered_the_lobby"
+    ]
+  ],
+  "rewards": {},
+  "sends_telemetry_event": true
+}

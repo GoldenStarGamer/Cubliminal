@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/shower",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/shower"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/shower",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/shower",
+      "y": 270
+    }
+  }
+}

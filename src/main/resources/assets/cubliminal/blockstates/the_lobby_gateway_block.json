@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=true": {
+      "model": "cubliminal:block/the_lobby_gateway_block_on"
+    },
+    "lit=false": {
+      "model": "cubliminal:block/the_lobby_gateway_block_off"
+    }
+  }
+}

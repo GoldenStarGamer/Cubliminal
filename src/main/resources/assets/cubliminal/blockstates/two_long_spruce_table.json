@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/two_long_spruce_table",
+      "y": -90
+    },
+    "facing=north": {
+      "model": "cubliminal:block/two_long_spruce_table"
+    },
+    "facing=south": {
+      "model": "cubliminal:block/two_long_spruce_table",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/two_long_spruce_table",
+      "y": 90
+    }
+  }
+}

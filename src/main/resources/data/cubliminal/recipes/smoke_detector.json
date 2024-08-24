@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "B": {
+      "tag": "minecraft:stone_buttons"
+    }
+  },
+  "pattern": [
+    "Q",
+    "B"
+  ],
+  "result": {
+    "item": "cubliminal:smoke_detector"
+  },
+  "show_notification": true
+}

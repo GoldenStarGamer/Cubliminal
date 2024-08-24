@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_manila_wallpapers": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "cubliminal:manila_wallpapers"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cubliminal:top_manila_wallpapers"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_manila_wallpapers"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cubliminal:top_manila_wallpapers"
+    ]
+  },
+  "sends_telemetry_event": false
+}

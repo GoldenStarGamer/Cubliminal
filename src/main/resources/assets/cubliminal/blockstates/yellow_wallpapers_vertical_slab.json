@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "cubliminal:block/yellow_wallpapers_vertical_slab",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "cubliminal:block/yellow_wallpapers_vertical_slab"
+    },
+    "facing=south": {
+      "model": "cubliminal:block/yellow_wallpapers_vertical_slab",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cubliminal:block/yellow_wallpapers_vertical_slab",
+      "y": 270
+    }
+  }
+}

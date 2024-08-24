@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "item": "cubliminal:yellow_wallpapers"
+    },
+    "title": {
+      "translate": "advancements.backrooms.title"
+    },
+    "description": {
+      "translate": "advancements.backrooms.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "background": "cubliminal:textures/block/yellow_wallpapers.png"
+  },
+  "criteria": {
+    "entered_the_lobby": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "cubliminal:the_lobby"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "entered_the_lobby"
+    ]
+  ]
+}

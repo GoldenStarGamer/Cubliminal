@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/electrical_plug",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/electrical_plug"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/electrical_plug",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/electrical_plug",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "ambient.lvl0": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "cubliminal:ambience/ambient0",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.lvl37": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "cubliminal:ambience/ambient37",
+        "stream": true
+      }
+    ]
+  },
+  "entity.bacteria.step": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cubliminal:entity/bacteria_step",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.cubliminal.bacteria_step"
+  },
+  "entity.bacteria.ambient": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cubliminal:entity/bacteria_idle1"
+      },
+      {
+        "name": "cubliminal:entity/bacteria_idle2"
+      },
+      {
+        "name": "cubliminal:entity/bacteria_idle3"
+      }
+    ],
+    "subtitle": "subtitle.entity.cubliminal.bacteria_idle"
+  },
+  "entity.bacteria.chase": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cubliminal:entity/bacteria_chase"
+      }
+    ],
+    "subtitle": "subtitle.entity.cubliminal.bacteria_scream"
+  },
+  "entity.bacteria.kill": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cubliminal:entity/bacteria_kill"
+      }
+    ],
+    "subtitle": "subtitle.entity.cubliminal.bacteria_scream"
+  },
+  "heartbeat": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "cubliminal:misc/heartbeat"
+      }
+    ]
+  },
+  "noclipping": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "cubliminal:misc/noclipping"
+      }
+    ],
+    "subtitle": "subtitle.noclipping"
+  },
+  "block.sink_open": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/open_faucet"
+      }
+    ],
+    "subtitle": "subtitle.block.sink_open"
+  },
+  "block.sink.ambient": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/tap_water"
+      }
+    ],
+    "subtitle": "subtitle.block.sink_ambient"
+  }
+}

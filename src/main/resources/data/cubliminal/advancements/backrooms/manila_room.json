@@ -1,0 +1,29 @@
+{
+  "parent": "cubliminal:backrooms/enter_the_lobby",
+  "criteria": {
+    "entered_manila_room": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "icon": {
+      "item": "cubliminal:manila_wallpapers"
+    },
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.backrooms.enter_manila_room.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.backrooms.enter_manila_room.title"
+    }
+  },
+  "requirements": [
+    [
+      "entered_manila_room"
+    ]
+  ],
+  "rewards": {},
+  "sends_telemetry_event": true
+}

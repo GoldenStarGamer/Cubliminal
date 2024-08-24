@@ -1,0 +1,32 @@
+{
+  "variants": {
+    "facing=north,lit=false": {
+      "model": "cubliminal:block/fluorescent_light_off"
+    },
+    "facing=west,lit=false": {
+      "model": "cubliminal:block/fluorescent_light_off",
+      "y": 90
+    },
+    "facing=east,lit=false": {
+      "model": "cubliminal:block/fluorescent_light_off",
+      "y": 90
+    },
+    "facing=south,lit=false": {
+      "model": "cubliminal:block/fluorescent_light_off"
+    },
+    "facing=north,lit=true": {
+      "model": "cubliminal:block/fluorescent_light_on"
+    },
+    "facing=west,lit=true": {
+      "model": "cubliminal:block/fluorescent_light_on",
+      "y": 90
+    },
+    "facing=east,lit=true": {
+      "model": "cubliminal:block/fluorescent_light_on",
+      "y": 90
+    },
+    "facing=south,lit=true": {
+      "model": "cubliminal:block/fluorescent_light_on"
+    }
+  }
+}
