@@ -55,13 +55,11 @@ public class SanityData {
 		}
 
 		nbt.putInt("sanity", i);
-		//syncSanity(playerEntity, i);
 		return i;
 	}
 
 	public static void resetTimer(ServerPlayerEntity playerEntity) {
 		IEntityDataSaver.castAndGet(playerEntity).putInt("sanity", 10);
-		//syncSanity(playerEntity, 10);
 	}
 
 	public static void resetAfterDeath(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {

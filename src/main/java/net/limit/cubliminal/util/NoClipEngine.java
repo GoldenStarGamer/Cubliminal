@@ -53,7 +53,7 @@ public class NoClipEngine {
                 playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 50,
                         0, false, false, false));
             }
-            i = playerEntity.getRandom().nextInt(200);
+            i = playerEntity.getRandom().nextInt(6000) + 12000;
         }
 
         nbt.putInt("ticksToNc", i);
