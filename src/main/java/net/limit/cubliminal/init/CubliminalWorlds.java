@@ -4,7 +4,10 @@ import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Lifecycle;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.world.biome.TheLobbyBiome;
+import net.limit.cubliminal.world.biome.level_0.RedroomsBiome;
+import net.limit.cubliminal.world.biome.level_0.LevelZeroBiomeSource;
+import net.limit.cubliminal.world.biome.level_0.PillarBiome;
+import net.limit.cubliminal.world.biome.level_0.TheLobbyBiome;
 import net.limit.cubliminal.world.chunk.LevelZeroChunkGenerator;
 import net.ludocrypt.limlib.api.LimlibRegistrar;
 import net.ludocrypt.limlib.api.LimlibRegistryHooks;
@@ -22,7 +25,6 @@ import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionType.MonsterSettings;
@@ -43,7 +45,7 @@ public class CubliminalWorlds implements LimlibRegistrar {
 	private static final List<Pair<RegistryKey<PostEffect>, PostEffect>> POST_EFFECTS = Lists.newArrayList();
 
 	public static String THE_LOBBY = "the_lobby";
-    public static final RegistryKey<World> THE_LOBBY_KEY = RegistryKey.of(RegistryKeys.WORLD,
+	public static final RegistryKey<World> THE_LOBBY_KEY = RegistryKey.of(RegistryKeys.WORLD,
 		Cubliminal.id(THE_LOBBY));
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -53,11 +55,11 @@ public class CubliminalWorlds implements LimlibRegistrar {
 			new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(2.15f).setDensity(0.0725f).build()),
 				Optional.empty(), Optional.empty()));
 
-		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
+		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, false, false, 0f));
 
 		getWorld(THE_LOBBY,
 			new LimlibWorld(
-				() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 384, 384,
+				() -> new DimensionType(OptionalLong.of(15500), true, false, false, false, 1.0, false, false, 0, 384, 384,
 					TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(THE_LOBBY)), Cubliminal.id(THE_LOBBY),
 					0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 				(registry) -> new DimensionOptions(
@@ -66,8 +68,10 @@ public class CubliminalWorlds implements LimlibRegistrar {
 						.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(THE_LOBBY)))
 						.get(),
 					new LevelZeroChunkGenerator(
-						new FixedBiomeSource(
-							registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.THE_LOBBY_BIOME).get()),
+						new LevelZeroBiomeSource(
+								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.THE_LOBBY_BIOME).get(),
+								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.PILLAR_BIOME).get(),
+								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.REDROOMS_BIOME).get()),
 						LevelZeroChunkGenerator.createGroup(), 1))));
 
 
@@ -91,7 +95,14 @@ public class CubliminalWorlds implements LimlibRegistrar {
 			RegistryEntryLookup<ConfiguredCarver<?>> carvers = infoLookup.getRegistryInfo(RegistryKeys.CONFIGURED_CARVER).get().entryLookup();
 
 			registry.add(CubliminalBiomes.THE_LOBBY_BIOME, TheLobbyBiome.create(features, carvers),
-				Lifecycle.stable());
+					Lifecycle.stable());
+
+			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers),
+					Lifecycle.stable());
+
+			registry.add(CubliminalBiomes.REDROOMS_BIOME, RedroomsBiome.create(features, carvers),
+					Lifecycle.stable());
+
 		});
 	}
 

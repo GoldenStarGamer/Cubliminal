@@ -35,6 +35,7 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.SMOKE_DETECTOR);
 						entries.add(CubliminalBlocks.ELECTRICAL_PLUG);
 						entries.add(CubliminalBlocks.TWO_LONG_SPRUCE_TABLE);
+                        entries.add(CubliminalBlocks.SPRUCE_CHAIR);
 						entries.add(CubliminalBlocks.SINK);
 						entries.add(CubliminalBlocks.SHOWER);
                         entries.add(CubliminalItems.ALMOND_WATER);

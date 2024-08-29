@@ -13,6 +13,6 @@ public class NoClipC2SPacket {
 	public static void receive(MinecraftServer server, ServerPlayerEntity player,
 							   ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
 		NbtCompound nbt = IEntityDataSaver.castAndGet(player);
-		if (nbt.getInt("ticksToNc") == 1) NoClipEngine.noClip(player);
+		if (nbt.getInt("ticksToNc") == 1 && player.isOnGround()) NoClipEngine.noClip(player);
 	}
 }

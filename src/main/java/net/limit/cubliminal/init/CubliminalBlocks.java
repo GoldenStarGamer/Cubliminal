@@ -126,6 +126,10 @@ public class CubliminalBlocks {
 			new TwoLongTableBlock(FabricBlockSettings.copyOf(Blocks.SPRUCE_PLANKS)
 					.requiresTool()));
 
+	public static final Block SPRUCE_CHAIR = registerBlock("spruce_chair",
+			new ChairBlock(FabricBlockSettings.copyOf(Blocks.SPRUCE_PLANKS)
+					.requiresTool()));
+
 	public static final Block MANILA_WALLPAPERS = registerBlock("manila_wallpapers",
 			new Block(AbstractBlock.Settings.create()
 				.mapColor(MapColor.IRON_GRAY)
@@ -225,6 +229,7 @@ public class CubliminalBlocks {
 		FuelRegistry.INSTANCE.add(MANILA_WALLPAPERS.asItem(), 300);
 		FuelRegistry.INSTANCE.add(TOP_MANILA_WALLPAPERS.asItem(), 300);
 		FuelRegistry.INSTANCE.add(TWO_LONG_SPRUCE_TABLE.asItem(), 1000);
+		FuelRegistry.INSTANCE.add(SPRUCE_CHAIR.asItem(), 800);
 		FuelRegistry.INSTANCE.add(DAMP_CARPET.asItem(), 100);
 		FuelRegistry.INSTANCE.add(DIRTY_DAMP_CARPET.asItem(), 100);
     }

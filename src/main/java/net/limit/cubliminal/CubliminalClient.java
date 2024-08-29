@@ -11,6 +11,7 @@ import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.entity.client.BacteriaModel;
 import net.limit.cubliminal.entity.client.BacteriaRenderer;
+import net.limit.cubliminal.entity.client.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalEntities;
@@ -31,6 +32,8 @@ public class CubliminalClient implements ClientModInitializer {
 				.register(CubliminalEntities.BACTERIA, BacteriaRenderer::new);
 		EntityModelLayerRegistry
 				.registerModelLayer(CubliminalModelLayers.BACTERIA, BacteriaModel::getTexturedModelData);
+		EntityRendererRegistry
+				.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
 
 		CubliminalPackets.registerS2CPackets();
 		HudRenderCallback.EVENT.register(new NoClippingHudOverlay());

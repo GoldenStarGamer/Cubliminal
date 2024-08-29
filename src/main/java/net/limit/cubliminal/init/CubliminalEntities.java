@@ -2,6 +2,7 @@ package net.limit.cubliminal.init;
 
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.entity.custom.BacteriaEntity;
+import net.limit.cubliminal.entity.custom.SeatEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
@@ -12,6 +13,11 @@ public class CubliminalEntities {
             Cubliminal.id("bacteria"),
 		EntityType.Builder.create(BacteriaEntity::new, SpawnGroup.MONSTER)
 			.setDimensions(0.8f,2.8f).build());
+
+    public static final EntityType<SeatEntity> SEAT_ENTITY = Registry.register(Registries.ENTITY_TYPE,
+            Cubliminal.id("seat_entity"),
+            EntityType.Builder.create(SeatEntity::new, SpawnGroup.MISC)
+                    .setDimensions(0f, 0f).build());
 
     public static void init() {
     }

@@ -2,7 +2,6 @@ package net.limit.cubliminal.util;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.init.CubliminalPackets;
@@ -14,11 +13,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
@@ -110,13 +106,6 @@ public class NoClipEngine {
         FabricDimensions.teleport(playerEntity, playerEntity.getServer().getWorld(registryKey),
                 new TeleportTarget(destination.add(0, 2.5, 0), new Vec3d(0, 0, 0),
                         playerEntity.getYaw(), playerEntity.getPitch()));
-    }
-
-    public static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-        int i = IEntityDataSaver.castAndGet(handler.player).getInt("ticksToNc");
-        PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(i);
-        ServerPlayNetworking.send(handler.player, CubliminalPackets.NOCLIP_SYNC, buf);
     }
 
     public static void syncNoClip(ServerPlayerEntity playerEntity) {

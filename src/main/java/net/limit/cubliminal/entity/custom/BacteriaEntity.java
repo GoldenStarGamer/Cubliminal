@@ -52,7 +52,7 @@ public class BacteriaEntity extends HostileEntity {
     private int idleAnimationTimeout = 0;
     public final AnimationState attackAnimationState = new AnimationState();
     public int attackAnimationTimeout = 0;
-    public BacteriaEntity(EntityType<? extends HostileEntity> entityType, World world) {
+    public BacteriaEntity(EntityType<? extends BacteriaEntity> entityType, World world) {
         super(entityType, world);
         this.setStepHeight(3f);
 		((MobNavigation)this.getNavigation()).setCanPathThroughDoors(true);

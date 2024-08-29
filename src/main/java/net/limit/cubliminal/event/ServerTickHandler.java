@@ -14,7 +14,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
 
-public class PlayerTickHandler implements ServerTickEvents.StartTick {
+public class ServerTickHandler implements ServerTickEvents.StartTick {
 	public static boolean isVulnerable(ServerPlayerEntity player) {
 		return !player.isCreative() && !player.isSpectator();
 	}

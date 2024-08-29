@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/spruce_chair",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/spruce_chair"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/spruce_chair",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/spruce_chair",
+      "y": 270
+    }
+  }
+}

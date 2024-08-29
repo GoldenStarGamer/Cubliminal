@@ -1,4 +1,4 @@
-package net.limit.cubliminal.world.biome;
+package net.limit.cubliminal.world.biome.level_0;
 
 import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.registry.RegistryEntryLookup;

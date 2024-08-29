@@ -55,7 +55,7 @@ public class CubliminalSounds {
 		}
 	}
 	public static void blockPlaySound(World world, BlockPos pos, SoundEvent sound) {
-		world.playSound((PlayerEntity) null, pos, sound, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 
     public static void init() {

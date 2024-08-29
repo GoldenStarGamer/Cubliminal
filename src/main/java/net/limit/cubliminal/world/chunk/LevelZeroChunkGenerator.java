@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalWorlds;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
@@ -25,6 +26,8 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
@@ -95,6 +98,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 			generateNbt(region, pos, nbtGroup.pick("0tinywall", random), Manipulation.random(random));
 		}
 	}
+
 	@Override
 	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkStatus targetStatus, Executor executor,
 												  ServerWorld world, ChunkGenerator generator,
@@ -103,6 +107,9 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 		CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>>> fullChunkConverter, List<Chunk> chunks, Chunk chunk) {
 
 		BlockPos startPos = chunk.getPos().getStartPos();
+		if (world.getBiome(startPos).getKey().isPresent()
+				&& !world.getBiome(startPos).getKey().get().equals(CubliminalBiomes.THE_LOBBY_BIOME))
+			return CompletableFuture.completedFuture(chunk);
 		ChunkPos chunkPos = new ChunkPos(startPos);
 		int originX = startPos.getX();
 		int originZ = startPos.getZ();
