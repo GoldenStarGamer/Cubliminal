@@ -1,10 +1,13 @@
 package net.limit.cubliminal.init;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.client.render.SkyboxRenderer;
 import net.ludocrypt.specialmodels.api.SpecialModelRenderer;
 import net.minecraft.registry.Registry;
 
+@Environment(EnvType.CLIENT)
 public class CubliminalModelRenderers {
 
 	public static final SpecialModelRenderer MANILA_SKYBOX_RENDERER =

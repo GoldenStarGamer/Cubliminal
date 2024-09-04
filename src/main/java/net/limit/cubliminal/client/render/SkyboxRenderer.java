@@ -20,6 +20,7 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec2f;
 import org.joml.Matrix4f;
 
+@Environment(EnvType.CLIENT)
 public class SkyboxRenderer extends SpecialModelRenderer {
 
 	private final String id;

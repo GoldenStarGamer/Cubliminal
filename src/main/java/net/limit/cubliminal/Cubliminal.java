@@ -43,7 +43,6 @@ public class Cubliminal implements ModInitializer {
 		CubliminalSounds.init();
 		CubliminalEntities.init();
 		CubliminalEffects.init();
-		CubliminalModelRenderers.init();
 		FabricDefaultAttributeRegistry.register(CubliminalEntities.BACTERIA, BacteriaEntity.createBacteriaAttributes());
 		CubliminalBlockEntities.init();
 		CubliminalPackets.registerC2SPackets();

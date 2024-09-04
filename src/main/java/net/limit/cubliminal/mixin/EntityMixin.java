@@ -28,9 +28,11 @@ public abstract class EntityMixin {
 	private void isImmuneToFire(CallbackInfoReturnable<Boolean> cir) {
 		if (NoClipEngine.isNoClipping(this)) cir.setReturnValue(true);
 	}
-
+	/*
 	@Inject(method = "move", at = @At("HEAD"), cancellable = true)
 	private void suppressMovement(MovementType movementType, Vec3d movement, CallbackInfo ci) {
 		if (!ParalyzingEntries.PARALYZING_ENTRIES.isEmpty()) ci.cancel();
 	}
+
+	 */
 }

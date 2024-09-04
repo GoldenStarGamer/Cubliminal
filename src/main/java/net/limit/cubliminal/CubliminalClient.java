@@ -13,10 +13,7 @@ import net.limit.cubliminal.entity.client.BacteriaModel;
 import net.limit.cubliminal.entity.client.BacteriaRenderer;
 import net.limit.cubliminal.entity.client.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
-import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.init.CubliminalEntities;
-import net.limit.cubliminal.init.CubliminalModelLayers;
-import net.limit.cubliminal.init.CubliminalPackets;
+import net.limit.cubliminal.init.*;
 import net.minecraft.client.render.RenderLayer;
 
 @Environment(EnvType.CLIENT)
@@ -27,6 +24,7 @@ public class CubliminalClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(), CubliminalBlocks.EMERGENCY_EXIT_DOOR_0, CubliminalBlocks.MOLD);
 
 		KeyInputHandler.register();
+		CubliminalModelRenderers.init();
 
 		EntityRendererRegistry
 				.register(CubliminalEntities.BACTERIA, BacteriaRenderer::new);
