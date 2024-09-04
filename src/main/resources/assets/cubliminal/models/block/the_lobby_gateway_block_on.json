@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/air",
   "textures": {
-    "particle": "cubliminal:block/empty_texture"
+    "particle": "cubliminal:block/black"
   },
   "specialmodels": {
     "cubliminal:manila_skybox": "cubliminal:shader/manila"

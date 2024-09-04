@@ -12,6 +12,6 @@ public class ResetNoClipCooldownC2SPacket {
 	public static void receive(MinecraftServer server, ServerPlayerEntity player,
 							   ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
 		NbtCompound nbt = IEntityDataSaver.castAndGet(player);
-		if (nbt.getInt("tickslefttonc") == 1) nbt.putInt("tickslefttonc", 0);
+		if (nbt.getInt("ticksToNc") == 1) nbt.putInt("ticksToNc", 0);
 	}
 }

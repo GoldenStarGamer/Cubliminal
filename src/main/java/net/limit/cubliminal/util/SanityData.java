@@ -16,13 +16,12 @@ public class SanityData {
 	public static int modifyTimer(ServerPlayerEntity playerEntity, int bound, @Nullable Integer amount) {
 		NbtCompound nbt = IEntityDataSaver.castAndGet(playerEntity);
 		int i = nbt.getInt("sanity");
-		bound += 5;
 
 		Difficulty difficulty = playerEntity.getWorld().getDifficulty();
 		if (difficulty.equals(Difficulty.HARD)) {
-			bound -= 3;
+			bound -= 2;
 		} else if (difficulty.equals(Difficulty.EASY)) {
-			bound += 3;
+			bound += 2;
 		}
 
 		i = amount != null ? i + amount : i;

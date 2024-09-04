@@ -35,6 +35,7 @@ public class AlmondWaterItem extends Item {
 				user.removeStatusEffect(CubliminalEffects.PARANOIA);
 			}
         }
+        /*
         if (stack.isEmpty()) {
             return new ItemStack(Items.GLASS_BOTTLE);
         }
@@ -44,6 +45,7 @@ public class AlmondWaterItem extends Item {
                 playerEntity.dropItem(itemStack, false);
             }
         }
+         */
         return stack;
     }
 
@@ -58,8 +60,13 @@ public class AlmondWaterItem extends Item {
     }
 
     @Override
+    public SoundEvent getDrinkSound() {
+        return SoundEvents.ITEM_HONEY_BOTTLE_DRINK;
+    }
+
+    @Override
     public SoundEvent getEatSound() {
-        return SoundEvents.INTENTIONALLY_EMPTY;
+        return SoundEvents.ITEM_HONEY_BOTTLE_DRINK;
     }
 
     @Override

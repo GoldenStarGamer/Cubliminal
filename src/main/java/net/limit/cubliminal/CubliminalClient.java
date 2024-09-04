@@ -24,7 +24,7 @@ public class CubliminalClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		BlockRenderLayerMap.INSTANCE.putBlock(CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK, RenderLayer.getCutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(CubliminalBlocks.EMERGENCY_EXIT_DOOR_0, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(), CubliminalBlocks.EMERGENCY_EXIT_DOOR_0, CubliminalBlocks.MOLD);
 
 		KeyInputHandler.register();
 

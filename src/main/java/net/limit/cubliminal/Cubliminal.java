@@ -14,6 +14,7 @@ import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.entity.custom.BacteriaEntity;
 import net.limit.cubliminal.event.ServerTickHandler;
 import net.limit.cubliminal.event.command.NoClipCommand;
+import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.util.SanityData;
 import net.minecraft.server.world.ServerWorld;
@@ -50,6 +51,7 @@ public class Cubliminal implements ModInitializer {
 		ServerPlayerEvents.AFTER_RESPAWN.register(SanityData::resetAfterDeath);
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(ServerTickHandler::afterWorldChange);
 		CommandRegistrationCallback.EVENT.register(NoClipCommand::register);
+		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> LVL_0 = server.getWorld(CubliminalWorlds.THE_LOBBY_KEY));
 	}
 }

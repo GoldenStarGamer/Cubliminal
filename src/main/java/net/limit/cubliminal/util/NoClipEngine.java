@@ -15,6 +15,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
@@ -85,26 +86,43 @@ public class NoClipEngine {
 
     public static void noClipDestination(ServerPlayerEntity playerEntity) {
         RegistryKey<World> registryKey = playerEntity.getWorld().getRegistryKey();
-        Vec3d destination;
+        BlockPos destination;
 
         if (TO_OVER.contains(playerEntity)) {
             registryKey = RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD);
-            destination = playerEntity.getServerWorld().getSpawnPos().toCenterPos();
+            destination = playerEntity.getServerWorld().getSpawnPos();
             TO_OVER.remove(playerEntity);
         } else if (TO_LEVEL_0.contains(playerEntity)) {
             registryKey = CubliminalWorlds.THE_LOBBY_KEY;
-            destination = new Vec3d(2.5, 2, 2.5);
+            /*
+            int x = playerEntity.getBlockX();
+            int z = playerEntity.getBlockZ();
+            while (x % 8 != 0) x++;
+            while (z % 8 != 0) z++;
+
+             */
+            destination = new BlockPos(4, 16, 4);
             TO_LEVEL_0.remove(playerEntity);
         } else if (registryKey.getValue().getNamespace().equals(Cubliminal.MOD_ID)) {
             registryKey = RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD);
-            destination = playerEntity.getServerWorld().getSpawnPos().toCenterPos();
+            destination = playerEntity.getServerWorld().getSpawnPos();
         } else {
             registryKey = CubliminalWorlds.THE_LOBBY_KEY;
-            destination = new Vec3d(2.5, 2, 2.5);
+            /*
+            int x = playerEntity.getBlockX();
+            int z = playerEntity.getBlockZ();
+            while (x % 8 != 0) x++;
+            while (z % 8 != 0) z++;
+
+             */
+            destination = new BlockPos(4, 16, 4);
         }
 
+        playerEntity.setSpawnPoint(registryKey, new BlockPos(destination),
+                0f, true, false);
+
         FabricDimensions.teleport(playerEntity, playerEntity.getServer().getWorld(registryKey),
-                new TeleportTarget(destination.add(0, 2.5, 0), new Vec3d(0, 0, 0),
+                new TeleportTarget(destination.toCenterPos().add(0, 2.5, 0), new Vec3d(0, 0, 0),
                         playerEntity.getYaw(), playerEntity.getPitch()));
     }
 

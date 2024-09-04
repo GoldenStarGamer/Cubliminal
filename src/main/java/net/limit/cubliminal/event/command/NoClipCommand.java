@@ -12,7 +12,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 public class NoClipCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
@@ -27,10 +26,8 @@ public class NoClipCommand {
     }
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
-        Iterator<ServerPlayerEntity> var2 = targets.iterator();
 
-        while (var2.hasNext()) {
-            ServerPlayerEntity entity = var2.next();
+        for (ServerPlayerEntity entity : targets) {
             if (entity.getWorld().isClient()) return 0;
             NoClipEngine.noClip(entity);
         }
@@ -45,10 +42,8 @@ public class NoClipCommand {
     }
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets, ServerWorld world) {
-        Iterator<ServerPlayerEntity> var2 = targets.iterator();
 
-        while (var2.hasNext()) {
-            ServerPlayerEntity entity = var2.next();
+        for (ServerPlayerEntity entity : targets) {
             if (entity.getWorld().isClient()) return 0;
             NoClipEngine.noClip(entity, world.getRegistryKey());
         }

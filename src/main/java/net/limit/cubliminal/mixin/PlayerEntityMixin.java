@@ -52,7 +52,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	private void cancelAttack(Entity target, CallbackInfo ci) {
 		if (target.isPlayer() && this.getWorld().getRegistryKey().equals(CubliminalWorlds.THE_LOBBY_KEY)
-				&& this.getBlockY() < 8) ci.cancel();
+				&& this.getBlockY() < 22) ci.cancel();
 	}
 	//cancel player interactions below level 0 gabbro ceiling
 }

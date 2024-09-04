@@ -1,7 +1,6 @@
 package net.limit.cubliminal.init;
 
 import net.limit.cubliminal.Cubliminal;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.registry.Registries;
@@ -27,7 +26,8 @@ public class CubliminalSounds {
 		return Registry.registerReference(Registries.SOUND_EVENT, Cubliminal.id(id), SoundEvent.of(Cubliminal.id(id)));
 	}
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_LEVEL_O = registerSoundEvent("ambient.lvl0");
-    public static final RegistryEntry.Reference<SoundEvent> AMBIENT_LEVEL_37 = registerSoundEvent("ambient.lvl37");
+    public static final RegistryEntry.Reference<SoundEvent> AMBIENT_PILLARS_LEVEL_0 = registerSoundEvent("ambient.lvl0.pillars");
+    public static final RegistryEntry.Reference<SoundEvent> AMBIENT_REDROOMS = registerSoundEvent("ambient.redrooms");
     public static final RegistryEntry.Reference<SoundEvent> BACTERIA_STEP_SOUND = registerSoundEvent("entity.bacteria.step");
 	public static final SoundEvent BACTERIA_IDLE = register("entity.bacteria.ambient");
 	public static final SoundEvent BACTERIA_CHASE = register("entity.bacteria.chase");

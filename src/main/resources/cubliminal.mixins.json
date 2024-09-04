@@ -6,8 +6,7 @@
     "CubliminalEntityDataSaverMixin",
     "EntityMixin",
     "MilkBucketItemMixin",
-    "PlayerEntityMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityMixin"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",
@@ -15,7 +14,8 @@
     "client.GameRendererAccessor",
     "client.ItemRendererAccessor",
     "client.ItemRendererMixin",
-    "client.ModelLoaderMixin"
+    "client.ModelLoaderMixin",
+    "client.PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

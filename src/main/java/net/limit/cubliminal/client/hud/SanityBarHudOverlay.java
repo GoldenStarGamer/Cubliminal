@@ -23,6 +23,7 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 
 	@Override
 	public void onHudRender(DrawContext drawContext, float tickDelta) {
+
 		ClientPlayerEntity player = client.player;
 		if (player == null || player.isCreative() || player.isSpectator() ||
 			!player.getWorld().getRegistryKey().getValue().getNamespace().equals(Cubliminal.MOD_ID)) return;
@@ -50,6 +51,10 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 			int k = (int) (i * 0.1 * 28);
 			drawContext.drawTexture(texture, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32);
 		}
+		int j = 3;
+		if (i > 9) j = 4;
+		String string = i * 10 + "%";
+		drawContext.drawText(client.inGameHud.getTextRenderer(), string, x - j, l - 7, 20165255, true);
 		RenderSystem.disableBlend();
 	}
 }

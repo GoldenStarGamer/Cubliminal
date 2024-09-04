@@ -15,6 +15,7 @@ import net.minecraft.registry.Registry;
 public class CubliminalItems {
 
     public static final Item YELLOW_WALLPAPER = registerItem("yellow_wallpaper", new Item(new FabricItemSettings()));
+    public static final Item CRIMSON_WALLPAPER = registerItem("crimson_wallpaper", new Item(new FabricItemSettings()));
     public static final Item BACTERIA_SPAWN_EGG = registerItem("bacteria_spawn_egg", new SpawnEggItem(CubliminalEntities.BACTERIA, 0x171717, 0x2d02a6, new FabricItemSettings()));
     public static final Item ALMOND_WATER = registerItem("almond_water", new AlmondWaterItem(new FabricItemSettings().food(CubliminalFoodComponents.ALMOND_WATER).maxCount(16)));
     public static final Item WOODEN_PLANK = registerItem("wooden_plank", new BasicWeaponItem(2, -2f, new FabricItemSettings()));

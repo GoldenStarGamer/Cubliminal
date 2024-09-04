@@ -24,7 +24,7 @@ public class CubliminalBiomes {
 
     public static void init() {
 		getChunkGenerator("the_lobby_chunk_generator", LevelZeroChunkGenerator.CODEC);
-		getBiomeSource("the_lobby_biome_source", LevelZeroBiomeSource.CODEC);
+		//getBiomeSource("the_lobby_biome_source", LevelZeroBiomeSource.CODEC);
     }
 
 	public static <C extends ChunkGenerator, D extends Codec<C>> D getChunkGenerator(String id, D chunkGeneratorCodec) {

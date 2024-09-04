@@ -1,5 +1,7 @@
 package net.limit.cubliminal.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.model.ModelLoader;
@@ -16,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Map;
 
+@Environment(EnvType.CLIENT)
 @Mixin(ModelLoader.class)
 public abstract class ModelLoaderMixin {
     @Shadow

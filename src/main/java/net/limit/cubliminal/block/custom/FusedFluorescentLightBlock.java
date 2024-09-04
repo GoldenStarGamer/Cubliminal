@@ -1,5 +1,7 @@
 package net.limit.cubliminal.block.custom;
 
+import net.limit.cubliminal.block.CustomProperties;
+import net.limit.cubliminal.init.CubliminalBiomes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class FusedFluorescentLightBlock extends Block {
 
 	private static final BooleanProperty LIT = Properties.LIT;
+	public static final BooleanProperty RED = CustomProperties.RED;
 	public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 	private static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0, 15,0, 16, 16, 16);
 
@@ -41,7 +44,7 @@ public class FusedFluorescentLightBlock extends Block {
 
 	public FusedFluorescentLightBlock(Settings settings) {
 		super(settings);
-		this.setDefaultState(this.stateManager.getDefaultState().with(LIT, false).with(FACING, Direction.NORTH));
+		this.setDefaultState(this.stateManager.getDefaultState().with(LIT, false).with(FACING, Direction.NORTH).with(RED, false));
 	}
 
 	@Override
@@ -77,13 +80,15 @@ public class FusedFluorescentLightBlock extends Block {
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
 		BlockState blockState = this.getDefaultState();
 		Direction direction = ctx.getSide();
+		boolean needsToBeRed = ctx.getWorld().getBiome(ctx.getBlockPos()).getKey()
+				.get().equals(CubliminalBiomes.REDROOMS_BIOME);
 		if (!ctx.canReplaceExisting() && direction.getAxis().isHorizontal()) {
 			blockState = blockState.with(FACING, direction);
 		} else {
 			blockState = blockState.with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
 		}
 
-		return blockState;
+		return blockState.with(RED, needsToBeRed);
 	}
 
 	@Override
@@ -106,7 +111,7 @@ public class FusedFluorescentLightBlock extends Block {
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(LIT, FACING);
+		builder.add(LIT, FACING, RED);
 	}
 /*
 	@Nullable

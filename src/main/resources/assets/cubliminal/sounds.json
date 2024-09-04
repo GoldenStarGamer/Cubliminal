@@ -8,11 +8,20 @@
       }
     ]
   },
-  "ambient.lvl37": {
+  "ambient.lvl0.pillars": {
     "category": "ambient",
     "sounds": [
       {
-        "name": "cubliminal:ambience/ambient37",
+        "name": "cubliminal:ambience/ambientpillars0",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.redrooms": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "cubliminal:ambience/ambientredrooms",
         "stream": true
       }
     ]

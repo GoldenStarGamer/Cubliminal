@@ -25,15 +25,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class TheLobbyGatewayBlockEntity extends BlockEntity {
-	private final int theLobbyLayers = 1;
-	private final int theLobbyCellHeight = 6;
-	private long age;
-	private BlockPos exitPos = new BlockPos(7, theLobbyLayers * theLobbyCellHeight + 3, 3);
-
 
 	public TheLobbyGatewayBlockEntity(BlockPos pos, BlockState state) {
 		super(CubliminalBlockEntities.THE_LOBBY_GATEWAY_BLOCK_ENTITY, pos, state);
+        int theLobbyLayers = 3;
+        int theLobbyCellHeight = 7;
+        //this.exitPos = new BlockPos(7, theLobbyLayers * theLobbyCellHeight + 2, 3);
 	}
+
+	private long age;
+	private BlockPos exitPos = new BlockPos(7, 23, 3);
 
 	public void writeExitPos(BlockPos blockPos) {
 		this.exitPos = blockPos;

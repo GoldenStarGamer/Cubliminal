@@ -25,6 +25,7 @@ import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionType.MonsterSettings;
@@ -48,18 +49,17 @@ public class CubliminalWorlds implements LimlibRegistrar {
 	public static final RegistryKey<World> THE_LOBBY_KEY = RegistryKey.of(RegistryKeys.WORLD,
 		Cubliminal.id(THE_LOBBY));
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void registerHooks() {
 		getSoundEffects(THE_LOBBY,
 			new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(2.15f).setDensity(0.0725f).build()),
 				Optional.empty(), Optional.empty()));
 
-		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, false, false, 0f));
+		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
 
 		getWorld(THE_LOBBY,
 			new LimlibWorld(
-				() -> new DimensionType(OptionalLong.of(15500), true, false, false, false, 1.0, false, false, 0, 384, 384,
+				() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 384, 384,
 					TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(THE_LOBBY)), Cubliminal.id(THE_LOBBY),
 					0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 				(registry) -> new DimensionOptions(
@@ -68,28 +68,38 @@ public class CubliminalWorlds implements LimlibRegistrar {
 						.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(THE_LOBBY)))
 						.get(),
 					new LevelZeroChunkGenerator(
-						new LevelZeroBiomeSource(
+							new FixedBiomeSource(registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.THE_LOBBY_BIOME).get())
+							/*
+							new LevelZeroBiomeSource(
 								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.THE_LOBBY_BIOME).get(),
 								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.PILLAR_BIOME).get(),
-								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.REDROOMS_BIOME).get()),
-						LevelZeroChunkGenerator.createGroup(), 1))));
+								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.REDROOMS_BIOME).get())
+							 */
+						,
+						LevelZeroChunkGenerator.createGroup(), 3))));
 
 
-		WORLDS.forEach((pair) -> ((SimpleRegistry) LimlibWorld.LIMLIB_WORLD).add(pair.getFirst(), pair.getSecond(), Lifecycle.stable()));
+		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable()));
 
 
 		LimlibRegistryHooks
 			.hook(SoundEffects.SOUND_EFFECTS_KEY, (infoLookup, registryKey, registry) -> SOUND_EFFECTS
 				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+		/*
 		LimlibRegistryHooks
 			.hook(Skybox.SKYBOX_KEY, (infoLookup, registryKey, registry) -> SKYBOXES
 				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+
+		 */
 		LimlibRegistryHooks
 			.hook(LDimensionEffects.DIMENSION_EFFECTS_KEY, (infoLookup, registryKey, registry) -> DIMENSION_EFFECTS
 				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+		/*
 		LimlibRegistryHooks
 			.hook(PostEffect.POST_EFFECT_KEY, (infoLookup, registryKey, registry) -> POST_EFFECTS
 				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+
+		 */
 		LimlibRegistryHooks.hook(RegistryKeys.BIOME, (infoLookup, registryKey, registry) -> {
 			RegistryEntryLookup<PlacedFeature> features = infoLookup.getRegistryInfo(RegistryKeys.PLACED_FEATURE).get().entryLookup();
 			RegistryEntryLookup<ConfiguredCarver<?>> carvers = infoLookup.getRegistryInfo(RegistryKeys.CONFIGURED_CARVER).get().entryLookup();

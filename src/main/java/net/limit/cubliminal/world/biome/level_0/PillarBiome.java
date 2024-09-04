@@ -1,5 +1,6 @@
 package net.limit.cubliminal.world.biome.level_0;
 
+import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
@@ -16,10 +17,11 @@ public class PillarBiome {
 		GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
 		BiomeEffects.Builder biomeEffects = new BiomeEffects.Builder();
 
-		biomeEffects.skyColor(19384);
+		biomeEffects.loopSound(CubliminalSounds.AMBIENT_PILLARS_LEVEL_0);
+		biomeEffects.skyColor(0);
 		biomeEffects.fogColor(16252805);
-		biomeEffects.waterColor(6694896);
-		biomeEffects.waterFogColor(6694896);
+		biomeEffects.waterColor(15660426);
+		biomeEffects.waterFogColor(12499526);
 		BiomeEffects effects = biomeEffects.build();
 
 		biome.spawnSettings(spawnSettings.build());

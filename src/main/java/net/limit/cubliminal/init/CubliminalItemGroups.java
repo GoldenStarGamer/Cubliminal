@@ -16,6 +16,7 @@ public class CubliminalItemGroups {
                     .icon(() -> new ItemStack(CubliminalBlocks.YELLOW_WALLPAPERS)).entries((displayContext, entries) -> {
 
                         entries.add(CubliminalItems.YELLOW_WALLPAPER);
+                        entries.add(CubliminalItems.CRIMSON_WALLPAPER);
                         entries.add(CubliminalBlocks.YELLOW_WALLPAPERS);
                         entries.add(CubliminalBlocks.YELLOW_WALLPAPERS_WALL);
 						entries.add(CubliminalBlocks.YELLOW_WALLPAPERS_VERTICAL_SLAB);
@@ -24,6 +25,8 @@ public class CubliminalItemGroups {
                         entries.add(CubliminalBlocks.FALSE_CEILING);
                         entries.add(CubliminalBlocks.DAMP_CARPET);
                         entries.add(CubliminalBlocks.DIRTY_DAMP_CARPET);
+                        entries.add(CubliminalBlocks.RED_DAMP_CARPET);
+                        entries.add(CubliminalBlocks.RED_WALLPAPERS);
 						entries.add(CubliminalBlocks.FLICKERING_FLUORESCENT_LIGHT);
 						entries.add(CubliminalBlocks.FLUORESCENT_LIGHT);
 						entries.add(CubliminalBlocks.FUSED_FLUORESCENT_LIGHT);
@@ -32,6 +35,7 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.EMERGENCY_EXIT_DOOR_0);
 						entries.add(CubliminalBlocks.EXIT_SIGN);
 						entries.add(CubliminalBlocks.GABBRO);
+                        entries.add(CubliminalBlocks.MOLD);
 						entries.add(CubliminalBlocks.SMOKE_DETECTOR);
 						entries.add(CubliminalBlocks.ELECTRICAL_PLUG);
 						entries.add(CubliminalBlocks.TWO_LONG_SPRUCE_TABLE);

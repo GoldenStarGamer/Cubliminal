@@ -1,5 +1,7 @@
 package net.limit.cubliminal.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.limit.cubliminal.init.CubliminalWorlds;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumer;
@@ -14,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Environment(EnvType.CLIENT)
 @Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
     @Unique
@@ -40,6 +43,6 @@ public abstract class EntityRenderDispatcherMixin {
 
     @Unique
     private static boolean notInManilaRoom() {
-        return client.player.getBlockY() < 8;
+        return client.player.getBlockY() < 22;
     }
 }

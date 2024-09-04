@@ -4,14 +4,21 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
+import net.limit.cubliminal.block.custom.SpreadableBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.DyeColor;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+
+import java.util.Optional;
+import java.util.function.ToIntFunction;
 
 import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 
@@ -78,21 +85,45 @@ public class CubliminalBlocks {
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3)));
 
+	public static final Block RED_WALLPAPERS = registerBlock("red_wallpapers",
+			new SpreadableBlock(Optional.empty(),
+					AbstractBlock.Settings.create()
+					.mapColor(MapColor.TERRACOTTA_RED)
+					.sounds(BlockSoundGroup.BASALT)
+					.strength(5, 7)
+					.ticksRandomly()
+					.requiresTool(),
+					CubliminalBlocks.YELLOW_WALLPAPERS, CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS, CubliminalBlocks.BOTTOM_YELLOW_WALLPAPERS));
+
+	public static final Block RED_DAMP_CARPET = registerBlock("red_damp_carpet",
+			new SpreadableBlock(Optional.empty(),
+					AbstractBlock.Settings.create()
+					.mapColor(MapColor.RED)
+					.sounds(BlockSoundGroup.WOOL)
+					.strength(1, 3)
+					.ticksRandomly()
+					.slipperiness(0.7f),
+					CubliminalBlocks.DAMP_CARPET, CubliminalBlocks.DIRTY_DAMP_CARPET));
+
 	public static final Block FLICKERING_FLUORESCENT_LIGHT = registerBlock("fluorescent_light",
 			new FluorescentLightBlock(AbstractBlock.Settings.create()
 				.mapColor(MapColor.WHITE)
 				.strength(1, 2)
 				.ticksRandomly()
-				.luminance(createLightLevelFromLitBlockState(15))
+				.luminance(shouldBeRed(15, 8))
 				.sounds(BlockSoundGroup.GLASS)
+					.nonOpaque()
+					.emissiveLighting(Blocks::always)
 					.requiresTool()));
 
 	public static final Block FLUORESCENT_LIGHT = registerBlock("deco_fluorescent_light",
 			new FluorescentLightBlock(AbstractBlock.Settings.create()
 				.mapColor(MapColor.WHITE)
 				.strength(1, 2)
-				.luminance(createLightLevelFromLitBlockState(15))
+				.luminance(shouldBeRed(15, 8))
 				.sounds(BlockSoundGroup.GLASS)
+					.nonOpaque()
+					.emissiveLighting(Blocks::always)
 					.requiresTool()));
 
 	public static final Block FUSED_FLUORESCENT_LIGHT = registerBlock("fused_fluorescent_light",
@@ -100,8 +131,9 @@ public class CubliminalBlocks {
 				.mapColor(MapColor.STONE_GRAY)
 				.strength(1, 2)
 				.ticksRandomly()
-				.luminance(createLightLevelFromLitBlockState(6))
+				.luminance(shouldBeRed(6, 4))
 				.sounds(BlockSoundGroup.GLASS)
+					.nonOpaque()
 					.requiresTool()));
 
 	public static final Block SMOKE_DETECTOR = registerBlock("smoke_detector",
@@ -204,6 +236,16 @@ public class CubliminalBlocks {
 					.pistonBehavior(PistonBehavior.BLOCK)
 					.strength(-1, 3600000)));
 
+	public static final Block MOLD = registerBlock("mold",
+			new MoldBlock(AbstractBlock.Settings.create()
+					.mapColor(MapColor.BLACK)
+					.replaceable()
+					.noCollision()
+					.strength(0.2f)
+					.sounds(BlockSoundGroup.GLOW_LICHEN)
+					.burnable()
+					.pistonBehavior(PistonBehavior.DESTROY)));
+
 	public static final Block POOL_TILES = registerBlock("pool_tiles",
 			new Block(FabricBlockSettings.copyOf(Blocks.REINFORCED_DEEPSLATE)
 					.sounds(BlockSoundGroup.DEEPSLATE_TILES)));
@@ -219,6 +261,18 @@ public class CubliminalBlocks {
 			new WallBlock(FabricBlockSettings.copyOf(Blocks.REINFORCED_DEEPSLATE)));
 
 
+	public static boolean isRed(BlockState state, BlockView world, BlockPos pos) {
+		return state.get(CustomProperties.RED);
+	}
+
+	public static ToIntFunction<BlockState> shouldBeRed(int defaultLevel, int redLevel) {
+		return (state) -> {
+			int litLevel = state.get(CustomProperties.RED) ? redLevel : defaultLevel;
+			return (Boolean) state.get(Properties.LIT) ? litLevel : 0;
+		};
+	}
+
+
 
     public static void init() {
 		FuelRegistry.INSTANCE.add(YELLOW_WALLPAPERS.asItem(), 300);
@@ -232,5 +286,7 @@ public class CubliminalBlocks {
 		FuelRegistry.INSTANCE.add(SPRUCE_CHAIR.asItem(), 800);
 		FuelRegistry.INSTANCE.add(DAMP_CARPET.asItem(), 100);
 		FuelRegistry.INSTANCE.add(DIRTY_DAMP_CARPET.asItem(), 100);
+		FuelRegistry.INSTANCE.add(RED_DAMP_CARPET.asItem(), 100);
+		FuelRegistry.INSTANCE.add(RED_WALLPAPERS.asItem(), 300);
     }
 }
