@@ -1,10 +1,7 @@
 package net.limit.cubliminal.mixin;
 
 import net.limit.cubliminal.util.NoClipEngine;
-import net.limit.cubliminal.util.ParalyzingEntries;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,11 +25,4 @@ public abstract class EntityMixin {
 	private void isImmuneToFire(CallbackInfoReturnable<Boolean> cir) {
 		if (NoClipEngine.isNoClipping(this)) cir.setReturnValue(true);
 	}
-	/*
-	@Inject(method = "move", at = @At("HEAD"), cancellable = true)
-	private void suppressMovement(MovementType movementType, Vec3d movement, CallbackInfo ci) {
-		if (!ParalyzingEntries.PARALYZING_ENTRIES.isEmpty()) ci.cancel();
-	}
-
-	 */
 }

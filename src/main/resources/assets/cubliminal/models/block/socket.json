@@ -2,8 +2,8 @@
 	"parent": "block/cube_all",
 	"texture_size": [32, 32],
 	"textures": {
-		"1": "cubliminal:block/electrical_plug",
-		"particle": "cubliminal:block/electrical_plug"
+		"1": "cubliminal:block/socket",
+		"particle": "cubliminal:block/socket"
 	},
 	"elements": [
 		{

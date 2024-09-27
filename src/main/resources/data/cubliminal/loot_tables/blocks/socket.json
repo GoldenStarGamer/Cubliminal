@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "cubliminal:electrical_plug"
+          "name": "cubliminal:socket"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "cubliminal:blocks/electrical_plug"
+  "random_sequence": "cubliminal:blocks/socket"
 }

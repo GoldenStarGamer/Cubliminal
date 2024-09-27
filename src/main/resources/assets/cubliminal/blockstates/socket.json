@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/socket",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/socket"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/socket",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/socket",
+      "y": 270
+    }
+  }
+}

@@ -6,18 +6,17 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
-import net.limit.cubliminal.block.custom.SpreadableBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
-import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
@@ -86,24 +85,26 @@ public class CubliminalBlocks {
 					.strength(1, 3)));
 
 	public static final Block RED_WALLPAPERS = registerBlock("red_wallpapers",
-			new SpreadableBlock(Optional.empty(),
+			new Block(//Optional.empty(),
 					AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_RED)
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(5, 7)
-					.ticksRandomly()
-					.requiresTool(),
-					CubliminalBlocks.YELLOW_WALLPAPERS, CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS, CubliminalBlocks.BOTTOM_YELLOW_WALLPAPERS));
+					//.ticksRandomly()
+					.requiresTool()
+					//, CubliminalBlocks.YELLOW_WALLPAPERS, CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS, CubliminalBlocks.BOTTOM_YELLOW_WALLPAPERS
+			));
 
 	public static final Block RED_DAMP_CARPET = registerBlock("red_damp_carpet",
-			new SpreadableBlock(Optional.empty(),
+			new Block(//Optional.empty(),
 					AbstractBlock.Settings.create()
 					.mapColor(MapColor.RED)
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3)
-					.ticksRandomly()
-					.slipperiness(0.7f),
-					CubliminalBlocks.DAMP_CARPET, CubliminalBlocks.DIRTY_DAMP_CARPET));
+					//.ticksRandomly()
+					.slipperiness(0.7f)
+					//, CubliminalBlocks.DAMP_CARPET, CubliminalBlocks.DIRTY_DAMP_CARPET
+			));
 
 	public static final Block FLICKERING_FLUORESCENT_LIGHT = registerBlock("fluorescent_light",
 			new FluorescentLightBlock(AbstractBlock.Settings.create()
@@ -146,13 +147,23 @@ public class CubliminalBlocks {
 				.pistonBehavior(PistonBehavior.DESTROY)
 				.requiresTool()));
 
-	public static final Block ELECTRICAL_PLUG = registerBlock("electrical_plug",
-			new ElectricalPlugBlock(AbstractBlock.Settings.create()
+	public static final Block SOCKET = registerBlock("socket",
+			new SocketBlock(AbstractBlock.Settings.create()
 				.mapColor(MapColor.WHITE_GRAY)
 				.strength(3, 3)
 				.sounds(BlockSoundGroup.CALCITE)
 				.pistonBehavior(PistonBehavior.DESTROY)
 				.requiresTool()));
+
+	public static final Block JUMBLED_DOCUMENTS = registerBlock("jumbled_documents",
+			new Block(AbstractBlock.Settings.create()
+					.mapColor(MapColor.WHITE)
+					.breakInstantly()
+					.sounds(new BlockSoundGroup(1.0f, 1.0f, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN,
+							SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN))
+					.nonOpaque()
+					.noCollision()
+					.pistonBehavior(PistonBehavior.DESTROY)));
 
 	public static final Block TWO_LONG_SPRUCE_TABLE = registerBlock("two_long_spruce_table",
 			new TwoLongTableBlock(FabricBlockSettings.copyOf(Blocks.SPRUCE_PLANKS)

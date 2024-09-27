@@ -28,10 +28,6 @@ public class CubliminalSounds {
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_LEVEL_O = registerSoundEvent("ambient.lvl0");
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_PILLARS_LEVEL_0 = registerSoundEvent("ambient.lvl0.pillars");
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_REDROOMS = registerSoundEvent("ambient.redrooms");
-    public static final RegistryEntry.Reference<SoundEvent> BACTERIA_STEP_SOUND = registerSoundEvent("entity.bacteria.step");
-	public static final SoundEvent BACTERIA_IDLE = register("entity.bacteria.ambient");
-	public static final SoundEvent BACTERIA_CHASE = register("entity.bacteria.chase");
-	public static final RegistryEntry.Reference<SoundEvent> BACTERIA_KILL = registerSoundEvent("entity.bacteria.kill");
 	public static final RegistryEntry.Reference<SoundEvent> HEARTBEAT = registerSoundEvent("heartbeat");
 	public static final RegistryEntry.Reference<SoundEvent> NOCLIPPING = registerSoundEvent("noclipping");
 	public static final RegistryEntry.Reference<SoundEvent> OPEN_SINK = registerSoundEvent("block.sink_open");

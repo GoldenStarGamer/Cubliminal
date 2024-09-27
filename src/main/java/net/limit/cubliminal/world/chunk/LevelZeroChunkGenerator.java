@@ -213,7 +213,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 								.with(CustomProperties.RED, state.get(CustomProperties.RED)),
 					Block.FORCE_STATE, 1);
 			}
-		} else if (state.isOf(CubliminalBlocks.ELECTRICAL_PLUG)) {
+		} else if (state.isOf(CubliminalBlocks.SOCKET)) {
 			if (randomInt != 0) {
 				region.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 3),
 						Block.FORCE_STATE, 1);

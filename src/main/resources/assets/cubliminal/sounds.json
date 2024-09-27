@@ -26,49 +26,6 @@
       }
     ]
   },
-  "entity.bacteria.step": {
-    "category": "hostile",
-    "sounds": [
-      {
-        "name": "cubliminal:entity/bacteria_step",
-        "stream": false
-      }
-    ],
-    "subtitle": "subtitle.entity.cubliminal.bacteria_step"
-  },
-  "entity.bacteria.ambient": {
-    "category": "hostile",
-    "sounds": [
-      {
-        "name": "cubliminal:entity/bacteria_idle1"
-      },
-      {
-        "name": "cubliminal:entity/bacteria_idle2"
-      },
-      {
-        "name": "cubliminal:entity/bacteria_idle3"
-      }
-    ],
-    "subtitle": "subtitle.entity.cubliminal.bacteria_idle"
-  },
-  "entity.bacteria.chase": {
-    "category": "hostile",
-    "sounds": [
-      {
-        "name": "cubliminal:entity/bacteria_chase"
-      }
-    ],
-    "subtitle": "subtitle.entity.cubliminal.bacteria_scream"
-  },
-  "entity.bacteria.kill": {
-    "category": "hostile",
-    "sounds": [
-      {
-        "name": "cubliminal:entity/bacteria_kill"
-      }
-    ],
-    "subtitle": "subtitle.entity.cubliminal.bacteria_scream"
-  },
   "heartbeat": {
     "category": "player",
     "sounds": [

@@ -35,13 +35,6 @@ public class FluorescentLightBlock extends Block {
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return VOXEL_SHAPE;
 	}
-/*
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
-	}
-
- */
 
 	public FluorescentLightBlock(Settings settings) {
 		super(settings);
@@ -101,26 +94,10 @@ public class FluorescentLightBlock extends Block {
 
 		return blockState.with(RED, needsToBeRed);
 	}
-/*
-	@Nullable
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		//return checkType(type, CubliminalBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntity::tick);
-		return null;
-	}
-
- */
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(LIT, FACING, RED);
 	}
-/*
-	@Nullable
-	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		//return new FluorescentLightBlockEntity(pos, state);
-		return null;
-	}
 
- */
 }

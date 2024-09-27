@@ -9,9 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.limit.cubliminal.config.CubliminalConfig;
-import net.limit.cubliminal.entity.custom.BacteriaEntity;
 import net.limit.cubliminal.event.ServerTickHandler;
 import net.limit.cubliminal.event.command.NoClipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
@@ -43,7 +41,6 @@ public class Cubliminal implements ModInitializer {
 		CubliminalSounds.init();
 		CubliminalEntities.init();
 		CubliminalEffects.init();
-		FabricDefaultAttributeRegistry.register(CubliminalEntities.BACTERIA, BacteriaEntity.createBacteriaAttributes());
 		CubliminalBlockEntities.init();
 		CubliminalPackets.registerC2SPackets();
 		ServerTickEvents.START_SERVER_TICK.register(new ServerTickHandler());

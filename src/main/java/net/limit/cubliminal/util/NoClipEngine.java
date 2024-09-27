@@ -94,13 +94,6 @@ public class NoClipEngine {
             TO_OVER.remove(playerEntity);
         } else if (TO_LEVEL_0.contains(playerEntity)) {
             registryKey = CubliminalWorlds.THE_LOBBY_KEY;
-            /*
-            int x = playerEntity.getBlockX();
-            int z = playerEntity.getBlockZ();
-            while (x % 8 != 0) x++;
-            while (z % 8 != 0) z++;
-
-             */
             destination = new BlockPos(4, 16, 4);
             TO_LEVEL_0.remove(playerEntity);
         } else if (registryKey.getValue().getNamespace().equals(Cubliminal.MOD_ID)) {
@@ -108,13 +101,6 @@ public class NoClipEngine {
             destination = playerEntity.getServerWorld().getSpawnPos();
         } else {
             registryKey = CubliminalWorlds.THE_LOBBY_KEY;
-            /*
-            int x = playerEntity.getBlockX();
-            int z = playerEntity.getBlockZ();
-            while (x % 8 != 0) x++;
-            while (z % 8 != 0) z++;
-
-             */
             destination = new BlockPos(4, 16, 4);
         }
 

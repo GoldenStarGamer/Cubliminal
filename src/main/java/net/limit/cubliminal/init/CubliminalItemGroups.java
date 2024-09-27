@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class CubliminalItemGroups {
     public static final ItemGroup BACKROOMS_GROUP = Registry.register(Registries.ITEM_GROUP,
@@ -37,7 +36,7 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.GABBRO);
                         entries.add(CubliminalBlocks.MOLD);
 						entries.add(CubliminalBlocks.SMOKE_DETECTOR);
-						entries.add(CubliminalBlocks.ELECTRICAL_PLUG);
+						entries.add(CubliminalBlocks.SOCKET);
 						entries.add(CubliminalBlocks.TWO_LONG_SPRUCE_TABLE);
                         entries.add(CubliminalBlocks.SPRUCE_CHAIR);
 						entries.add(CubliminalBlocks.SINK);

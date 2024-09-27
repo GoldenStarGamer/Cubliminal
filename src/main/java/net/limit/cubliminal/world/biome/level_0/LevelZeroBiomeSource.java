@@ -52,9 +52,9 @@ public class LevelZeroBiomeSource extends BiomeSource {
             bl = true;
         }
         //get noise value at the given position (range of 0 - 3)
-        double rarityValue = (rarity.sample(x * 0.01,z * 0.01) + 1) * 1.5;
-        double spacingValue = (spacing.sample(x * 0.01,z * 0.01) + 1) * 1.5;
-        double safetyValue = (safety.sample(x * 0.01,z * 0.01) + 1) * 1.5;
+        double rarityValue = (rarity.sample(x * 0.005,z * 0.005) + 1) * 1.5;
+        double spacingValue = (spacing.sample(x * 0.005,z * 0.005) + 1) * 1.5;
+        double safetyValue = (safety.sample(x * 0.005,z * 0.005) + 1) * 1.5;
 
         //return most suitable biome entry by making use of helper enum
         return getBiomeReference(rarityValue, spacingValue, safetyValue);

@@ -34,13 +34,6 @@ public class FusedFluorescentLightBlock extends Block {
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return VOXEL_SHAPE;
 	}
-/*
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
-	}
-
- */
 
 	public FusedFluorescentLightBlock(Settings settings) {
 		super(settings);
@@ -100,26 +93,10 @@ public class FusedFluorescentLightBlock extends Block {
 	public BlockState mirror(BlockState state, BlockMirror mirror) {
 		return state.rotate(mirror.getRotation(state.get(FACING)));
 	}
-/*
-	@Nullable
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		//return checkType(type, CubliminalBlockEntities.FUSED_FLUORESCENT_LIGHT_BLOCK_ENTITY, FusedFluorescentLightBlockEntity::tick);
-		return null;
-	}
-
- */
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(LIT, FACING, RED);
 	}
-/*
-	@Nullable
-	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		//return new FusedFluorescentLightBlockEntity(pos, state);
-		return null;
-	}
 
- */
 }

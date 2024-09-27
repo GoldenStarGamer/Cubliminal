@@ -16,14 +16,14 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class ElectricalPlugBlock extends HorizontalFacingBlock {
-	public static final MapCodec<ElectricalPlugBlock> CODEC = ElectricalPlugBlock.createCodec(ElectricalPlugBlock::new);
+public class SocketBlock extends HorizontalFacingBlock {
+	public static final MapCodec<SocketBlock> CODEC = SocketBlock.createCodec(SocketBlock::new);
 	public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 	protected static final VoxelShape WEST_SHAPE = Block.createCuboidShape(15.5, 4, 4.5, 16, 12.5, 11.5);
 	protected static final VoxelShape EAST_SHAPE = Block.createCuboidShape(0, 4, 4.5, 0.5, 12.5, 11.5);
 	protected static final VoxelShape SOUTH_SHAPE = Block.createCuboidShape(4.5, 4, 0, 11.5, 12.5, 0.5);
 	protected static final VoxelShape NORTH_SHAPE = Block.createCuboidShape(4.5, 4, 15.5, 11.5, 12.5, 16);
-	public ElectricalPlugBlock(Settings settings) {
+	public SocketBlock(Settings settings) {
 		super(settings);
 		this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
 	}
