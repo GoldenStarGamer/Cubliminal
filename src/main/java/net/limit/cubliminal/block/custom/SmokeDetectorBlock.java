@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 
 public class SmokeDetectorBlock extends Block {
-	protected static final float COLLISION_SHAPE_OFFSET = 1.5F;
+	protected static final float COLLISION_SHAPE_OFFSET = 1.5f;
 	protected static final VoxelShape SHAPE = Block.createCuboidShape(6.5, 15, 6.5, 9.5, 16, 9.5);
 
 	public SmokeDetectorBlock(Settings settings) {

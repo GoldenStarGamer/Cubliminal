@@ -22,7 +22,7 @@
 			"net.limit.cubliminal.CubliminalClient"
 		],
 		"limlib:registrar": [
-			"net.limit.cubliminal.init.CubliminalWorlds"
+          "net.limit.cubliminal.init.CubliminalRegistrar"
 		],
 		"modmenu": [
 			"net.limit.cubliminal.config.CubliminalModmenu"

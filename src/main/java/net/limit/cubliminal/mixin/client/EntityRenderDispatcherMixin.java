@@ -2,7 +2,7 @@ package net.limit.cubliminal.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.limit.cubliminal.init.CubliminalWorlds;
+import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -28,7 +28,7 @@ public abstract class EntityRenderDispatcherMixin {
                                            float radius, CallbackInfo ci) {
         if (client.player == null) return;
         if (entity.isPlayer() && client.player.getWorld().getRegistryKey().equals(
-                CubliminalWorlds.THE_LOBBY_KEY) && !entity.equals(client.player)
+                CubliminalRegistrar.THE_LOBBY_KEY) && !entity.equals(client.player)
                 && notInManilaRoom()) ci.cancel();
     }
 
@@ -37,7 +37,7 @@ public abstract class EntityRenderDispatcherMixin {
                                            Entity entity, float tickDelta, CallbackInfo ci) {
         if (client.player == null) return;
         if (entity.isPlayer() && client.player.getWorld().getRegistryKey().equals(
-                CubliminalWorlds.THE_LOBBY_KEY) && !entity.equals(client.player)
+                CubliminalRegistrar.THE_LOBBY_KEY) && !entity.equals(client.player)
                 && notInManilaRoom()) ci.cancel();
     }
 

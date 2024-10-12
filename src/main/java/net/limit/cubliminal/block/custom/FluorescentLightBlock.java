@@ -52,6 +52,7 @@ public class FluorescentLightBlock extends Block {
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		world.setBlockState(pos, state.with(LIT, true));
 	}
+
 	@Override
 	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
 		if (!state.canPlaceAt(world, pos)) {

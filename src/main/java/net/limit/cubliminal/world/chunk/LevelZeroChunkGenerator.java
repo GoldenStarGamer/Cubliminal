@@ -7,7 +7,7 @@ import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.init.CubliminalWorlds;
+import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
 import net.ludocrypt.limlib.api.world.NbtGroup;
@@ -55,7 +55,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 
 	public static NbtGroup createGroup() {
 		return NbtGroup.Builder
-				.create(Cubliminal.id(CubliminalWorlds.THE_LOBBY))
+				.create(Cubliminal.id(CubliminalRegistrar.THE_LOBBY))
 				.with("0column", 1, 2)
 				.with("0corner", 1, 1)
 				.with("0corridor", 1, 1)

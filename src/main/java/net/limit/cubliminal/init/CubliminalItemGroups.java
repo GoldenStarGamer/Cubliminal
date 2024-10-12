@@ -37,11 +37,13 @@ public class CubliminalItemGroups {
                         entries.add(CubliminalBlocks.MOLD);
 						entries.add(CubliminalBlocks.SMOKE_DETECTOR);
 						entries.add(CubliminalBlocks.SOCKET);
+                        entries.add(CubliminalBlocks.COMPUTER);
+                        entries.add(CubliminalBlocks.JUMBLED_DOCUMENTS);
+                        entries.add(CubliminalBlocks.ALMOND_WATER);
 						entries.add(CubliminalBlocks.TWO_LONG_SPRUCE_TABLE);
                         entries.add(CubliminalBlocks.SPRUCE_CHAIR);
 						entries.add(CubliminalBlocks.SINK);
 						entries.add(CubliminalBlocks.SHOWER);
-                        entries.add(CubliminalItems.ALMOND_WATER);
                         entries.add(CubliminalItems.WOODEN_PLANK);
                         entries.add(CubliminalItems.NAILED_BAT);
 

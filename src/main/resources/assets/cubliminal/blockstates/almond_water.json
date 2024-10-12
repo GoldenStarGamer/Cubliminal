@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/almond_water",
+      "y": -90
+    },
+    "facing=north": {
+      "model": "cubliminal:block/almond_water"
+    },
+    "facing=south": {
+      "model": "cubliminal:block/almond_water",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/almond_water",
+      "y": 90
+    }
+  }
+}

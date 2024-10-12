@@ -5,31 +5,31 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import org.jetbrains.annotations.Nullable;
 
-public class JumbledDocumentsBlock extends HorizontalFacingBlock {
-    public static final MapCodec<JumbledDocumentsBlock> CODEC = JumbledDocumentsBlock.createCodec(JumbledDocumentsBlock::new);
+public class AlmondWaterBlock extends HorizontalFacingBlock {
+    protected static final float COLLISION_SHAPE_OFFSET = 1.5f;
+    public static final MapCodec<AlmondWaterBlock> CODEC = AlmondWaterBlock.createCodec(AlmondWaterBlock::new);
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-    protected static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 2.0, 16.0);
-    public JumbledDocumentsBlock(Settings settings) {
+    protected static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(5.0, 0.0, 5.0, 10.0, 11.0, 10.0);
+    public AlmondWaterBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return VOXEL_SHAPE;
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Override
@@ -49,29 +49,15 @@ public class JumbledDocumentsBlock extends HorizontalFacingBlock {
         }
     }
 
-    @Nullable
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState blockState = this.getDefaultState();
-        WorldView worldView = ctx.getWorld();
-        BlockPos blockPos = ctx.getBlockPos();
-        Direction[] directions = ctx.getPlacementDirections();
-
-        for(Direction direction : directions) {
-            if (direction.getAxis().isHorizontal()) {
-                blockState = blockState.with(FACING, direction.getOpposite());
-                if (blockState.canPlaceAt(worldView, blockPos)) {
-                    return blockState;
-                }
-            }
-        }
-
-        return null;
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        Vec3d vec3d = state.getModelOffset(world, pos);
+        return VOXEL_SHAPE.offset(vec3d.x, vec3d.y, vec3d.z);
     }
-
     @Override
-    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
-        return CODEC;
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        Vec3d vec3d = state.getModelOffset(world, pos);
+        return VOXEL_SHAPE.offset(vec3d.x, vec3d.y, vec3d.z);
     }
 
     @Override
@@ -82,5 +68,10 @@ public class JumbledDocumentsBlock extends HorizontalFacingBlock {
     @Override
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.rotate(mirror.getRotation(state.get(FACING)));
+    }
+
+    @Override
+    public boolean isShapeFullCube(BlockState state, BlockView world, BlockPos pos) {
+        return false;
     }
 }

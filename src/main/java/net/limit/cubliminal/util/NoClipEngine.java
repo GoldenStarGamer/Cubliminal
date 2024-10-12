@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.init.CubliminalPackets;
 import net.limit.cubliminal.init.CubliminalSounds;
-import net.limit.cubliminal.init.CubliminalWorlds;
+import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
@@ -76,7 +76,7 @@ public class NoClipEngine {
         nbt.putInt("ticksToNc", -1);
 
         if (registryKey.getValue().getNamespace().equals(Cubliminal.MOD_ID)) {
-            if (registryKey.equals(CubliminalWorlds.THE_LOBBY_KEY)) {
+            if (registryKey.equals(CubliminalRegistrar.THE_LOBBY_KEY)) {
                 TO_LEVEL_0.add(player);
             }
         } else {
@@ -93,14 +93,14 @@ public class NoClipEngine {
             destination = playerEntity.getServerWorld().getSpawnPos();
             TO_OVER.remove(playerEntity);
         } else if (TO_LEVEL_0.contains(playerEntity)) {
-            registryKey = CubliminalWorlds.THE_LOBBY_KEY;
+            registryKey = CubliminalRegistrar.THE_LOBBY_KEY;
             destination = new BlockPos(4, 16, 4);
             TO_LEVEL_0.remove(playerEntity);
         } else if (registryKey.getValue().getNamespace().equals(Cubliminal.MOD_ID)) {
             registryKey = RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD);
             destination = playerEntity.getServerWorld().getSpawnPos();
         } else {
-            registryKey = CubliminalWorlds.THE_LOBBY_KEY;
+            registryKey = CubliminalRegistrar.THE_LOBBY_KEY;
             destination = new BlockPos(4, 16, 4);
         }
 

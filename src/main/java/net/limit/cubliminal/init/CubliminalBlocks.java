@@ -6,9 +6,11 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
+import net.limit.cubliminal.item.AlmondWaterBlockItem;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.FoodComponent;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -30,6 +32,12 @@ public class CubliminalBlocks {
         registerBlockItem(id, block);
 		return Registry.register(Registries.BLOCK, Cubliminal.id(id), block);
     }
+	private static Block registerBlockWithItem(String id, Block block, FoodComponent foodComponent, int maxCount) {
+		Registry.register(Registries.ITEM, Cubliminal.id(id),
+				new AlmondWaterBlockItem(block, new FabricItemSettings().food(foodComponent).maxCount(maxCount)));
+		return Registry.register(Registries.BLOCK, Cubliminal.id(id), block);
+	}
+
 
     public static final Block YELLOW_WALLPAPERS = registerBlock("yellow_wallpapers",
             new Block(AbstractBlock.Settings.create()
@@ -85,26 +93,18 @@ public class CubliminalBlocks {
 					.strength(1, 3)));
 
 	public static final Block RED_WALLPAPERS = registerBlock("red_wallpapers",
-			new Block(//Optional.empty(),
-					AbstractBlock.Settings.create()
+			new Block(AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_RED)
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(5, 7)
-					//.ticksRandomly()
-					.requiresTool()
-					//, CubliminalBlocks.YELLOW_WALLPAPERS, CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS, CubliminalBlocks.BOTTOM_YELLOW_WALLPAPERS
-			));
+					.requiresTool()));
 
 	public static final Block RED_DAMP_CARPET = registerBlock("red_damp_carpet",
-			new Block(//Optional.empty(),
-					AbstractBlock.Settings.create()
+			new Block(AbstractBlock.Settings.create()
 					.mapColor(MapColor.RED)
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3)
-					//.ticksRandomly()
-					.slipperiness(0.7f)
-					//, CubliminalBlocks.DAMP_CARPET, CubliminalBlocks.DIRTY_DAMP_CARPET
-			));
+					.slipperiness(0.7f)));
 
 	public static final Block FLICKERING_FLUORESCENT_LIGHT = registerBlock("fluorescent_light",
 			new FluorescentLightBlock(AbstractBlock.Settings.create()
@@ -143,7 +143,7 @@ public class CubliminalBlocks {
 				.strength(2.6f, 2.6f)
 				.offset(AbstractBlock.OffsetType.XZ)
 				.dynamicBounds()
-				.sounds(BlockSoundGroup.LANTERN)
+				.sounds(BlockSoundGroup.METAL)
 				.pistonBehavior(PistonBehavior.DESTROY)
 				.requiresTool()));
 
@@ -155,14 +155,24 @@ public class CubliminalBlocks {
 				.pistonBehavior(PistonBehavior.DESTROY)
 				.requiresTool()));
 
+	public static final Block ALMOND_WATER = registerBlockWithItem("almond_water",
+			new AlmondWaterBlock(AbstractBlock.Settings.create()
+					.mapColor(MapColor.PALE_YELLOW)
+					.breakInstantly()
+					.dynamicBounds()
+					.offset(AbstractBlock.OffsetType.XZ)
+					.sounds(BlockSoundGroup.LANTERN)
+					.pistonBehavior(PistonBehavior.DESTROY)), CubliminalFoodComponents.ALMOND_WATER, 16);
+
 	public static final Block JUMBLED_DOCUMENTS = registerBlock("jumbled_documents",
-			new Block(AbstractBlock.Settings.create()
+			new JumbledDocumentsBlock(AbstractBlock.Settings.create()
 					.mapColor(MapColor.WHITE)
 					.breakInstantly()
 					.sounds(new BlockSoundGroup(1.0f, 1.0f, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN,
 							SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN))
 					.nonOpaque()
 					.noCollision()
+					.noBlockBreakParticles()
 					.pistonBehavior(PistonBehavior.DESTROY)));
 
 	public static final Block TWO_LONG_SPRUCE_TABLE = registerBlock("two_long_spruce_table",

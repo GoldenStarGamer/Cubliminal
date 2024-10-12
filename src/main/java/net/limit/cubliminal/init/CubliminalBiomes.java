@@ -14,7 +14,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public class CubliminalBiomes {
     public static final RegistryKey<Biome> THE_LOBBY_BIOME = RegistryKey
-		.of(RegistryKeys.BIOME, Cubliminal.id(CubliminalWorlds.THE_LOBBY));
+		.of(RegistryKeys.BIOME, Cubliminal.id(CubliminalRegistrar.THE_LOBBY));
 
 	public static final RegistryKey<Biome> PILLAR_BIOME = RegistryKey
 			.of(RegistryKeys.BIOME, Cubliminal.id("pillar_biome"));

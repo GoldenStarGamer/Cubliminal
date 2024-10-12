@@ -13,6 +13,7 @@ import net.ludocrypt.limlib.api.LimlibRegistrar;
 import net.ludocrypt.limlib.api.LimlibRegistryHooks;
 import net.ludocrypt.limlib.api.LimlibWorld;
 import net.ludocrypt.limlib.api.effects.post.PostEffect;
+import net.ludocrypt.limlib.api.effects.post.StaticPostEffect;
 import net.ludocrypt.limlib.api.effects.sky.LDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sky.StaticDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sound.SoundEffects;
@@ -35,7 +36,7 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 
-public class CubliminalWorlds implements LimlibRegistrar {
+public class CubliminalRegistrar implements LimlibRegistrar {
 
 	private static final List<Pair<RegistryKey<LimlibWorld>, LimlibWorld>> WORLDS = Lists.newArrayList();
 	private static final List<Pair<RegistryKey<SoundEffects>, SoundEffects>> SOUND_EFFECTS = Lists.newArrayList();
@@ -54,6 +55,8 @@ public class CubliminalWorlds implements LimlibRegistrar {
 				Optional.empty(), Optional.empty()));
 
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
+
+		getPostEffects("paranoia", new StaticPostEffect(Cubliminal.id("paranoia")));
 
 		getWorld(THE_LOBBY,
 			new LimlibWorld(

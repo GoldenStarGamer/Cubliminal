@@ -1,6 +1,3 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "cubliminal:item/almond_water"
-  }
+  "parent": "cubliminal:block/almond_water"
 }

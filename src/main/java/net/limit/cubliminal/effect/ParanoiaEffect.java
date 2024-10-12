@@ -6,6 +6,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 
@@ -18,20 +19,29 @@ public class ParanoiaEffect extends StatusEffect {
     }
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-		if (entity.isPlayer() && !entity.getWorld().isClient && !entity.isSpectator()) {
-			while (entity.getRandom().nextInt(140) == 1) {
-				if (!entity.hasStatusEffect(StatusEffects.DARKNESS)) {
-					clientPlaySoundSingle((ServerPlayerEntity) entity, CubliminalSounds.HEARTBEAT,
-						SoundCategory.PLAYERS, entity.getX(), entity.getY(),
-						entity.getZ(), 1f, 1f, 1);
-				}
+		if (entity instanceof PlayerEntity player && !player.isSpectator()) {
+			if (player.getWorld().isClient) {
+				/*
+				GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
+				gameRenderer.disablePostProcessor();
+				((GameRendererAccessor) gameRenderer).callLoadPostProcessor(new Identifier("shaders/post/invert.json"));
 
-				entity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 60,
-					0, false, false, false));
-			}
-			while (entity.getRandom().nextInt(800) == 1) {
-				if (!((ServerPlayerEntity) entity).isCreative()) {
-					entity.damage(entity.getDamageSources().genericKill(), 1);
+				 */
+			} else {
+				while (entity.getRandom().nextInt(140) == 1) {
+					if (!entity.hasStatusEffect(StatusEffects.DARKNESS)) {
+						clientPlaySoundSingle((ServerPlayerEntity) entity, CubliminalSounds.HEARTBEAT,
+								SoundCategory.PLAYERS, entity.getX(), entity.getY(),
+								entity.getZ(), 1f, 1f, 1);
+					}
+
+					entity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 60,
+							0, false, false, false));
+				}
+				while (entity.getRandom().nextInt(800) == 1) {
+					if (!((ServerPlayerEntity) entity).isCreative()) {
+						entity.damage(entity.getDamageSources().genericKill(), 1);
+					}
 				}
 			}
 		}

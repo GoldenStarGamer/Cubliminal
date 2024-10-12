@@ -1,14 +1,15 @@
 package net.limit.cubliminal.item;
 
+import net.limit.cubliminal.block.custom.AlmondWaterBlock;
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.limit.cubliminal.util.SanityData;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
-import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -17,11 +18,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.Validate;
 
-public class AlmondWaterItem extends Item {
+public class AlmondWaterBlockItem extends BlockItem {
 
-	public AlmondWaterItem(Settings settings) {
-        super(settings);
+    public AlmondWaterBlockItem(Block block, Settings settings) {
+        super(block, settings);
+        Validate.isInstanceOf(AlmondWaterBlock.class, block);
     }
 
     @Override
@@ -30,10 +33,10 @@ public class AlmondWaterItem extends Item {
         if (user instanceof ServerPlayerEntity serverPlayerEntity) {
             Criteria.CONSUME_ITEM.trigger(serverPlayerEntity, stack);
             serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
-			if (!world.isClient) {
-				SanityData.resetTimer(serverPlayerEntity);
-				user.removeStatusEffect(CubliminalEffects.PARANOIA);
-			}
+            if (!world.isClient) {
+                SanityData.resetTimer(serverPlayerEntity);
+                user.removeStatusEffect(CubliminalEffects.PARANOIA);
+            }
         }
         /*
         if (stack.isEmpty()) {

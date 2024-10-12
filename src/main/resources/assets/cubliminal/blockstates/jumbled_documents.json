@@ -1,0 +1,147 @@
+{
+  "variants": {
+    "facing=west": [
+      {
+        "model": "cubliminal:block/jumbled_documents/0",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/1",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/2",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/3",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/4",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/5",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/6",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/7",
+        "y": 90
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/8",
+        "y": 90
+      }
+    ],
+    "facing=south": [
+      {
+        "model": "cubliminal:block/jumbled_documents/0"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/1"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/2"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/3"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/4"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/5"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/6"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/7"
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/8"
+      }
+    ],
+    "facing=north": [
+      {
+        "model": "cubliminal:block/jumbled_documents/0",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/1",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/2",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/3",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/4",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/5",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/6",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/7",
+        "y": 180
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/8",
+        "y": 180
+      }
+    ],
+    "facing=east": [
+      {
+        "model": "cubliminal:block/jumbled_documents/0",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/1",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/2",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/3",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/4",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/5",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/6",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/7",
+        "y": 270
+      },
+      {
+        "model": "cubliminal:block/jumbled_documents/8",
+        "y": 270
+      }
+    ]
+  }
+}

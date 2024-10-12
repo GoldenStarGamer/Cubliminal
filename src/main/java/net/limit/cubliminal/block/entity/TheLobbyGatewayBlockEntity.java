@@ -4,7 +4,7 @@ import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.advancements.AdvancementHelper;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.init.CubliminalWorlds;
+import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.util.SanityData;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.BlockState;
@@ -60,7 +60,7 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 	public static void tick(World world, BlockPos pos, BlockState state, TheLobbyGatewayBlockEntity blockEntity) {
 		if (!world.isClient) {
 			++blockEntity.age;
-			if (blockEntity.getWorld().getRegistryKey().equals(CubliminalWorlds.THE_LOBBY_KEY)) {
+			if (blockEntity.getWorld().getRegistryKey().equals(CubliminalRegistrar.THE_LOBBY_KEY)) {
 				if (world.getBlockEntity(pos.down()) instanceof TheLobbyGatewayBlockEntity) return;
 				if (blockEntity.age % 100 == 0 && state.equals(CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK
 					.getDefaultState().with(Properties.LIT, false))) {

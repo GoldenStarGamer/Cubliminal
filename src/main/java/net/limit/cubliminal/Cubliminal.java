@@ -48,6 +48,6 @@ public class Cubliminal implements ModInitializer {
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(ServerTickHandler::afterWorldChange);
 		CommandRegistrationCallback.EVENT.register(NoClipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> LVL_0 = server.getWorld(CubliminalWorlds.THE_LOBBY_KEY));
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> LVL_0 = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 	}
 }

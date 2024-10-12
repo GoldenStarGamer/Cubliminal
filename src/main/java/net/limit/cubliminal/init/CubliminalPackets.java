@@ -3,10 +3,7 @@ package net.limit.cubliminal.init;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.packet.NoClipC2SPacket;
-import net.limit.cubliminal.packet.NoClipS2CPacket;
-import net.limit.cubliminal.packet.ResetNoClipCooldownC2SPacket;
-import net.limit.cubliminal.packet.SanitySyncS2CPacket;
+import net.limit.cubliminal.packet.*;
 import net.minecraft.util.Identifier;
 
 public class CubliminalPackets {

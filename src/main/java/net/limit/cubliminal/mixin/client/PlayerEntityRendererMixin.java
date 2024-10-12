@@ -2,7 +2,7 @@ package net.limit.cubliminal.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.limit.cubliminal.init.CubliminalWorlds;
+import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -30,7 +30,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
                               VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) return;
-        if (abstractClientPlayerEntity.getWorld().getRegistryKey().equals(CubliminalWorlds.THE_LOBBY_KEY)
+        if (abstractClientPlayerEntity.getWorld().getRegistryKey().equals(CubliminalRegistrar.THE_LOBBY_KEY)
                 && !abstractClientPlayerEntity.equals(client.player) && client.player.getBlockY() < 22) ci.cancel();
         //cancel player rendering below level 0 gabbro ceiling
     }

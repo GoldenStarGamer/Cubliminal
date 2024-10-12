@@ -1,6 +1,6 @@
 package net.limit.cubliminal.mixin;
 
-import net.limit.cubliminal.init.CubliminalWorlds;
+import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.util.NoClipEngine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
@@ -51,7 +51,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	private void cancelAttack(Entity target, CallbackInfo ci) {
-		if (target.isPlayer() && this.getWorld().getRegistryKey().equals(CubliminalWorlds.THE_LOBBY_KEY)
+		if (target.isPlayer() && this.getWorld().getRegistryKey().equals(CubliminalRegistrar.THE_LOBBY_KEY)
 				&& this.getBlockY() < 22) ci.cancel();
 	}
 	//cancel player interactions below level 0 gabbro ceiling

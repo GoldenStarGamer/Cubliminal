@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.mixin.client.GameRendererAccessor;
+import net.limit.cubliminal.util.GameRendererAccessor;
 import net.ludocrypt.specialmodels.api.SpecialModelRenderer;
 import net.ludocrypt.specialmodels.impl.render.MutableQuad;
 import net.minecraft.block.BlockState;
@@ -49,10 +49,10 @@ public class SkyboxRenderer extends SpecialModelRenderer {
 		}
 
 		MatrixStack matrixStack = new MatrixStack();
-		((GameRendererAccessor) client.gameRenderer).callTiltViewWhenHurt(matrixStack, tickDelta);
+		((GameRendererAccessor) client.gameRenderer).cubliminal$callTiltViewWhenHurt(matrixStack, tickDelta);
 
 		if (client.options.getBobView().getValue()) {
-			((GameRendererAccessor) client.gameRenderer).callBobView(matrixStack, tickDelta);
+			((GameRendererAccessor) client.gameRenderer).cubliminal$callBobView(matrixStack, tickDelta);
 		}
 
 		if (shader.getUniform("bobMat") != null) {
