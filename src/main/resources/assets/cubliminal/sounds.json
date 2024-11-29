@@ -43,6 +43,15 @@
     ],
     "subtitle": "subtitle.noclipping"
   },
+  "wall_clipping": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "cubliminal:misc/wall_clipping"
+      }
+    ],
+    "subtitle": "subtitle.noclipping"
+  },
   "block.sink_open": {
     "category": "blocks",
     "sounds": [

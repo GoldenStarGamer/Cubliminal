@@ -31,7 +31,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) return;
         if (abstractClientPlayerEntity.getWorld().getRegistryKey().equals(CubliminalRegistrar.THE_LOBBY_KEY)
-                && !abstractClientPlayerEntity.equals(client.player) && client.player.getBlockY() < 22) ci.cancel();
+                && !abstractClientPlayerEntity.equals(client.player) && client.player.getBlockY() < 8) ci.cancel();
         //cancel player rendering below level 0 gabbro ceiling
     }
 }

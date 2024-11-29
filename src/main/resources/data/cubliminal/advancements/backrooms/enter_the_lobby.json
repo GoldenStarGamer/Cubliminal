@@ -10,7 +10,7 @@
   },
   "display": {
     "icon": {
-      "item": "cubliminal:yellow_wallpaper"
+      "id": "cubliminal:yellow_wallpaper"
     },
     "announce_to_chat": true,
     "description": {

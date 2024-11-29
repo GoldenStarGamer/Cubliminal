@@ -14,7 +14,7 @@
     "B"
   ],
   "result": {
-    "item": "cubliminal:smoke_detector"
+    "id": "cubliminal:smoke_detector"
   },
   "show_notification": true
 }

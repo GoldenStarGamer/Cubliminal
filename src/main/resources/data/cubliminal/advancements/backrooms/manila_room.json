@@ -7,7 +7,7 @@
   },
   "display": {
     "icon": {
-      "item": "cubliminal:manila_wallpapers"
+      "id": "cubliminal:manila_wallpapers"
     },
     "announce_to_chat": true,
     "description": {

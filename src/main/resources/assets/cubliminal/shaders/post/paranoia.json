@@ -6,7 +6,10 @@
     {
       "name": "paranoia",
       "intarget": "minecraft:main",
-      "outtarget": "swap"
+      "outtarget": "swap",
+      "uniforms": [
+        { "name": "RenderTime", "values": [ 0.0 ] }
+      ]
     },
     {
       "name": "blit",

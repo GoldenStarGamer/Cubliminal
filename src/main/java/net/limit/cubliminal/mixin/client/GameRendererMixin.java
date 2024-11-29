@@ -3,6 +3,7 @@ package net.limit.cubliminal.mixin.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.limit.cubliminal.util.GameRendererAccessor;
 import net.ludocrypt.limlib.impl.shader.PostProcesser;
@@ -11,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Final;
@@ -61,8 +63,14 @@ public abstract class GameRendererMixin implements GameRendererAccessor {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawEntityOutlinesFramebuffer()V", shift = At.Shift.BEFORE))
     private void cubliminal$renderPostEffects(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
-        if (client.player != null && client.player.hasStatusEffect(CubliminalEffects.PARANOIA)) {
-            memoizedShaders.apply(Cubliminal.id("shaders/post/paranoia.json")).render(tickDelta);
+
+        if (client.player != null && client.world != null && client.player.hasStatusEffect(Registries.STATUS_EFFECT.getEntry(CubliminalEffects.PARANOIA))
+                && !CubliminalConfig.get().disableAggressiveGraphics) {
+            PostProcesser shader = memoizedShaders.apply(Cubliminal.id("shaders/post/paranoia.json"));
+            shader.getShaderEffect().setUniforms("RenderTime", (float) client.world.getTime());
+            shader.render(tickDelta);
         }
+
+
     }
 }

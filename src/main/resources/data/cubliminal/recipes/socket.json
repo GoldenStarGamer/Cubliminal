@@ -14,7 +14,7 @@
   ],
   "result": {
     "count": 2,
-    "item": "cubliminal:socket"
+    "id": "cubliminal:socket"
   },
   "show_notification": true
 }

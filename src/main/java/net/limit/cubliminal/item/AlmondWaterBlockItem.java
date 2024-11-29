@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -35,7 +36,7 @@ public class AlmondWaterBlockItem extends BlockItem {
             serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
             if (!world.isClient) {
                 SanityData.resetTimer(serverPlayerEntity);
-                user.removeStatusEffect(CubliminalEffects.PARANOIA);
+                user.removeStatusEffect(Registries.STATUS_EFFECT.getEntry(CubliminalEffects.PARANOIA));
             }
         }
         /*

@@ -31,7 +31,7 @@ public class SanityCommand {
         for (ServerPlayerEntity entity : targets) {
             if (entity.getWorld().isClient()) return 0;
             message.append(entity.getNameForScoreboard()).append(": ")
-                    .append(IEntityDataSaver.castAndGet(entity).getInt("sanity")).append("\n");
+                    .append(IEntityDataSaver.cast(entity).getInt("sanity")).append("\n");
         }
         source.getPlayer().sendMessage(Text.literal(message.toString()));
 
@@ -51,7 +51,7 @@ public class SanityCommand {
         }
 
         for (ServerPlayerEntity entity : targets) {
-            NbtCompound nbt = IEntityDataSaver.castAndGet(entity);
+            NbtCompound nbt = IEntityDataSaver.cast(entity);
             nbt.putInt("sanity", amount);
         }
 

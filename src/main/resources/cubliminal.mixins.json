@@ -1,9 +1,8 @@
 {
   "required": true,
   "package": "net.limit.cubliminal.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "CubliminalEntityDataSaverMixin",
     "EntityMixin",
     "MilkBucketItemMixin",
     "PlayerEntityMixin"

@@ -11,7 +11,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -19,7 +18,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -83,26 +81,26 @@ public class ShowerBlock extends BlockWithEntity implements BlockEntityProvider 
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
 		if (random.nextInt(10) == 0) {
 			float offsetX = 0;
-			float offsetZ = 0;
-			switch (state.get(ShowerBlock.FACING)) {
-				case NORTH:
-					offsetX = 0.375f;
-					offsetZ = 0.5f;
-					break;
-				case SOUTH:
-					offsetX = 0.375f;
-					offsetZ = 0.25f;
-					break;
-				case WEST:
-					offsetX = 0.5f;
-					offsetZ = 0.375f;
-					break;
-				case EAST:
-					offsetX = 0.25f;
-					offsetZ = 0.375f;
-					break;
-			}
-			world.addParticle(ParticleTypes.DRIPPING_WATER, pos.getX() + 0.125f + offsetX,
+			float offsetZ = switch (state.get(ShowerBlock.FACING)) {
+                case NORTH -> {
+                    offsetX = 0.375f;
+                    yield 0.5f;
+                }
+                case SOUTH -> {
+                    offsetX = 0.375f;
+                    yield 0.25f;
+                }
+                case WEST -> {
+                    offsetX = 0.5f;
+                    yield 0.375f;
+                }
+                case EAST -> {
+                    offsetX = 0.25f;
+                    yield 0.375f;
+                }
+                default -> 0;
+            };
+            world.addParticle(ParticleTypes.DRIPPING_WATER, pos.getX() + 0.125f + offsetX,
 				pos.getY() + 1.65, pos.getZ() + 0.125f + offsetZ, 0, 0, 0);
 		}
 	}
@@ -116,11 +114,11 @@ public class ShowerBlock extends BlockWithEntity implements BlockEntityProvider 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return switch (state.get(FACING)) {
-			default -> NORTH_SHAPE;
-			case SOUTH -> SOUTH_SHAPE;
+            case SOUTH -> SOUTH_SHAPE;
 			case WEST -> WEST_SHAPE;
 			case EAST -> EAST_SHAPE;
-		};
+            default -> NORTH_SHAPE;
+        };
 	}
 
 	@Override
@@ -157,7 +155,7 @@ public class ShowerBlock extends BlockWithEntity implements BlockEntityProvider 
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		boolean bl = !state.get(Properties.ENABLED);
 		world.setBlockState(pos, state.with(ENABLED, bl));
 		CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.OPEN_SINK.value());

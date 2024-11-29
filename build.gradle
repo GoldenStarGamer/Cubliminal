@@ -45,11 +45,11 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	includeMod("me.shedaniel.cloth:cloth-config-fabric:13.0.121")
-	modImplementation "com.terraformersmc:modmenu:9.2.0"
+	includeMod("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}")
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	includeMod("com.github.northernlimit:Special-Models-Fabric:1.4.11")
-	includeMod("com.github.northernlimit:Liminal-Library-Fabric:v-b11.1.12")
+	includeMod("com.github.northernlimit:Special-Models-Fabric:${project.specialmodels_version}")
+	includeMod("com.github.northernlimit:Liminal-Library-Fabric:${project.limlib_version}")
 }
 def includeMod(var dep) {
 	dependencies.modImplementation(dep)
@@ -65,14 +65,14 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {

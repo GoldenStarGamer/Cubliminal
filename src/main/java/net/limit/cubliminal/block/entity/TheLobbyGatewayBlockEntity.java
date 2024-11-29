@@ -14,6 +14,7 @@ import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
@@ -23,39 +24,38 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TheLobbyGatewayBlockEntity extends BlockEntity {
 
 	public TheLobbyGatewayBlockEntity(BlockPos pos, BlockState state) {
 		super(CubliminalBlockEntities.THE_LOBBY_GATEWAY_BLOCK_ENTITY, pos, state);
-        int theLobbyLayers = 3;
-        int theLobbyCellHeight = 7;
-        //this.exitPos = new BlockPos(7, theLobbyLayers * theLobbyCellHeight + 2, 3);
 	}
 
 	private long age;
-	private BlockPos exitPos = new BlockPos(7, 23, 3);
+	private BlockPos exitPos = new BlockPos(7, 9, 3);
 
 	public void writeExitPos(BlockPos blockPos) {
 		this.exitPos = blockPos;
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound nbt) {
-		super.writeNbt(nbt);
+	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+		super.writeNbt(nbt, registryLookup);
 		nbt.putLong("Age", this.age);
 		nbt.put("exitPos", NbtHelper.fromBlockPos(exitPos));
 	}
 
 	@Override
-	public void readNbt(NbtCompound nbt) {
-		super.readNbt(nbt);
+	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+		super.readNbt(nbt, registryLookup);
 		this.age = nbt.getLong("Age");
-		BlockPos blockPos = NbtHelper.toBlockPos(nbt.getCompound("exitPos"));
-		if (World.isValid(blockPos)) {
-			this.exitPos = blockPos;
+		Optional<BlockPos> blockPos = NbtHelper.toBlockPos(nbt, "exitPos");
+		if (blockPos.isPresent() && World.isValid(blockPos.get())) {
+			this.exitPos = blockPos.get();
 		}
 	}
+
 
 	public static void tick(World world, BlockPos pos, BlockState state, TheLobbyGatewayBlockEntity blockEntity) {
 		if (!world.isClient) {
@@ -122,7 +122,7 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		return this.createNbt();
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+		return this.createNbt(registryLookup);
 	}
 }

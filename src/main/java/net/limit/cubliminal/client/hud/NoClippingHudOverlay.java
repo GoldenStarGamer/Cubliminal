@@ -5,79 +5,90 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.client.NoClippingSoundInstance;
 import net.limit.cubliminal.config.CubliminalConfig;
-import net.limit.cubliminal.util.IEntityDataSaver;
 import net.limit.cubliminal.util.NoClipEngine;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Identifier;
-
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 @Environment(EnvType.CLIENT)
 public class NoClippingHudOverlay implements HudRenderCallback {
-	private static final Identifier GLITCH_OVERLAY_1 = Cubliminal.id(
-			"textures/hud/noclip/glitch_overlay_1.png");
-	private static final Identifier GLITCH_OVERLAY_2 = Cubliminal.id(
-			"textures/hud/noclip/glitch_overlay_2.png");
+
+	public static NoClippingHudOverlay INSTANCE = new NoClippingHudOverlay();
+	private boolean clippingIntoWall = false;
+
+	private static final Identifier GLITCH_OVERLAY_1 = Cubliminal.id("textures/hud/noclip/glitch_overlay_1.png");
+	private static final Identifier GLITCH_OVERLAY_2 = Cubliminal.id("textures/hud/noclip/glitch_overlay_2.png");
 
 	@Override
 	public void onHudRender(DrawContext drawContext, float tickDelta) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.player == null || client.player.isCreative() || client.player.isSpectator()) return;
-		if (!CubliminalConfig.get().disableAggressiveGraphics) {
-			if (NoClipEngine.isNoClipping(client.player)) {
-				int random = new Random().nextInt(11);
-				if (random < 2) {
-					int width = client.getWindow().getScaledWidth();
-					int height = client.getWindow().getScaledHeight();
-					RenderSystem.disableDepthTest();
-					RenderSystem.depthMask(false);
-					drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-					drawContext.drawTexture(GLITCH_OVERLAY_1, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
-					RenderSystem.depthMask(true);
-					RenderSystem.enableDepthTest();
-					drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-				} else if (random == 2) {
-					int width = client.getWindow().getScaledWidth();
-					int height = client.getWindow().getScaledHeight();
-					float f = new Random().nextFloat(1);
-					float g = new Random().nextFloat(1);
-					float h = new Random().nextFloat(1);
-					RenderSystem.disableDepthTest();
-					RenderSystem.depthMask(false);
-					drawContext.setShaderColor(f, g, h, 1.0f);
-					drawContext.drawTexture(GLITCH_OVERLAY_2, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
-					RenderSystem.depthMask(true);
-					RenderSystem.enableDepthTest();
-					drawContext.setShaderColor(f, g, h, 1.0f);
-				}
-			} else if (IEntityDataSaver.castAndGet(client.player).getInt("ticksToNc") == 1) {
+		ClientPlayerEntity player = client.player;
+		if (player != null && !CubliminalConfig.get().disableAggressiveGraphics) {
+			if (NoClipEngine.isNoClipping(player)) {
 				for (int i = 0; i < 5; i++) {
-					if ((client.player.getWorld().getTime() + i) % 200 == 0) {
+					if ((player.getWorld().getTime() + i) % 8 == 0) {
+						Random random = player.getRandom();
+						float a = 1.0f;
+
+						switch (random.nextInt(3)) {
+							case 0:
+							case 1:
+								this.renderOverlay(drawContext, GLITCH_OVERLAY_1, a);
+								break;
+							case 2:
+								this.renderOverlay(drawContext, GLITCH_OVERLAY_2, a);
+								break;
+						}
+						break;
+					}
+				}
+			} else if (this.clippingIntoWall) {
+				for (int i = 0; i < 2; i++) {
+					if ((player.getWorld().getTime() + i) % 6 == 0) {
+						Random random = player.getRandom();
+						float a = 1.0f;
 						Identifier texture = GLITCH_OVERLAY_1;
-						int width = client.getWindow().getScaledWidth();
-						int height = client.getWindow().getScaledHeight();
-						float f = 1;
-						float g = 1;
-						float h = 1;
-						if (new Random().nextInt(3) == 0) {
-							f = new Random().nextFloat(1);
-							g = new Random().nextFloat(1);
-							h = new Random().nextFloat(1);
+
+						if (random.nextInt(3) == 0) {
 							texture = GLITCH_OVERLAY_2;
 						}
-						RenderSystem.disableDepthTest();
-						RenderSystem.depthMask(false);
-						drawContext.setShaderColor(f, g, h, 1.0f);
-						drawContext.drawTexture(texture, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
-						RenderSystem.depthMask(true);
-						RenderSystem.enableDepthTest();
-						drawContext.setShaderColor(f, g, h, 1.0f);
+
+						if (!client.getSoundManager().isPlaying(NoClippingSoundInstance.CREATE)) {
+							client.getSoundManager().play(NoClippingSoundInstance.CREATE);
+						}
+
+						this.renderOverlay(drawContext, texture, a);
 						break;
 					}
 				}
 			}
 		}
 	}
+
+	private void renderOverlay(DrawContext drawContext, Identifier texture, float opacity) {
+		int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
+		int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
+
+		RenderSystem.disableDepthTest();
+		RenderSystem.depthMask(false);
+		RenderSystem.enableBlend();
+		drawContext.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
+		drawContext.drawTexture(texture, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
+		RenderSystem.disableBlend();
+		RenderSystem.depthMask(true);
+		RenderSystem.enableDepthTest();
+		drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+    public boolean isClippingIntoWall() {
+        return clippingIntoWall;
+    }
+
+    public void setClippingIntoWall(boolean clippingIntoWall) {
+        this.clippingIntoWall = clippingIntoWall;
+    }
 }

@@ -11,7 +11,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -19,7 +18,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -29,7 +27,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public class SinkBlock extends BlockWithEntity implements BlockEntityProvider {
@@ -124,11 +121,11 @@ public class SinkBlock extends BlockWithEntity implements BlockEntityProvider {
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return switch (state.get(FACING)) {
-			default -> NORTH_SHAPE;
-			case SOUTH -> SOUTH_SHAPE;
+            case SOUTH -> SOUTH_SHAPE;
 			case WEST -> WEST_SHAPE;
 			case EAST -> EAST_SHAPE;
-		};
+            default -> NORTH_SHAPE;
+        };
 	}
 
 	@Override
@@ -150,8 +147,6 @@ public class SinkBlock extends BlockWithEntity implements BlockEntityProvider {
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
 		BlockState blockState = this.getDefaultState();
-		WorldView worldView = ctx.getWorld();
-		BlockPos blockPos = ctx.getBlockPos();
 		Direction[] directions = ctx.getPlacementDirections();
 
 		for (Direction direction : directions) {
@@ -165,7 +160,7 @@ public class SinkBlock extends BlockWithEntity implements BlockEntityProvider {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		boolean bl = !state.get(Properties.ENABLED);
 		world.setBlockState(pos, state.with(ENABLED, bl));
 		CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.OPEN_SINK.value());

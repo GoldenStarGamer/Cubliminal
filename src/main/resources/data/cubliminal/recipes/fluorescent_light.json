@@ -14,7 +14,7 @@
   ],
   "result": {
     "count": 2,
-    "item": "cubliminal:fluorescent_light"
+    "id": "cubliminal:fluorescent_light"
   },
   "show_notification": true
 }

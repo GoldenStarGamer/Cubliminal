@@ -31,7 +31,6 @@ public class TheLobbyGatewayBlock extends BlockWithEntity implements BlockEntity
 		return CODEC;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return this.getOutlineShape(state, world, pos, context);

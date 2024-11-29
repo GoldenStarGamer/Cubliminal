@@ -30,6 +30,7 @@ public class CubliminalSounds {
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_REDROOMS = registerSoundEvent("ambient.redrooms");
 	public static final RegistryEntry.Reference<SoundEvent> HEARTBEAT = registerSoundEvent("heartbeat");
 	public static final RegistryEntry.Reference<SoundEvent> NOCLIPPING = registerSoundEvent("noclipping");
+	public static final RegistryEntry.Reference<SoundEvent> WALL_CLIPPING = registerSoundEvent("wall_clipping");
 	public static final RegistryEntry.Reference<SoundEvent> OPEN_SINK = registerSoundEvent("block.sink_open");
 	public static final RegistryEntry.Reference<SoundEvent> SINK_AMBIENT = registerSoundEvent("block.sink.ambient");
 

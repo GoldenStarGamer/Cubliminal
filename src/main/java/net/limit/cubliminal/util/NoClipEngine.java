@@ -1,120 +1,106 @@
 package net.limit.cubliminal.util;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.event.ServerTickHandler;
 import net.limit.cubliminal.init.CubliminalPackets;
 import net.limit.cubliminal.init.CubliminalSounds;
 import net.limit.cubliminal.init.CubliminalRegistrar;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static net.limit.cubliminal.init.CubliminalSounds.clientPlaySoundSingle;
+import java.util.HashMap;
 
 
 public class NoClipEngine {
-    public static Set<Object> TO_OVER = new HashSet<>();
-    public static Set<Object> TO_LEVEL_0 = new HashSet<>();
+    public static HashMap<ServerPlayerEntity, RegistryKey<World>> NOCLIP_MAP = new HashMap<>();
 
-    public static boolean isNoClipping(Object object) {
-        return ((IEntityDataSaver) object).cubliminal$getPersistentData().getInt("ticksToNc") < 0;
+    public static <T extends PlayerEntity> boolean isNoClipping(T player) {
+        return ((IEntityDataSaver) player).cubliminal$getPersistentData().getInt("ticksToNc") < 0;
     }
 
-    public static int decreaseTimer(ServerPlayerEntity playerEntity) {
-        NbtCompound nbt = IEntityDataSaver.castAndGet(playerEntity);
-        int i = nbt.getInt("ticksToNc");
+    public static <T extends PlayerEntity> boolean canNoCLip(T player) {
+        return ((IEntityDataSaver) player).cubliminal$getPersistentData()
+                .getInt("ticksToNc") == 1 && player.isOnGround();
+    }
 
-        if (i > 1) {
-            if (playerEntity.isSprinting()) i--;
-        } else if (i < 0 && i > -80) {
-            i--;
-        } else if (i != 1) {
-            if (i <= -80 && playerEntity.isAlive() && !playerEntity.isDisconnected()) {
+
+    public static void run(ServerPlayerEntity playerEntity) {
+        NbtCompound nbt = IEntityDataSaver.cast(playerEntity);
+        int ticksToNc = nbt.getInt("ticksToNc");
+
+        if (ticksToNc > 1) {
+            if (playerEntity.isSprinting()) {
+                --ticksToNc;
+            }
+        } else if (ticksToNc < 0 && ticksToNc > -80) {
+            --ticksToNc;
+        } else if (ticksToNc != 1) {
+            if (ticksToNc < -79 && playerEntity.isAlive() && !playerEntity.isDisconnected()) {
                 noClipDestination(playerEntity);
-                playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 50,
-                        0, false, false, false));
             }
-            i = playerEntity.getRandom().nextInt(6000) + 12000;
+
+            ticksToNc = playerEntity.getRandom().nextInt(6000) + 12000;
         }
 
-        nbt.putInt("ticksToNc", i);
-        return i;
+        nbt.putInt("ticksToNc", ticksToNc);
     }
 
-    public static void noClip(Object object) {
-        ServerPlayerEntity player = (ServerPlayerEntity) object;
-        player.changeGameMode(GameMode.SURVIVAL);
-        clientPlaySoundSingle(player, CubliminalSounds.NOCLIPPING, SoundCategory.MASTER,
+    public static <T extends PlayerEntity> void noClip(T playerEntity) {
+        ServerPlayerEntity player = (ServerPlayerEntity) playerEntity;
+        CubliminalSounds.clientPlaySoundSingle(player, CubliminalSounds.NOCLIPPING, SoundCategory.MASTER,
                 player.getX(), player.getY(), player.getZ(),1f, 1f, 1);
-        NbtCompound nbt = IEntityDataSaver.castAndGet(object);
+
+        if (ServerTickHandler.inBackrooms(player.getWorld().getRegistryKey())) NOCLIP_MAP.put(player,
+                RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD));
+
+        NbtCompound nbt = IEntityDataSaver.cast(playerEntity);
         nbt.putInt("ticksToNc", -1);
     }
 
-    public static void noClip(Object object, RegistryKey<World> registryKey) {
-        ServerPlayerEntity player = (ServerPlayerEntity) object;
-        player.changeGameMode(GameMode.SURVIVAL);
-        clientPlaySoundSingle(player, CubliminalSounds.NOCLIPPING, SoundCategory.MASTER,
+    public static <T extends PlayerEntity> void noClip(T playerEntity, RegistryKey<World> registryKey) {
+        ServerPlayerEntity player = (ServerPlayerEntity) playerEntity;
+        CubliminalSounds.clientPlaySoundSingle(player, CubliminalSounds.NOCLIPPING, SoundCategory.MASTER,
                 player.getX(), player.getY(), player.getZ(),1f, 1f, 1);
 
-        NbtCompound nbt = IEntityDataSaver.castAndGet(object);
+        NbtCompound nbt = IEntityDataSaver.cast(playerEntity);
         nbt.putInt("ticksToNc", -1);
 
-        if (registryKey.getValue().getNamespace().equals(Cubliminal.MOD_ID)) {
-            if (registryKey.equals(CubliminalRegistrar.THE_LOBBY_KEY)) {
-                TO_LEVEL_0.add(player);
-            }
-        } else {
-            TO_OVER.add(player);
-        }
+        NOCLIP_MAP.put(player, registryKey);
     }
 
     public static void noClipDestination(ServerPlayerEntity playerEntity) {
-        RegistryKey<World> registryKey = playerEntity.getWorld().getRegistryKey();
+        RegistryKey<World> registryKey = NOCLIP_MAP.remove(playerEntity);
         BlockPos destination;
 
-        if (TO_OVER.contains(playerEntity)) {
-            registryKey = RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD);
-            destination = playerEntity.getServerWorld().getSpawnPos();
-            TO_OVER.remove(playerEntity);
-        } else if (TO_LEVEL_0.contains(playerEntity)) {
-            registryKey = CubliminalRegistrar.THE_LOBBY_KEY;
-            destination = new BlockPos(4, 16, 4);
-            TO_LEVEL_0.remove(playerEntity);
-        } else if (registryKey.getValue().getNamespace().equals(Cubliminal.MOD_ID)) {
-            registryKey = RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD);
-            destination = playerEntity.getServerWorld().getSpawnPos();
+        if (registryKey == null) registryKey = CubliminalRegistrar.THE_LOBBY_KEY;
+
+        if (registryKey.getValue().getNamespace().equals(Cubliminal.MOD_ID)) {
+            destination = new BlockPos(4, 2, 4);
         } else {
-            registryKey = CubliminalRegistrar.THE_LOBBY_KEY;
-            destination = new BlockPos(4, 16, 4);
+            registryKey = RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD);
+            destination = playerEntity.getServerWorld().getSpawnPos();
         }
 
-        playerEntity.setSpawnPoint(registryKey, new BlockPos(destination),
-                0f, true, false);
+        playerEntity.setSpawnPoint(registryKey, destination, 0f, true, false);
 
         FabricDimensions.teleport(playerEntity, playerEntity.getServer().getWorld(registryKey),
-                new TeleportTarget(destination.toCenterPos().add(0, 2.5, 0), new Vec3d(0, 0, 0),
+                new TeleportTarget(destination.toCenterPos().add(0, 2.5, 0), Vec3d.ZERO,
                         playerEntity.getYaw(), playerEntity.getPitch()));
     }
 
     public static void syncNoClip(ServerPlayerEntity playerEntity) {
-        PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(IEntityDataSaver.castAndGet(playerEntity).getInt("ticksToNc"));
-        ServerPlayNetworking.send(playerEntity, CubliminalPackets.NOCLIP_SYNC, buf);
+        int ticks = IEntityDataSaver.cast(playerEntity).getInt("ticksToNc");
+        ServerPlayNetworking.send(playerEntity, new CubliminalPackets.NoClipSyncPayload(ticks));
     }
 }

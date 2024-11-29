@@ -1,6 +1,6 @@
 package net.limit.cubliminal.init;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.world.biome.level_0.LevelZeroBiomeSource;
 import net.limit.cubliminal.world.chunk.LevelZeroChunkGenerator;
@@ -27,10 +27,10 @@ public class CubliminalBiomes {
 		getBiomeSource("the_lobby_biome_source", LevelZeroBiomeSource.CODEC);
     }
 
-	public static <C extends ChunkGenerator, D extends Codec<C>> D getChunkGenerator(String id, D chunkGeneratorCodec) {
+	public static <C extends ChunkGenerator, D extends MapCodec<C>> D getChunkGenerator(String id, D chunkGeneratorCodec) {
 		return Registry.register(Registries.CHUNK_GENERATOR, Cubliminal.id(id), chunkGeneratorCodec);
 	}
-	public static <C extends BiomeSource, D extends Codec<C>> D getBiomeSource(String id, D biomeSourceCodec) {
+	public static <C extends BiomeSource, D extends MapCodec<C>> D getBiomeSource(String id, D biomeSourceCodec) {
 		return Registry.register(Registries.BIOME_SOURCE, Cubliminal.id(id), biomeSourceCodec);
 	}
 

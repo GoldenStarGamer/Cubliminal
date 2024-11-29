@@ -1,7 +1,7 @@
 package net.limit.cubliminal.world.chunk;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.CustomProperties;
@@ -14,14 +14,11 @@ import net.ludocrypt.limlib.api.world.NbtGroup;
 import net.ludocrypt.limlib.api.world.chunk.AbstractNbtChunkGenerator;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.world.ChunkHolder;
-import net.minecraft.server.world.ServerLightingProvider;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.StructureTemplateManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
@@ -29,7 +26,9 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkGenerationContext;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.FullChunkConverter;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
@@ -37,10 +36,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 
 public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
-	public static final Codec<LevelZeroChunkGenerator> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<LevelZeroChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
 			(instance) -> instance.group(BiomeSource.CODEC.fieldOf("biome_source").stable().forGetter(
 					(chunkGenerator) -> chunkGenerator.biomeSource), NbtGroup.CODEC.fieldOf("group").stable().forGetter(
 							(chunkGenerator) -> chunkGenerator.nbtGroup), Codec.INT.fieldOf("floors").stable().forGetter(
@@ -81,7 +79,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 			.build();
 	}
 	@Override
-	protected Codec<? extends ChunkGenerator> getCodec() {
+	protected MapCodec<? extends ChunkGenerator> getCodec() {
 		return CODEC;
 	}
 
@@ -129,22 +127,21 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 		}
 	}
 
+
 	@Override
-	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkStatus targetStatus, Executor executor,
-												  ServerWorld world, ChunkGenerator generator,
-												  StructureTemplateManager structureTemplateManager,
-												  ServerLightingProvider lightingProvider, Function<Chunk,
-		CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>>> fullChunkConverter, List<Chunk> chunks, Chunk chunk) {
+	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context, ChunkStatus targetStatus, Executor executor,
+												  FullChunkConverter fullChunkConverter, List<Chunk> chunks, Chunk chunk) {
 
 		BlockPos startPos = chunk.getPos().getStartPos();
 		int spacing = 8;
 		int cellHeight = 7;
 
 		generateNbt(region, startPos, nbtGroup.nbtId("preset", "preset_1"));
-		if (startPos.equals(new BlockPos(0, 0, 0))) generateNbt(region, startPos.add(0, cellHeight * floors + 1, 0),
+		if (startPos.equals(BlockPos.ZERO)) generateNbt(region, startPos.add(0, cellHeight * floors + 1, 0),
 				nbtGroup.nbtId("manila_room", "manila_room_1"));
 
-		Optional<RegistryKey<Biome>> biomeKey = world.getBiome(startPos).getKey();
+		Optional<RegistryKey<Biome>> biomeKey = context.world().getBiome(startPos).getKey();
+		/*
 		if (biomeKey.isEmpty()) return CompletableFuture.completedFuture(chunk);
 		if (biomeKey.get().equals(CubliminalBiomes.THE_LOBBY_BIOME)) {
 			Random random = Random
@@ -188,11 +185,45 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 			}
 		}
 
+		 */
+
+		//if (biomeKey.isEmpty()) return CompletableFuture.completedFuture(chunk);
+		if (biomeKey.get().equals(CubliminalBiomes.THE_LOBBY_BIOME)) {
+			for (int y = 0; y < floors; y++) {
+				for (int x = 0; x < 2; x++) {
+					for (int z = 0; z < 2; z++) {
+						decorateLobby(region, startPos.add(spacing * x, y * cellHeight + 1, spacing * z));
+					}
+				}
+			}
+		} else if (biomeKey.get().equals(CubliminalBiomes.PILLAR_BIOME)) {
+			Random random = Random
+					.create(region.getSeed() + LimlibHelper.blockSeed(startPos));
+			for (int y = 0; y < floors; y++) {
+				if (random.nextInt(160) == 0) {
+					generateNbt(region, startPos.add(0, y * cellHeight + 1, 0),
+							nbtGroup.nbtId("special", "special_3"), Manipulation.random(random));
+				} else {
+					generateNbt(region, startPos.add(0, y * cellHeight + 1, 0),
+							nbtGroup.nbtId("pillars", "pillars_1"));
+				}
+			}
+		} else if (biomeKey.get().equals(CubliminalBiomes.REDROOMS_BIOME)) {
+			for (int y = 0; y < floors; y++) {
+				for (int x = 0; x < 2; x++) {
+					for (int z = 0; z < 2; z++) {
+						decorateRedRooms(region, startPos.add(spacing * x, y * cellHeight + 1, spacing * z));
+					}
+				}
+			}
+		}
+
 		return CompletableFuture.completedFuture(chunk);
 	}
 
 	@Override
 	protected void modifyStructure(ChunkRegion region, BlockPos pos, BlockState state, Optional<NbtCompound> blockEntityNbt) {
+
 		super.modifyStructure(region, pos, state, blockEntityNbt);
 
 		Random random = Random
@@ -247,10 +278,10 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
-	protected Identifier getContainerLootTable(LootableContainerBlockEntity container) {
-		if (container.getLootTableId() != null) {
-			container.setLootTableId(LootTables.EMPTY);
-			return Cubliminal.id("barrels/the_lobby/0");
+	protected RegistryKey<LootTable> getContainerLootTable(LootableContainerBlockEntity container) {
+		if (container.getLootTable() != null) {
+			container.setLootTable(LootTables.EMPTY);
+			return RegistryKey.of(RegistryKeys.LOOT_TABLE, Cubliminal.id("barrels/the_lobby/0"));
 		} else return LootTables.EMPTY;
 	}
 

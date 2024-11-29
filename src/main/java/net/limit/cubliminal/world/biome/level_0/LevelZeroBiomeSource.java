@@ -1,6 +1,6 @@
 package net.limit.cubliminal.world.biome.level_0;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.init.CubliminalBiomes;
@@ -16,7 +16,7 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import java.util.stream.Stream;
 
 public class LevelZeroBiomeSource extends BiomeSource {
-    public static final Codec<LevelZeroBiomeSource> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<LevelZeroBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
             (instance) -> instance.group(RegistryOps.getEntryCodec(CubliminalBiomes.THE_LOBBY_BIOME),
                             RegistryOps.getEntryCodec(CubliminalBiomes.PILLAR_BIOME),
                             RegistryOps.getEntryCodec(CubliminalBiomes.REDROOMS_BIOME))
@@ -44,19 +44,19 @@ public class LevelZeroBiomeSource extends BiomeSource {
     public RegistryEntry.Reference<Biome> getBiome(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
         if (Math.abs(x) + Math.abs(z) < 200) return baseBiome;
         if (!bl) {
-            //initialize noise samplers
+            // initialize noise samplers
             Random random = Random.create(Cubliminal.LVL_0.getSeed());
             this.rarity = new SimplexNoiseSampler(new ChunkRandom(random));
             this.spacing = new SimplexNoiseSampler(new ChunkRandom(random));
             this.safety = new SimplexNoiseSampler(new ChunkRandom(random));
             bl = true;
         }
-        //get noise value at the given position (range of 0 - 3)
+        // get noise value at the given position (range of 0 - 3)
         double rarityValue = (rarity.sample(x * 0.005,z * 0.005) + 1) * 1.5;
         double spacingValue = (spacing.sample(x * 0.005,z * 0.005) + 1) * 1.5;
         double safetyValue = (safety.sample(x * 0.005,z * 0.005) + 1) * 1.5;
 
-        //return most suitable biome entry by making use of helper enum
+        // return most suitable biome entry by making use of helper enum
         return getBiomeReference(rarityValue, spacingValue, safetyValue);
     }
 
@@ -83,7 +83,7 @@ public class LevelZeroBiomeSource extends BiomeSource {
     }
 
     @Override
-    protected Codec<? extends BiomeSource> getCodec() {
+    protected MapCodec<? extends BiomeSource> getCodec() {
         return CODEC;
     }
 }

@@ -26,11 +26,12 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 
 		ClientPlayerEntity player = client.player;
 		if (player == null || player.isCreative() || player.isSpectator() ||
-			!player.getWorld().getRegistryKey().getValue().getNamespace().equals(Cubliminal.MOD_ID)) return;
+			!player.getWorld().getRegistryKey().getValue().getNamespace()
+					.equals(Cubliminal.MOD_ID) || client.options.hudHidden) return;
 
 		int x = drawContext.getScaledWindowWidth() / 2 + 95;
 		int l = drawContext.getScaledWindowHeight() - 34;
-		int i = IEntityDataSaver.castAndGet(player).getInt("sanity");
+		int i = IEntityDataSaver.cast(player).getInt("sanity");
 		Identifier texture;
 		RenderSystem.enableBlend();
 

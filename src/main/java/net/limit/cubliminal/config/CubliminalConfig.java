@@ -9,8 +9,6 @@ import java.util.List;
 
 @Config(name = "cubliminal")
 public class CubliminalConfig implements ConfigData {
-	public boolean allowNoClip = true;
-	public boolean crouchingNoClippingResetsCooldown = false;
 	public boolean disableAggressiveGraphics = false;
 
 	private static List<String> trimList(List<String> inputList) {
@@ -25,7 +23,6 @@ public class CubliminalConfig implements ConfigData {
 	}
 
 	public static CubliminalConfig get() {
-		CubliminalConfig config = AutoConfig.getConfigHolder(CubliminalConfig.class).getConfig();
-		return config;
+        return AutoConfig.getConfigHolder(CubliminalConfig.class).getConfig();
 	}
 }

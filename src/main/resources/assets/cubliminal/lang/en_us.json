@@ -1,6 +1,4 @@
 {
-  "key.category.cubliminal": "Cubliminal",
-  "key.cubliminal.noclip": "Noclip",
   "item.cubliminal.yellow_wallpaper": "Yellow Wallpaper",
   "item.cubliminal.crimson_wallpaper": "Crimson Wallpaper",
   "item.cubliminal.wooden_plank": "Wooden Plank",
@@ -45,6 +43,7 @@
   "commands.sanity.success.multiple": "Successfully modified sanity of %s players",
   "commands.sanity.success.single": "Successfully modified sanity of player %s",
   "commands.sanity.failed.invalid_range": "The determined value surpasses the range of possible sanity",
+  "death.attack.mental_collapse": "%1$s fell into madness...",
   "itemgroup.Backrooms": "Cubliminal",
   "biome.cubliminal.the_lobby": "The Lobby",
   "dimension.cubliminal.the_lobby": "The Lobby",
@@ -53,13 +52,11 @@
   "advancements.backrooms.enter_the_lobby.title": "Am I dreaming?",
   "advancements.backrooms.enter_the_lobby.description": "Enter the parallel reality of The Backrooms",
   "advancements.backrooms.enter_manila_room.title": "Man-made oasis",
-  "advancements.backrooms.enter_manila_room.description": "Make your way to the Manila Room and save yourself from madness",
+  "advancements.backrooms.enter_manila_room.description": "Make your way to the Manila Room and save yourself from falling into madness",
   "effect.cubliminal.paranoia": "Paranoia",
   "subtitle.noclipping": "Null",
   "subtitle.block.sink_open": "Squeak",
   "subtitle.block.sink_ambient": "Open water source",
   "text.autoconfig.cubliminal.title": "Cubliminal",
-  "text.autoconfig.cubliminal.option.allowNoClip": "Toggle no-clip key",
-  "text.autoconfig.cubliminal.option.crouchingNoClippingResetsCooldown": "Crouching + nocliping resets the noclip cooldown",
   "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Disable abrupt changes in graphics"
 }

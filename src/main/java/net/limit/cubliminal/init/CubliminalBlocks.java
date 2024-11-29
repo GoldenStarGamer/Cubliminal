@@ -1,7 +1,5 @@
 package net.limit.cubliminal.init;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.CustomProperties;
@@ -9,8 +7,9 @@ import net.limit.cubliminal.block.custom.*;
 import net.limit.cubliminal.item.AlmondWaterBlockItem;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.FoodComponent;
+import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -26,7 +25,7 @@ import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 public class CubliminalBlocks {
     private static void registerBlockItem(String id, Block block) {
         Registry.register(Registries.ITEM, Cubliminal.id(id),
-                new BlockItem(block, new FabricItemSettings()));
+                new BlockItem(block, new Item.Settings()));
     }
     private static Block registerBlock(String id, Block block) {
         registerBlockItem(id, block);
@@ -34,7 +33,7 @@ public class CubliminalBlocks {
     }
 	private static Block registerBlockWithItem(String id, Block block, FoodComponent foodComponent, int maxCount) {
 		Registry.register(Registries.ITEM, Cubliminal.id(id),
-				new AlmondWaterBlockItem(block, new FabricItemSettings().food(foodComponent).maxCount(maxCount)));
+				new AlmondWaterBlockItem(block, new Item.Settings().food(foodComponent).maxCount(maxCount)));
 		return Registry.register(Registries.BLOCK, Cubliminal.id(id), block);
 	}
 
@@ -176,11 +175,11 @@ public class CubliminalBlocks {
 					.pistonBehavior(PistonBehavior.DESTROY)));
 
 	public static final Block TWO_LONG_SPRUCE_TABLE = registerBlock("two_long_spruce_table",
-			new TwoLongTableBlock(FabricBlockSettings.copyOf(Blocks.SPRUCE_PLANKS)
+			new TwoLongTableBlock(AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS)
 					.requiresTool()));
 
 	public static final Block SPRUCE_CHAIR = registerBlock("spruce_chair",
-			new ChairBlock(FabricBlockSettings.copyOf(Blocks.SPRUCE_PLANKS)
+			new ChairBlock(AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS)
 					.requiresTool()));
 
 	public static final Block MANILA_WALLPAPERS = registerBlock("manila_wallpapers",
@@ -242,7 +241,7 @@ public class CubliminalBlocks {
 					.requiresTool()));
 
 	public static final Block THE_LOBBY_GATEWAY_BLOCK = registerBlock("the_lobby_gateway_block",
-			new TheLobbyGatewayBlock(FabricBlockSettings.copyOf(Blocks.GLASS)
+			new TheLobbyGatewayBlock(AbstractBlock.Settings.copy(Blocks.GLASS)
 					.strength(-1, 3600000)
 					.noCollision()
 					.dropsNothing()
@@ -251,7 +250,7 @@ public class CubliminalBlocks {
 					.luminance(createLightLevelFromLitBlockState(9))));
 
 	public static final Block GABBRO = registerBlock("gabbro",
-			new Block(FabricBlockSettings.copyOf(Blocks.STONE)
+			new Block(AbstractBlock.Settings.copy(Blocks.STONE)
 					.mapColor(MapColor.BLACK)
 					.dropsNothing()
 					.pistonBehavior(PistonBehavior.BLOCK)
@@ -268,18 +267,18 @@ public class CubliminalBlocks {
 					.pistonBehavior(PistonBehavior.DESTROY)));
 
 	public static final Block POOL_TILES = registerBlock("pool_tiles",
-			new Block(FabricBlockSettings.copyOf(Blocks.REINFORCED_DEEPSLATE)
+			new Block(AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)
 					.sounds(BlockSoundGroup.DEEPSLATE_TILES)));
 
 	public static final Block POOL_TILE_STAIRS = registerBlock("pool_tile_stairs",
 			new StairsBlock(CubliminalBlocks.POOL_TILES.getDefaultState(),
-					FabricBlockSettings.copyOf(Blocks.REINFORCED_DEEPSLATE)));
+					AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)));
 
 	public static final Block POOL_TILE_SLAB = registerBlock("pool_tile_slab",
-			new SlabBlock(FabricBlockSettings.copyOf(Blocks.REINFORCED_DEEPSLATE)));
+			new SlabBlock(AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)));
 
 	public static final Block POOL_TILE_WALL = registerBlock("pool_tile_wall",
-			new WallBlock(FabricBlockSettings.copyOf(Blocks.REINFORCED_DEEPSLATE)));
+			new WallBlock(AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)));
 
 
 	public static boolean isRed(BlockState state, BlockView world, BlockPos pos) {

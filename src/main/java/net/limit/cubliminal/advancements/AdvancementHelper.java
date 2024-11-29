@@ -33,4 +33,8 @@ public class AdvancementHelper {
 	public static boolean visitedManilaRoom(PlayerEntity player) {
 		return isDone(player, Cubliminal.id("backrooms/manila_room"));
 	}
+
+	public static boolean visitedBackrooms(PlayerEntity player) {
+		return isDone(player, Cubliminal.id("backrooms/backrooms"));
+	}
 }

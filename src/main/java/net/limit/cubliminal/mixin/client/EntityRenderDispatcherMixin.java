@@ -43,6 +43,6 @@ public abstract class EntityRenderDispatcherMixin {
 
     @Unique
     private static boolean notInManilaRoom() {
-        return client.player.getBlockY() < 22;
-    }
+        return client.player.getBlockY() < 8;
+    } //TODO 22 for 3 layers
 }

@@ -1,18 +1,16 @@
 package net.limit.cubliminal.entity.custom;
 
 import com.google.common.base.Predicates;
-import com.google.common.collect.Lists;
 import net.limit.cubliminal.block.custom.SeatBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 public class SeatEntity extends Entity {
@@ -22,11 +20,15 @@ public class SeatEntity extends Entity {
     }
 
     @Override
+    protected void initDataTracker(DataTracker.Builder builder) {
+    }
+
+    @Override
     public void tick() {
         if (this.getWorld().isClient()) return;
         if (!(this.getBlockStateAtPos().getBlock() instanceof SeatBlock)
-                || !this.getWorld().getEntitiesByClass(SeatEntity.class, new Box(this.getBlockPos())
-                , Predicate.not(Predicates.alwaysTrue())).isEmpty()
+                || !this.getWorld().getEntitiesByClass(SeatEntity.class, new Box(this.getBlockPos()),
+                Predicate.not(Predicates.alwaysTrue())).isEmpty()
                 || this.getPassengerList().isEmpty()) this.discard();
         if (this.isSubmergedInWater()) this.removeAllPassengers();
     }
@@ -75,9 +77,6 @@ public class SeatEntity extends Entity {
         return true;
     }
 
-    @Override
-    protected void initDataTracker() {
-    }
 
     @Override
     protected void readCustomDataFromNbt(NbtCompound nbt) {
@@ -85,5 +84,10 @@ public class SeatEntity extends Entity {
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
+    }
+
+    @Override
+    public void onPassengerLookAround(Entity passenger) {
+        super.onPassengerLookAround(passenger);
     }
 }

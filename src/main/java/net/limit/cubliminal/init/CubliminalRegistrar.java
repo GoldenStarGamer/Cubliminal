@@ -2,7 +2,6 @@ package net.limit.cubliminal.init;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Lifecycle;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.world.biome.level_0.RedroomsBiome;
 import net.limit.cubliminal.world.biome.level_0.LevelZeroBiomeSource;
@@ -22,7 +21,9 @@ import net.ludocrypt.limlib.api.skybox.Skybox;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -51,7 +52,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 	@Override
 	public void registerHooks() {
 		getSoundEffects(THE_LOBBY,
-			new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(2.15f).setDensity(0.0725f).build()),
+			new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(2f).setDensity(0.073f).build()),
 				Optional.empty(), Optional.empty()));
 
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
@@ -73,27 +74,27 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.THE_LOBBY_BIOME).get(),
 								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.PILLAR_BIOME).get(),
 								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.REDROOMS_BIOME).get()),
-						LevelZeroChunkGenerator.createGroup(), 3))));
+						LevelZeroChunkGenerator.createGroup(), 1))));
 
 
-		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable()));
+		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT));
 
 
 		LimlibRegistryHooks
 			.hook(SoundEffects.SOUND_EFFECTS_KEY, (infoLookup, registryKey, registry) -> SOUND_EFFECTS
-				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT)));
 
 		LimlibRegistryHooks
 			.hook(Skybox.SKYBOX_KEY, (infoLookup, registryKey, registry) -> SKYBOXES
-				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT)));
 
 		LimlibRegistryHooks
 			.hook(LDimensionEffects.DIMENSION_EFFECTS_KEY, (infoLookup, registryKey, registry) -> DIMENSION_EFFECTS
-				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT)));
 
 		LimlibRegistryHooks
 			.hook(PostEffect.POST_EFFECT_KEY, (infoLookup, registryKey, registry) -> POST_EFFECTS
-				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), Lifecycle.stable())));
+				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT)));
 
 
 		LimlibRegistryHooks.hook(RegistryKeys.BIOME, (infoLookup, registryKey, registry) -> {
@@ -101,13 +102,13 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 			RegistryEntryLookup<ConfiguredCarver<?>> carvers = infoLookup.getRegistryInfo(RegistryKeys.CONFIGURED_CARVER).get().entryLookup();
 
 			registry.add(CubliminalBiomes.THE_LOBBY_BIOME, TheLobbyBiome.create(features, carvers),
-					Lifecycle.stable());
+					RegistryEntryInfo.DEFAULT);
 
 			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers),
-					Lifecycle.stable());
+					RegistryEntryInfo.DEFAULT);
 
 			registry.add(CubliminalBiomes.REDROOMS_BIOME, RedroomsBiome.create(features, carvers),
-					Lifecycle.stable());
+					RegistryEntryInfo.DEFAULT);
 
 		});
 	}
