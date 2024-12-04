@@ -27,7 +27,7 @@ public class CubliminalClient implements ClientModInitializer {
 				CubliminalBlocks.JUMBLED_DOCUMENTS);
 
 		KeyInputHandler.register();
-		CubliminalModelRenderers.init();
+		//CubliminalModelRenderers.init();
 
 		EntityRendererRegistry
 				.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);

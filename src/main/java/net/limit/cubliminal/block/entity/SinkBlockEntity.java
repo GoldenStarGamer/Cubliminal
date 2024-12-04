@@ -51,7 +51,8 @@ public class SinkBlockEntity extends BlockEntity {
 					break;
 			}
 			if (blockEntity.age % 12 == 0) {
-				CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.SINK_AMBIENT.value());
+				//CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.SINK_AMBIENT.value());
+				world.playSoundAtBlockCenter(pos, CubliminalSounds.SINK_AMBIENT.value(), SoundCategory.BLOCKS, 1.0f, 1.0f, true);
 			}
 		}
 	}

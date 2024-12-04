@@ -1,112 +1,127 @@
 package net.limit.cubliminal.init;
 
-import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
 import net.limit.cubliminal.item.AlmondWaterBlockItem;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.component.type.FoodComponent;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 
 public class CubliminalBlocks {
-    private static void registerBlockItem(String id, Block block) {
-        Registry.register(Registries.ITEM, Cubliminal.id(id),
-                new BlockItem(block, new Item.Settings()));
-    }
-    private static Block registerBlock(String id, Block block) {
-        registerBlockItem(id, block);
-		return Registry.register(Registries.BLOCK, Cubliminal.id(id), block);
-    }
-	private static Block registerBlockWithItem(String id, Block block, FoodComponent foodComponent, int maxCount) {
-		Registry.register(Registries.ITEM, Cubliminal.id(id),
-				new AlmondWaterBlockItem(block, new Item.Settings().food(foodComponent).maxCount(maxCount)));
-		return Registry.register(Registries.BLOCK, Cubliminal.id(id), block);
+
+	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
+		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
+		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
+
+		Block block = blockFactory.apply(blockSettings.registryKey(blockKey));
+		BlockItem item = itemFactory.apply(block, itemSettings.registryKey(itemKey));
+		Registry.register(Registries.ITEM, itemKey, item);
+		return Registry.register(Registries.BLOCK, blockKey, block);
+	}
+
+	private static <T> Block register(String id, BiFunction<T, AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, T constructorData, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
+		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
+		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
+
+		Block block = blockFactory.apply(constructorData, blockSettings.registryKey(blockKey));
+		BlockItem item = itemFactory.apply(block, itemSettings.registryKey(itemKey));
+		Registry.register(Registries.ITEM, itemKey, item);
+		return Registry.register(Registries.BLOCK, blockKey, block);
+	}
+
+	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings) {
+		return register(id, blockFactory, blockSettings, BlockItem::new, new Item.Settings());
 	}
 
 
-    public static final Block YELLOW_WALLPAPERS = registerBlock("yellow_wallpapers",
-            new Block(AbstractBlock.Settings.create()
+
+    public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(5, 7)
-					.requiresTool()));
+					.requiresTool());
 
-    public static final Block YELLOW_WALLPAPERS_WALL = registerBlock("yellow_wallpapers_wall",
-			new WallBlock(AbstractBlock.Settings.create()
+    public static final Block YELLOW_WALLPAPERS_WALL = register("yellow_wallpapers_wall", WallBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(5, 7)
-					.requiresTool()));
+					.requiresTool()
+					.solid());
 
-	public static final Block YELLOW_WALLPAPERS_VERTICAL_SLAB = registerBlock("yellow_wallpapers_vertical_slab",
-			new VerticalSlabBlock(AbstractBlock.Settings.create()
+	public static final Block YELLOW_WALLPAPERS_VERTICAL_SLAB = register("yellow_wallpapers_vertical_slab", VerticalSlabBlock::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.TERRACOTTA_YELLOW)
 				.sounds(BlockSoundGroup.BASALT)
 				.strength(5, 7)
-				.requiresTool()));
+				.requiresTool());
 
-    public static final Block DAMAGED_YELLOW_WALLPAPERS = registerBlock("damaged_yellow_wallpapers",
-            new Block(AbstractBlock.Settings.create()
+    public static final Block DAMAGED_YELLOW_WALLPAPERS = register("damaged_yellow_wallpapers", Block::new,
+            AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
-					.strength(2, 6)));
+					.strength(2, 6));
 
-    public static final Block BOTTOM_YELLOW_WALLPAPERS = registerBlock("bottom_yellow_wallpapers",
-            new Block(AbstractBlock.Settings.create()
+    public static final Block BOTTOM_YELLOW_WALLPAPERS = register("bottom_yellow_wallpapers", Block::new,
+            AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(5, 7)
-					.requiresTool()));
+					.requiresTool());
 
-    public static final Block FALSE_CEILING = registerBlock("false_ceiling",
-            new Block(AbstractBlock.Settings.create()
+    public static final Block FALSE_CEILING = register("false_ceiling", Block::new,
+            AbstractBlock.Settings.create()
 					.mapColor(MapColor.LIGHT_GRAY)
 					.sounds(BlockSoundGroup.CALCITE)
 					.strength(2, 6)
-					.requiresTool()));
+					.requiresTool());
 
-    public static final Block DAMP_CARPET = registerBlock("damp_carpet",
-            new Block(AbstractBlock.Settings.create()
+    public static final Block DAMP_CARPET = register("damp_carpet", Block::new,
+            AbstractBlock.Settings.create()
 					.mapColor(MapColor.OAK_TAN)
 					.sounds(BlockSoundGroup.WOOL)
-					.strength(1, 3)));
+					.strength(1, 3));
 
-    public static final Block DIRTY_DAMP_CARPET = registerBlock("dirty_damp_carpet",
-            new Block(AbstractBlock.Settings.create()
+    public static final Block DIRTY_DAMP_CARPET = register("dirty_damp_carpet", Block::new,
+            AbstractBlock.Settings.create()
 					.mapColor(MapColor.OAK_TAN)
 					.sounds(BlockSoundGroup.WOOL)
-					.strength(1, 3)));
+					.strength(1, 3));
 
-	public static final Block RED_WALLPAPERS = registerBlock("red_wallpapers",
-			new Block(AbstractBlock.Settings.create()
+	public static final Block RED_WALLPAPERS = register("red_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_RED)
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(5, 7)
-					.requiresTool()));
+					.requiresTool());
 
-	public static final Block RED_DAMP_CARPET = registerBlock("red_damp_carpet",
-			new Block(AbstractBlock.Settings.create()
+	public static final Block RED_DAMP_CARPET = register("red_damp_carpet", Block::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.RED)
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3)
-					.slipperiness(0.7f)));
+					.slipperiness(0.7f));
 
-	public static final Block FLICKERING_FLUORESCENT_LIGHT = registerBlock("fluorescent_light",
-			new FluorescentLightBlock(AbstractBlock.Settings.create()
+	public static final Block FLICKERING_FLUORESCENT_LIGHT = register("fluorescent_light", FluorescentLightBlock::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.WHITE)
 				.strength(1, 2)
 				.ticksRandomly()
@@ -114,57 +129,61 @@ public class CubliminalBlocks {
 				.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
 					.emissiveLighting(Blocks::always)
-					.requiresTool()));
+					.requiresTool());
 
-	public static final Block FLUORESCENT_LIGHT = registerBlock("deco_fluorescent_light",
-			new FluorescentLightBlock(AbstractBlock.Settings.create()
+	public static final Block FLUORESCENT_LIGHT = register("deco_fluorescent_light", FluorescentLightBlock::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.WHITE)
 				.strength(1, 2)
 				.luminance(shouldBeRed(15, 8))
 				.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
 					.emissiveLighting(Blocks::always)
-					.requiresTool()));
+					.requiresTool());
 
-	public static final Block FUSED_FLUORESCENT_LIGHT = registerBlock("fused_fluorescent_light",
-			new FusedFluorescentLightBlock(AbstractBlock.Settings.create()
+	public static final Block FUSED_FLUORESCENT_LIGHT = register("fused_fluorescent_light", FusedFluorescentLightBlock::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.STONE_GRAY)
 				.strength(1, 2)
 				.ticksRandomly()
 				.luminance(shouldBeRed(6, 4))
 				.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
-					.requiresTool()));
+					.requiresTool());
 
-	public static final Block SMOKE_DETECTOR = registerBlock("smoke_detector",
-			new SmokeDetectorBlock(AbstractBlock.Settings.create()
+	public static final Block SMOKE_DETECTOR = register("smoke_detector", SmokeDetectorBlock::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.DEEPSLATE_GRAY)
 				.strength(2.6f, 2.6f)
 				.offset(AbstractBlock.OffsetType.XZ)
 				.dynamicBounds()
 				.sounds(BlockSoundGroup.METAL)
 				.pistonBehavior(PistonBehavior.DESTROY)
-				.requiresTool()));
+				.requiresTool());
 
-	public static final Block SOCKET = registerBlock("socket",
-			new SocketBlock(AbstractBlock.Settings.create()
+	public static final Block SOCKET = register("socket", SocketBlock::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.WHITE_GRAY)
 				.strength(3, 3)
 				.sounds(BlockSoundGroup.CALCITE)
 				.pistonBehavior(PistonBehavior.DESTROY)
-				.requiresTool()));
+				.requiresTool());
 
-	public static final Block ALMOND_WATER = registerBlockWithItem("almond_water",
-			new AlmondWaterBlock(AbstractBlock.Settings.create()
+	public static final Block ALMOND_WATER = register("almond_water", AlmondWaterBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.PALE_YELLOW)
 					.breakInstantly()
 					.dynamicBounds()
 					.offset(AbstractBlock.OffsetType.XZ)
 					.sounds(BlockSoundGroup.LANTERN)
-					.pistonBehavior(PistonBehavior.DESTROY)), CubliminalFoodComponents.ALMOND_WATER, 16);
+					.pistonBehavior(PistonBehavior.DESTROY),
+			AlmondWaterBlockItem::new, new Item.Settings()
+					.food(CubliminalFoodComponents.ALMOND_WATER)
+					.maxCount(16)
+					.component(DataComponentTypes.CONSUMABLE, CubliminalFoodComponents.ALMOND_WATER_COMPONENT));
 
-	public static final Block JUMBLED_DOCUMENTS = registerBlock("jumbled_documents",
-			new JumbledDocumentsBlock(AbstractBlock.Settings.create()
+	public static final Block JUMBLED_DOCUMENTS = register("jumbled_documents", JumbledDocumentsBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.WHITE)
 					.breakInstantly()
 					.sounds(new BlockSoundGroup(1.0f, 1.0f, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN,
@@ -172,118 +191,114 @@ public class CubliminalBlocks {
 					.nonOpaque()
 					.noCollision()
 					.noBlockBreakParticles()
-					.pistonBehavior(PistonBehavior.DESTROY)));
+					.pistonBehavior(PistonBehavior.DESTROY));
 
-	public static final Block TWO_LONG_SPRUCE_TABLE = registerBlock("two_long_spruce_table",
-			new TwoLongTableBlock(AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS)
-					.requiresTool()));
+	public static final Block TWO_LONG_SPRUCE_TABLE = register("two_long_spruce_table", TwoLongTableBlock::new,
+			AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS)
+					.requiresTool());
 
-	public static final Block SPRUCE_CHAIR = registerBlock("spruce_chair",
-			new ChairBlock(AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS)
-					.requiresTool()));
+	public static final Block SPRUCE_CHAIR = register("spruce_chair", ChairBlock::new,
+			AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS)
+					.requiresTool());
 
-	public static final Block MANILA_WALLPAPERS = registerBlock("manila_wallpapers",
-			new Block(AbstractBlock.Settings.create()
+	public static final Block MANILA_WALLPAPERS = register("manila_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.IRON_GRAY)
 				.sounds(BlockSoundGroup.BASALT)
 				.strength(5, 7)
-				.requiresTool()));
+				.requiresTool());
 
-	public static final Block TOP_MANILA_WALLPAPERS = registerBlock("top_manila_wallpapers",
-			new Block(AbstractBlock.Settings.create()
+	public static final Block TOP_MANILA_WALLPAPERS = register("top_manila_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
 				.mapColor(MapColor.IRON_GRAY)
 				.sounds(BlockSoundGroup.BASALT)
 				.strength(5, 7)
-				.requiresTool()));
+				.requiresTool());
 
-	public static final Block EMERGENCY_EXIT_DOOR_0 = registerBlock("emergency_exit_door_0",
-			new DoorBlock(BlockSetType.IRON,
+	public static final Block EMERGENCY_EXIT_DOOR_0 = register("emergency_exit_door_0", DoorBlock::new,
 				AbstractBlock.Settings.create()
 						.mapColor(MapColor.RED)
 						.strength(5.0f)
 						.nonOpaque()
 						.pistonBehavior(PistonBehavior.DESTROY)
-						.requiresTool()));
+						.requiresTool(),
+			BlockSetType.IRON, BlockItem::new, new Item.Settings());
 
-	public static final Block EXIT_SIGN = registerBlock("exit_sign",
-			new ExitSignBlock(AbstractBlock.Settings.create()
+	public static final Block EXIT_SIGN = register("exit_sign", ExitSignBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.PALE_GREEN)
 					.strength(3, 3)
 					.sounds(BlockSoundGroup.CALCITE)
 					.pistonBehavior(PistonBehavior.DESTROY)
-					.requiresTool()));
+					.requiresTool());
 
-	public static final Block COMPUTER = registerBlock("computer",
-			new ComputerBlock(AbstractBlock.Settings.create()
+	public static final Block COMPUTER = register("computer", ComputerBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.PALE_YELLOW)
 					.strength(4, 5)
 					.sounds(BlockSoundGroup.GLASS)
 					.dropsNothing()
 					.nonOpaque()
-					.pistonBehavior(PistonBehavior.BLOCK)));
+					.pistonBehavior(PistonBehavior.BLOCK));
 
-	public static final Block SINK = registerBlock("sink",
-			new SinkBlock(AbstractBlock.Settings.create()
+	public static final Block SINK = register("sink", SinkBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.PALE_YELLOW)
 					.strength(4, 5)
 					.sounds(BlockSoundGroup.DEEPSLATE_BRICKS)
 					.nonOpaque()
 					.pistonBehavior(PistonBehavior.BLOCK)
-					.requiresTool()));
+					.requiresTool());
 
-	public static final Block SHOWER = registerBlock("shower",
-			new ShowerBlock(AbstractBlock.Settings.create()
+	public static final Block SHOWER = register("shower", ShowerBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.DEEPSLATE_GRAY)
 					.strength(4, 5)
 					.sounds(BlockSoundGroup.COPPER)
 					.nonOpaque()
 					.pistonBehavior(PistonBehavior.BLOCK)
-					.requiresTool()));
+					.requiresTool());
 
-	public static final Block THE_LOBBY_GATEWAY_BLOCK = registerBlock("the_lobby_gateway_block",
-			new TheLobbyGatewayBlock(AbstractBlock.Settings.copy(Blocks.GLASS)
+	public static final Block THE_LOBBY_GATEWAY_BLOCK = register("the_lobby_gateway_block", TheLobbyGatewayBlock::new,
+			AbstractBlock.Settings.copy(Blocks.GLASS)
 					.strength(-1, 3600000)
 					.noCollision()
 					.dropsNothing()
 					.pistonBehavior(PistonBehavior.BLOCK)
 					.noBlockBreakParticles()
-					.luminance(createLightLevelFromLitBlockState(9))));
+					.luminance(createLightLevelFromLitBlockState(9)));
 
-	public static final Block GABBRO = registerBlock("gabbro",
-			new Block(AbstractBlock.Settings.copy(Blocks.STONE)
+	public static final Block GABBRO = register("gabbro", Block::new,
+			AbstractBlock.Settings.copy(Blocks.STONE)
 					.mapColor(MapColor.BLACK)
 					.dropsNothing()
 					.pistonBehavior(PistonBehavior.BLOCK)
-					.strength(-1, 3600000)));
+					.strength(-1, 3600000));
 
-	public static final Block MOLD = registerBlock("mold",
-			new MoldBlock(AbstractBlock.Settings.create()
+	public static final Block MOLD = register("mold", MoldBlock::new,
+			AbstractBlock.Settings.create()
 					.mapColor(MapColor.BLACK)
 					.replaceable()
 					.noCollision()
 					.strength(0.2f)
 					.sounds(BlockSoundGroup.GLOW_LICHEN)
 					.burnable()
-					.pistonBehavior(PistonBehavior.DESTROY)));
+					.pistonBehavior(PistonBehavior.DESTROY));
 
-	public static final Block POOL_TILES = registerBlock("pool_tiles",
-			new Block(AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)
-					.sounds(BlockSoundGroup.DEEPSLATE_TILES)));
+	public static final Block POOL_TILES = register("pool_tiles", Block::new,
+			AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)
+					.sounds(BlockSoundGroup.DEEPSLATE_TILES));
 
-	public static final Block POOL_TILE_STAIRS = registerBlock("pool_tile_stairs",
-			new StairsBlock(CubliminalBlocks.POOL_TILES.getDefaultState(),
-					AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)));
+	public static final Block POOL_TILE_STAIRS = register("pool_tile_stairs", StairsBlock::new,
+					AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE),
+			CubliminalBlocks.POOL_TILES.getDefaultState(), BlockItem::new, new Item.Settings());
 
-	public static final Block POOL_TILE_SLAB = registerBlock("pool_tile_slab",
-			new SlabBlock(AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)));
+	public static final Block POOL_TILE_SLAB = register("pool_tile_slab", SlabBlock::new,
+			AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE));
 
-	public static final Block POOL_TILE_WALL = registerBlock("pool_tile_wall",
-			new WallBlock(AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE)));
+	public static final Block POOL_TILE_WALL = register("pool_tile_wall", WallBlock::new,
+			AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE).solid());
 
-
-	public static boolean isRed(BlockState state, BlockView world, BlockPos pos) {
-		return state.get(CustomProperties.RED);
-	}
 
 	public static ToIntFunction<BlockState> shouldBeRed(int defaultLevel, int redLevel) {
 		return (state) -> {
@@ -295,18 +310,20 @@ public class CubliminalBlocks {
 
 
     public static void init() {
-		FuelRegistry.INSTANCE.add(YELLOW_WALLPAPERS.asItem(), 300);
-		FuelRegistry.INSTANCE.add(YELLOW_WALLPAPERS_WALL.asItem(), 300);
-		FuelRegistry.INSTANCE.add(YELLOW_WALLPAPERS_VERTICAL_SLAB.asItem(), 300);
-		FuelRegistry.INSTANCE.add(BOTTOM_YELLOW_WALLPAPERS.asItem(), 300);
-		FuelRegistry.INSTANCE.add(DAMAGED_YELLOW_WALLPAPERS.asItem(), 200);
-		FuelRegistry.INSTANCE.add(MANILA_WALLPAPERS.asItem(), 300);
-		FuelRegistry.INSTANCE.add(TOP_MANILA_WALLPAPERS.asItem(), 300);
-		FuelRegistry.INSTANCE.add(TWO_LONG_SPRUCE_TABLE.asItem(), 1000);
-		FuelRegistry.INSTANCE.add(SPRUCE_CHAIR.asItem(), 800);
-		FuelRegistry.INSTANCE.add(DAMP_CARPET.asItem(), 100);
-		FuelRegistry.INSTANCE.add(DIRTY_DAMP_CARPET.asItem(), 100);
-		FuelRegistry.INSTANCE.add(RED_DAMP_CARPET.asItem(), 100);
-		FuelRegistry.INSTANCE.add(RED_WALLPAPERS.asItem(), 300);
+		FuelRegistryEvents.BUILD.register((builder, context) -> {
+			builder.add(YELLOW_WALLPAPERS.asItem(), 300);
+			builder.add(YELLOW_WALLPAPERS_WALL.asItem(), 300);
+			builder.add(YELLOW_WALLPAPERS_VERTICAL_SLAB.asItem(), 300);
+			builder.add(BOTTOM_YELLOW_WALLPAPERS.asItem(), 300);
+			builder.add(DAMAGED_YELLOW_WALLPAPERS.asItem(), 200);
+			builder.add(MANILA_WALLPAPERS.asItem(), 300);
+			builder.add(TOP_MANILA_WALLPAPERS.asItem(), 300);
+			builder.add(TWO_LONG_SPRUCE_TABLE.asItem(), 1000);
+			builder.add(SPRUCE_CHAIR.asItem(), 800);
+			builder.add(DAMP_CARPET.asItem(), 100);
+			builder.add(DIRTY_DAMP_CARPET.asItem(), 100);
+			builder.add(RED_DAMP_CARPET.asItem(), 100);
+			builder.add(RED_WALLPAPERS.asItem(), 300);
+		});
     }
 }

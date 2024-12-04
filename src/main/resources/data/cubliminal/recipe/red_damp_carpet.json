@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "cubliminal:damp_carpet",
+    "minecraft:red_dye"
+  ],
+  "result": {
+    "id": "cubliminal:red_damp_carpet"
+  },
+  "show_notification": true
+}

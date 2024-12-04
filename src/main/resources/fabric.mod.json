@@ -35,12 +35,11 @@
 		"cubliminal.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.7",
-		"minecraft": "~1.20.6",
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.3",
 		"java": ">=21",
 		"fabric-api": "*",
-		"limlib":"*",
-		"specialmodels": "*",
+		"limlib":"11.3",
 		"cloth-config": "*"
 	}
 }

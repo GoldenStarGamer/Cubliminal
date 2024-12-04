@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#minecraft:planks",
+    "cubliminal:yellow_wallpaper"
+  ],
+  "result": {
+    "id": "cubliminal:yellow_wallpapers"
+  },
+  "show_notification": true
+}

@@ -1,5 +1,5 @@
 package net.limit.cubliminal.init;
-
+/*
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
@@ -20,3 +20,5 @@ public class CubliminalModelRenderers {
 	public static void init() {
 	}
 }
+
+ */

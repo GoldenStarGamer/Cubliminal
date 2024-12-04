@@ -3,18 +3,16 @@
   "package": "net.limit.cubliminal.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ClearAllEffectsConsumeEffectMixin",
     "EntityMixin",
-    "MilkBucketItemMixin",
     "PlayerEntityMixin"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",
     "client.EntityRenderDispatcherMixin",
     "client.GameRendererMixin",
-    "client.ItemRendererAccessor",
     "client.ItemRendererMixin",
-    "client.ModelLoaderMixin",
-    "client.PlayerEntityRendererMixin"
+    "client.LightningEntityRendererMixin",
   ],
   "injectors": {
     "defaultRequire": 1

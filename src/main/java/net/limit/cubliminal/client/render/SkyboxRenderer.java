@@ -1,5 +1,6 @@
 package net.limit.cubliminal.client.render;
 
+/*
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -73,3 +74,5 @@ public class SkyboxRenderer extends SpecialModelRenderer {
 	}
 
 }
+
+ */

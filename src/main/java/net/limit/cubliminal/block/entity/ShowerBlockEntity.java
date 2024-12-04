@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -61,7 +62,8 @@ public class ShowerBlockEntity extends BlockEntity {
 				}
 			}
 			if (blockEntity.age % 12 == 0) {
-				CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.SINK_AMBIENT.value());
+				//CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.SINK_AMBIENT.value());
+				world.playSoundAtBlockCenter(pos, CubliminalSounds.SINK_AMBIENT.value(), SoundCategory.BLOCKS, 1.0f, 1.0f, true);
 			}
 		}
 	}

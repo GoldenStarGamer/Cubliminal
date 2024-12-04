@@ -15,27 +15,25 @@ import net.ludocrypt.limlib.api.world.chunk.AbstractNbtChunkGenerator;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.chunk.AbstractChunkHolder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkGenerationContext;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.FullChunkConverter;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 	public static final MapCodec<LevelZeroChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -129,8 +127,8 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context, ChunkStatus targetStatus, Executor executor,
-												  FullChunkConverter fullChunkConverter, List<Chunk> chunks, Chunk chunk) {
+	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
+												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 
 		BlockPos startPos = chunk.getPos().getStartPos();
 		int spacing = 8;
@@ -280,9 +278,9 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 	@Override
 	protected RegistryKey<LootTable> getContainerLootTable(LootableContainerBlockEntity container) {
 		if (container.getLootTable() != null) {
-			container.setLootTable(LootTables.EMPTY);
+			container.setLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, Cubliminal.id("barrels/the_lobby/0")));
 			return RegistryKey.of(RegistryKeys.LOOT_TABLE, Cubliminal.id("barrels/the_lobby/0"));
-		} else return LootTables.EMPTY;
+		} else return null;
 	}
 
 	@Override
@@ -296,7 +294,6 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
-	public void getDebugHudText(List<String> text, NoiseConfig noiseConfig, BlockPos pos) {
-
+	public void appendDebugHudText(List<String> text, NoiseConfig noiseConfig, BlockPos pos) {
 	}
 }

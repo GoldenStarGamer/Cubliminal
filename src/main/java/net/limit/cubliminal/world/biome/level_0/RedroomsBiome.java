@@ -18,8 +18,8 @@ public class RedroomsBiome {
 		BiomeEffects.Builder biomeEffects = new BiomeEffects.Builder();
 
 		biomeEffects.loopSound(CubliminalSounds.AMBIENT_REDROOMS);
-		biomeEffects.skyColor(0);
-		biomeEffects.fogColor(16252805);
+		biomeEffects.skyColor(197122);
+		biomeEffects.fogColor(1312000);
 		biomeEffects.waterColor(15660426);
 		biomeEffects.waterFogColor(12499526);
 		BiomeEffects effects = biomeEffects.build();

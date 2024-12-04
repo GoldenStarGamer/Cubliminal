@@ -18,8 +18,8 @@ public class TheLobbyBiome {
 		BiomeEffects.Builder biomeEffects = new BiomeEffects.Builder();
 
 		biomeEffects.loopSound(CubliminalSounds.AMBIENT_LEVEL_O);
-		biomeEffects.skyColor(0);
-		biomeEffects.fogColor(16252805);
+		biomeEffects.skyColor(197378);
+		biomeEffects.fogColor(1315584);
 		biomeEffects.waterColor(15660426);
 		biomeEffects.waterFogColor(12499526);
 		BiomeEffects effects = biomeEffects.build();

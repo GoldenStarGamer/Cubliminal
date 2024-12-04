@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:paper",
+    "minecraft:yellow_dye"
+  ],
+  "result": {
+    "id": "cubliminal:yellow_wallpaper"
+  },
+  "show_notification": true
+}

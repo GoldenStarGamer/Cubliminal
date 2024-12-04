@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:white_dye",
+    "cubliminal:yellow_wallpapers"
+  ],
+  "result": {
+    "id": "cubliminal:manila_wallpapers"
+  },
+  "show_notification": true
+}

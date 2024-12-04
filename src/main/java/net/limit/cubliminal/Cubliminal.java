@@ -32,7 +32,7 @@ public class Cubliminal implements ModInitializer {
 	public static final String MOD_ID = "cubliminal";
 
 	public static Identifier id(String id) {
-		return new Identifier(MOD_ID, id);
+		return Identifier.of(MOD_ID, id);
 	}
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);

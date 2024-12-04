@@ -11,9 +11,10 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
@@ -27,12 +28,14 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
+import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
 
 public class SinkBlock extends BlockWithEntity implements BlockEntityProvider {
 	public static final MapCodec<SinkBlock> CODEC = SinkBlock.createCodec(SinkBlock::new);
 	private static final BooleanProperty ENABLED = Properties.ENABLED;
-	public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
+	public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
 	protected static final VoxelShape EAST_SHAPE = VoxelShapes.union(
 		Block.createCuboidShape(0, 10, 0, 14, 11, 16),
 		Block.createCuboidShape(13, 11, 0, 14, 16, 16),
@@ -139,7 +142,7 @@ public class SinkBlock extends BlockWithEntity implements BlockEntityProvider {
 	}
 
 	@Override
-	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+	protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
 		return direction.getOpposite() == state.get(FACING) && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : state;
 	}
 
@@ -161,10 +164,12 @@ public class SinkBlock extends BlockWithEntity implements BlockEntityProvider {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		boolean bl = !state.get(Properties.ENABLED);
-		world.setBlockState(pos, state.with(ENABLED, bl));
-		CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.OPEN_SINK.value());
-		return ActionResult.success(world.isClient);
+		if (!world.isClient) {
+			boolean bl = !state.get(Properties.ENABLED);
+			world.setBlockState(pos, state.with(ENABLED, bl));
+			CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.OPEN_SINK.value());
+		}
+		return ActionResult.SUCCESS;
 	}
 
 	@Override

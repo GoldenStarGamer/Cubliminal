@@ -6,11 +6,17 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 
 public class CubliminalEntities {
 
-    public static final EntityType<SeatEntity> SEAT_ENTITY = Registry.register(Registries.ENTITY_TYPE, Cubliminal.id("seat_entity"),
-            EntityType.Builder.create(SeatEntity::new, SpawnGroup.MISC).dimensions(0f, 0f).build());
+    public static final EntityType<SeatEntity> SEAT_ENTITY = Registry.register(
+            Registries.ENTITY_TYPE,
+            Cubliminal.id("seat_entity"),
+            EntityType.Builder.create(SeatEntity::new, SpawnGroup.MISC)
+                    .dimensions(0f, 0f)
+                    .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Cubliminal.id("seat_entity"))));
 
     public static void init() {
     }

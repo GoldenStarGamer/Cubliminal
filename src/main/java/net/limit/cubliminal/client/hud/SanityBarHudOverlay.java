@@ -9,6 +9,8 @@ import net.limit.cubliminal.util.IEntityDataSaver;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -22,7 +24,7 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 	MinecraftClient client = MinecraftClient.getInstance();
 
 	@Override
-	public void onHudRender(DrawContext drawContext, float tickDelta) {
+	public void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter) {
 
 		ClientPlayerEntity player = client.player;
 		if (player == null || player.isCreative() || player.isSpectator() ||
@@ -47,10 +49,13 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 			texture = SANITY_BAR_4;
 		}
 
-		drawContext.drawTexture(texture, x, l, 2, 0, 12, 32, 32, 32);
+		//drawContext.drawTexture(texture, x, l, 2, 0, 12, 32, 32, 32);
+		drawContext.drawTexture(RenderLayer::getGuiTextured, texture, x, l, 2, 0, 12, 32, 32, 32);
+
 		if (i > 0) {
 			int k = (int) (i * 0.1 * 28);
-			drawContext.drawTexture(texture, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32);
+			//drawContext.drawTexture(texture, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32);
+			drawContext.drawTexture(RenderLayer::getGuiTextured, texture, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32);
 		}
 		int j = 3;
 		if (i > 9) j = 4;

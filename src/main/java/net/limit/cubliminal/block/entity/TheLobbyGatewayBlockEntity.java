@@ -20,6 +20,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -76,7 +78,7 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 	}
 
 	public static void tryTeleportingEntity(World world, BlockPos pos, BlockState state, Entity entity, TheLobbyGatewayBlockEntity blockEntity) {
-		if (world instanceof ServerWorld) {
+		if (world instanceof ServerWorld serverWorld) {
 			Entity entity3;
 			if (entity instanceof EnderPearlEntity) {
 				Entity entity2 = ((EnderPearlEntity) entity).getOwner();
@@ -95,10 +97,12 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 			}
 
 			entity3.resetPortalCooldown();
-			entity3.teleport((double) blockEntity.exitPos.getX() + 0.5, blockEntity.exitPos.getY(), (double) blockEntity.exitPos.getZ() + 0.5);
+			TeleportTarget teleportTarget = new TeleportTarget(serverWorld, Vec3d.ofBottomCenter(blockEntity.exitPos), Vec3d.ZERO, entity3.getYaw(), entity3.getPitch(), TeleportTarget.NO_OP);
+			entity3.teleportTo(teleportTarget);
 			if (entity3.isPlayer()) {
 				AdvancementHelper.grantAdvancement((ServerPlayerEntity) entity3, Cubliminal.id("backrooms/manila_room"));
 			}
+
 			if (state.equals(CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK.getDefaultState().with(Properties.LIT, true))) {
 				for (BlockEntity blockEntity2 : BlockPos.stream(new Box(blockEntity.exitPos).expand(10))
 					.map(blockEntity.getWorld()::getBlockEntity).filter(Objects::nonNull).filter(blockEntity2 ->

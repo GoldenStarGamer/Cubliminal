@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_yellow_wallpaper": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cubliminal:yellow_wallpaper"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cubliminal:yellow_wallpapers"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_yellow_wallpaper"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cubliminal:yellow_wallpapers"
+    ]
+  },
+  "sends_telemetry_event": false
+}

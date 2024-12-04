@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "W": "#minecraft:wool",
+    "M": "minecraft:moss_block"
+  },
+  "pattern": [
+    "MMM",
+    "WWW"
+  ],
+  "result": {
+    "count": 6,
+    "id": "cubliminal:damp_carpet"
+  },
+  "show_notification": true
+}

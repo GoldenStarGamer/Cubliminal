@@ -1,12 +1,14 @@
 package net.limit.cubliminal.util;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.event.ServerTickHandler;
 import net.limit.cubliminal.init.CubliminalPackets;
 import net.limit.cubliminal.init.CubliminalSounds;
 import net.limit.cubliminal.init.CubliminalRegistrar;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
@@ -50,7 +52,8 @@ public class NoClipEngine {
                 noClipDestination(playerEntity);
             }
 
-            ticksToNc = playerEntity.getRandom().nextInt(6000) + 12000;
+            //ticksToNc = playerEntity.getRandom().nextInt(6000) + 12000;
+            ticksToNc = 100;
         }
 
         nbt.putInt("ticksToNc", ticksToNc);
@@ -94,13 +97,20 @@ public class NoClipEngine {
 
         playerEntity.setSpawnPoint(registryKey, destination, 0f, true, false);
 
-        FabricDimensions.teleport(playerEntity, playerEntity.getServer().getWorld(registryKey),
-                new TeleportTarget(destination.toCenterPos().add(0, 2.5, 0), Vec3d.ZERO,
-                        playerEntity.getYaw(), playerEntity.getPitch()));
+        TeleportTarget teleportTarget = new TeleportTarget(playerEntity.getServer().getWorld(registryKey), destination.toCenterPos()
+                .add(0, 2.5, 0), Vec3d.ZERO, playerEntity.getYaw(), playerEntity.getPitch(), NoClipEngine::afterNoCLip);
+
+        playerEntity.teleportTo(teleportTarget);
     }
 
     public static void syncNoClip(ServerPlayerEntity playerEntity) {
         int ticks = IEntityDataSaver.cast(playerEntity).getInt("ticksToNc");
         ServerPlayNetworking.send(playerEntity, new CubliminalPackets.NoClipSyncPayload(ticks));
+    }
+
+    public static void afterNoCLip(Entity entity) {
+        if (entity instanceof PlayerEntity player) {
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 60, 0, true, false, true));
+        }
     }
 }

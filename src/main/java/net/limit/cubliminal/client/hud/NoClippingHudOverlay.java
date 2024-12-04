@@ -11,6 +11,8 @@ import net.limit.cubliminal.util.NoClipEngine;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 
@@ -24,7 +26,7 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 	private static final Identifier GLITCH_OVERLAY_2 = Cubliminal.id("textures/hud/noclip/glitch_overlay_2.png");
 
 	@Override
-	public void onHudRender(DrawContext drawContext, float tickDelta) {
+	public void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		ClientPlayerEntity player = client.player;
 		if (player != null && !CubliminalConfig.get().disableAggressiveGraphics) {
@@ -76,12 +78,15 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 		RenderSystem.disableDepthTest();
 		RenderSystem.depthMask(false);
 		RenderSystem.enableBlend();
-		drawContext.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
-		drawContext.drawTexture(texture, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
+		//drawContext.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
+		//drawContext.drawTexture(texture, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
+		drawContext.drawTexture(RenderLayer::getGuiTextured, texture, 0, 0, 0.0f, 0.0f, width, height, width, height);
 		RenderSystem.disableBlend();
 		RenderSystem.depthMask(true);
 		RenderSystem.enableDepthTest();
-		drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
     public boolean isClippingIntoWall() {

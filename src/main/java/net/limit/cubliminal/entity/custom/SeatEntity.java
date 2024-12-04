@@ -4,8 +4,10 @@ import com.google.common.base.Predicates;
 import net.limit.cubliminal.block.custom.SeatBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -24,6 +26,11 @@ public class SeatEntity extends Entity {
     }
 
     @Override
+    public boolean shouldRender(double cameraX, double cameraY, double cameraZ) {
+        return false;
+    }
+
+    @Override
     public void tick() {
         if (this.getWorld().isClient()) return;
         if (!(this.getBlockStateAtPos().getBlock() instanceof SeatBlock)
@@ -31,6 +38,11 @@ public class SeatEntity extends Entity {
                 Predicate.not(Predicates.alwaysTrue())).isEmpty()
                 || this.getPassengerList().isEmpty()) this.discard();
         if (this.isSubmergedInWater()) this.removeAllPassengers();
+    }
+
+    @Override
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        return false;
     }
 
     @Override
