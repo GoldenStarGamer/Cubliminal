@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TheLobbyGatewayBlock extends BlockWithEntity implements BlockEntityProvider {
 	public static final MapCodec<TheLobbyGatewayBlock> CODEC = TheLobbyGatewayBlock.createCodec(TheLobbyGatewayBlock::new);
-	private static final BooleanProperty LIT = Properties.LIT;
+	public static final BooleanProperty LIT = Properties.LIT;
 	public TheLobbyGatewayBlock(Settings settings) {
 		super(settings);
 		this.setDefaultState(this.stateManager.getDefaultState().with(LIT, true));

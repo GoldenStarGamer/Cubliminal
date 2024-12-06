@@ -19,7 +19,7 @@ public class SanityCommand {
                 .then(CommandManager.argument("targets", EntityArgumentType.players())
                         .executes(context -> execute(context.getSource(), EntityArgumentType.getPlayers(context, "targets")))
                         .then(CommandManager.literal("set")
-                                .then(CommandManager.argument("amount", IntegerArgumentType.integer(0, 10))
+                                .then(CommandManager.argument("amount", IntegerArgumentType.integer(0, 100))
                                         .executes(context -> execute(context.getSource(), EntityArgumentType.getPlayers(context, "targets"),
                                                 IntegerArgumentType.getInteger(context, "amount")))))));
     }
@@ -45,7 +45,7 @@ public class SanityCommand {
     }
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets, int amount) {
-        if (amount < 0 || amount > 10) {
+        if (amount < 0 || amount > 100) {
             source.sendError(Text.translatable("commands.sanity.failed.invalid_range"));
             return 0;
         }

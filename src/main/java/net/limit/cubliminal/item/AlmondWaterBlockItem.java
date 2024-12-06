@@ -2,21 +2,16 @@ package net.limit.cubliminal.item;
 
 import net.limit.cubliminal.block.custom.AlmondWaterBlock;
 import net.limit.cubliminal.init.CubliminalEffects;
-import net.limit.cubliminal.util.SanityData;
+import net.limit.cubliminal.util.SanityManager;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
-import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 
@@ -34,7 +29,7 @@ public class AlmondWaterBlockItem extends BlockItem {
             Criteria.CONSUME_ITEM.trigger(serverPlayerEntity, stack);
             serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
             if (!world.isClient) {
-                SanityData.resetTimer(serverPlayerEntity);
+                SanityManager.resetTimer(serverPlayerEntity);
                 user.removeStatusEffect(Registries.STATUS_EFFECT.getEntry(CubliminalEffects.PARANOIA));
             }
         }

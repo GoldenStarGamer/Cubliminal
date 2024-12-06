@@ -37,29 +37,26 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 		Identifier texture;
 		RenderSystem.enableBlend();
 
-		if (i > 8) {
+		if (i > 80) {
 			texture = SANITY_BAR_0;
-		} else if (i > 6) {
+		} else if (i > 60) {
 			texture = SANITY_BAR_1;
-		} else if (i > 3) {
+		} else if (i > 30) {
 			texture = SANITY_BAR_2;
-		} else if (i > 1) {
+		} else if (i > 10) {
 			texture = SANITY_BAR_3;
 		} else {
 			texture = SANITY_BAR_4;
 		}
 
-		//drawContext.drawTexture(texture, x, l, 2, 0, 12, 32, 32, 32);
 		drawContext.drawTexture(RenderLayer::getGuiTextured, texture, x, l, 2, 0, 12, 32, 32, 32);
 
 		if (i > 0) {
-			int k = (int) (i * 0.1 * 28);
-			//drawContext.drawTexture(texture, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32);
+			int k = (int) (i * 0.01 * 28);
 			drawContext.drawTexture(RenderLayer::getGuiTextured, texture, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32);
 		}
-		int j = 3;
-		if (i > 9) j = 4;
-		String string = i * 10 + "%";
+		int j = i > 90 ? 4 : 3;
+		String string = i + "%";
 		drawContext.drawText(client.inGameHud.getTextRenderer(), string, x - j, l - 7, 20165255, true);
 		RenderSystem.disableBlend();
 	}

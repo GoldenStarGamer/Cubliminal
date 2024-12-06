@@ -52,8 +52,7 @@ public class NoClipEngine {
                 noClipDestination(playerEntity);
             }
 
-            //ticksToNc = playerEntity.getRandom().nextInt(6000) + 12000;
-            ticksToNc = 100;
+            ticksToNc = playerEntity.getRandom().nextInt(6000) + 12000;
         }
 
         nbt.putInt("ticksToNc", ticksToNc);
@@ -110,7 +109,7 @@ public class NoClipEngine {
 
     public static void afterNoCLip(Entity entity) {
         if (entity instanceof PlayerEntity player) {
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 60, 0, true, false, true));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 100, 0, true, false, true));
         }
     }
 }

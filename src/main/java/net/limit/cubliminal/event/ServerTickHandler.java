@@ -5,7 +5,7 @@ import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.advancements.AdvancementHelper;
 import net.limit.cubliminal.util.IEntityDataSaver;
 import net.limit.cubliminal.util.NoClipEngine;
-import net.limit.cubliminal.util.SanityData;
+import net.limit.cubliminal.util.SanityManager;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
@@ -27,18 +27,17 @@ public class ServerTickHandler implements ServerTickEvents.StartTick {
 		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
 			boolean isVulnerable = !player.isCreative() && !player.isSpectator();
 			// sync both sanity and no-clip cooldown
-			SanityData.syncSanity(player);
+			SanityManager.syncSanity(player);
 			NoClipEngine.syncNoClip(player);
 			// run no-clip cooldown
-			if (NoClipEngine.isNoClipping(player) || (isVulnerable && AdvancementHelper.visitedManilaRoom(player))) {
+			if (NoClipEngine.isNoClipping(player) || (isVulnerable && inBackrooms(player.getWorld().getRegistryKey())
+					&& AdvancementHelper.visitedManilaRoom(player))) {
 				NoClipEngine.run(player);
 			}
 			// run sanity stuff
 			if (isVulnerable && inBackrooms(player.getWorld().getRegistryKey())
 					&& !player.getWorld().getDifficulty().equals(Difficulty.PEACEFUL)) {
-				if (player.getWorld().getTime() % 200 == 0) {
-					SanityData.run(player);
-				}
+				SanityManager.run(player);
 			}
 		}
 
@@ -49,7 +48,7 @@ public class ServerTickHandler implements ServerTickEvents.StartTick {
 		RegistryKey<World> key = destination.getRegistryKey();
 		if (inBackrooms(key) && !AdvancementHelper.visitedManilaRoom(player)) {
 			// reset sanity as it was uninitialized
-			SanityData.resetTimer(player);
+			SanityManager.resetTimer(player);
 		}
 	}
 
@@ -57,6 +56,6 @@ public class ServerTickHandler implements ServerTickEvents.StartTick {
 		NbtCompound oldNbt = IEntityDataSaver.cast(oldPlayer);
 		NbtCompound newNbt = IEntityDataSaver.cast(newPlayer);
 		newNbt.putInt("ticksToNc", oldNbt.getInt("ticksToNc"));
-		SanityData.resetTimer(newPlayer);
+		SanityManager.resetTimer(newPlayer);
 	}
 }

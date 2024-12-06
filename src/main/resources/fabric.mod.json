@@ -41,5 +41,6 @@
 		"fabric-api": "*",
 		"limlib":"11.3",
 		"cloth-config": "*"
-	}
+	},
+	"accessWidener": "cubliminal.accesswidener"
 }

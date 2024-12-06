@@ -5,8 +5,9 @@ import net.limit.cubliminal.advancements.AdvancementHelper;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
-import net.limit.cubliminal.util.SanityData;
+import net.limit.cubliminal.util.SanityManager;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -20,6 +21,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
@@ -68,7 +70,7 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 					.getDefaultState().with(Properties.LIT, false))) {
 
 					for (Entity entity : world.getEntitiesByClass(Entity.class, new Box(pos).expand(16, 2, 11), Entity::isPlayer)) {
-						SanityData.resetTimer((ServerPlayerEntity) entity);
+						SanityManager.resetTimer((ServerPlayerEntity) entity);
 					}
 				}
 				List<Entity> list = world.getEntitiesByClass(Entity.class, new Box(pos), TheLobbyGatewayBlockEntity::canTeleport);
@@ -128,5 +130,9 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 	@Override
 	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
 		return this.createNbt(registryLookup);
+	}
+
+	public boolean shouldDrawSide(Direction direction) {
+		return Block.shouldDrawSide(this.getCachedState(), this.world.getBlockState(this.getPos().offset(direction)), direction);
 	}
 }
