@@ -11,8 +11,7 @@
     "client.ClientPlayerEntityMixin",
     "client.EntityRenderDispatcherMixin",
     "client.GameRendererMixin",
-    "client.ItemRendererMixin",
-    "client.LightningEntityRendererMixin",
+    "client.ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

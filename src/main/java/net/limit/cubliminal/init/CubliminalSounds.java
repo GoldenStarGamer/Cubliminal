@@ -33,6 +33,7 @@ public class CubliminalSounds {
 	public static final RegistryEntry.Reference<SoundEvent> WALL_CLIPPING = registerSoundEvent("wall_clipping");
 	public static final RegistryEntry.Reference<SoundEvent> OPEN_SINK = registerSoundEvent("block.sink_open");
 	public static final RegistryEntry.Reference<SoundEvent> SINK_AMBIENT = registerSoundEvent("block.sink.ambient");
+	public static final RegistryEntry.Reference<SoundEvent> FLUX_CAPACITOR = registerSoundEvent("block.flux_capacitor");
 
 
 	public static void clientPlaySoundSingle(ServerPlayerEntity target, RegistryEntry<SoundEvent> sound, SoundCategory category, double x, double y, double z, float volume, float pitch, long seed) {

@@ -3,9 +3,9 @@ package net.limit.cubliminal.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.limit.cubliminal.CubliminalClient;
 import net.limit.cubliminal.block.custom.TheLobbyGatewayBlock;
 import net.limit.cubliminal.block.entity.TheLobbyGatewayBlockEntity;
+import net.limit.cubliminal.client.CubliminalRenderLayers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
@@ -31,7 +31,7 @@ public class ManilaGatewayRenderer implements BlockEntityRenderer<TheLobbyGatewa
             MinecraftClient client = MinecraftClient.getInstance();
 
             VertexConsumer vertexConsumer = vertexConsumers.getBuffer(getLayer());
-            ShaderProgram shader = RenderSystem.setShader(CubliminalClient.RENDERTYPE_CUBLIMINAL_MANILA_SKYBOX);
+            ShaderProgram shader = RenderSystem.setShader(CubliminalRenderLayers.RENDERTYPE_CUBLIMINAL_MANILA_SKYBOX);
 
 
             Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
@@ -65,6 +65,6 @@ public class ManilaGatewayRenderer implements BlockEntityRenderer<TheLobbyGatewa
     }
 
     public RenderLayer getLayer() {
-        return CubliminalClient.MANILA;
+        return CubliminalRenderLayers.MANILA;
     }
 }

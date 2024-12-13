@@ -21,6 +21,7 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 
 	public static NoClippingHudOverlay INSTANCE = new NoClippingHudOverlay();
 	private boolean clippingIntoWall = false;
+	private boolean aux_renderOverlay = false;
 
 	private static final Identifier GLITCH_OVERLAY_1 = Cubliminal.id("textures/hud/noclip/glitch_overlay_1.png");
 	private static final Identifier GLITCH_OVERLAY_2 = Cubliminal.id("textures/hud/noclip/glitch_overlay_2.png");
@@ -48,7 +49,7 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 						break;
 					}
 				}
-			} else if (this.clippingIntoWall) {
+			} else if (this.clippingIntoWall || this.aux_renderOverlay) {
 				for (int i = 0; i < 2; i++) {
 					if ((player.getWorld().getTime() + i) % 6 == 0) {
 						Random random = player.getRandom();
@@ -95,5 +96,9 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 
     public void setClippingIntoWall(boolean clippingIntoWall) {
         this.clippingIntoWall = clippingIntoWall;
+    }
+
+    public void setAux_renderOverlay(boolean aux_renderOverlay) {
+        this.aux_renderOverlay = aux_renderOverlay;
     }
 }

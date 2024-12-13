@@ -69,5 +69,14 @@
       }
     ],
     "subtitle": "subtitle.block.sink_ambient"
+  },
+  "block.flux_capacitor": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/flux_capacitor"
+      }
+    ],
+    "subtitle": "subtitle.block.flux_capacitor"
   }
 }

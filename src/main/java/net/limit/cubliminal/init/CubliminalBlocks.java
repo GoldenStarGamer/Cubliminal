@@ -268,6 +268,11 @@ public class CubliminalBlocks {
 					.noBlockBreakParticles()
 					.luminance(createLightLevelFromLitBlockState(9)));
 
+	public static final Block FLUX_CAPACITOR = register("flux_capacitor", FluxCapacitorBlock::new,
+			AbstractBlock.Settings.copy(Blocks.OBSIDIAN)
+					.mapColor(MapColor.GRAY)
+					.luminance(isPowered(10)));
+
 	public static final Block GABBRO = register("gabbro", Block::new,
 			AbstractBlock.Settings.copy(Blocks.STONE)
 					.mapColor(MapColor.BLACK)
@@ -305,6 +310,10 @@ public class CubliminalBlocks {
 			int litLevel = state.get(CustomProperties.RED) ? redLevel : defaultLevel;
 			return (Boolean) state.get(Properties.LIT) ? litLevel : 0;
 		};
+	}
+
+	public static ToIntFunction<BlockState> isPowered(int litLevel) {
+		return (state) -> state.get(Properties.POWERED) ? litLevel : 0;
 	}
 
 

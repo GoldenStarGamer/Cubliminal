@@ -6,7 +6,6 @@ import net.limit.cubliminal.block.entity.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 
 public class CubliminalBlockEntities {
 
@@ -16,6 +15,9 @@ public class CubliminalBlockEntities {
 
 	public static final BlockEntityType<TheLobbyGatewayBlockEntity> THE_LOBBY_GATEWAY_BLOCK_ENTITY =
 			register("the_lobby_gateway_block", FabricBlockEntityTypeBuilder.create(TheLobbyGatewayBlockEntity::new, CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK).build());
+
+	public static final BlockEntityType<FluxCapacitorBlockEntity> FLUX_CAPACITOR_BLOCK_ENTITY =
+			register("flux_capacitor", FabricBlockEntityTypeBuilder.create(FluxCapacitorBlockEntity::new, CubliminalBlocks.FLUX_CAPACITOR).build());
 
 	public static final BlockEntityType<SinkBlockEntity> SINK_BLOCK_ENTITY =
 			register("sink", FabricBlockEntityTypeBuilder.create(SinkBlockEntity::new, CubliminalBlocks.SINK).build());
