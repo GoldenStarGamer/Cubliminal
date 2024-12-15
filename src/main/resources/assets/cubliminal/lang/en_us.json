@@ -35,6 +35,7 @@
   "item.cubliminal.pool_tile_wall": "Pool Tile Wall",
   "item.cubliminal.the_lobby_gateway_block": "The Lobby Gateway Block",
   "item.cubliminal.flux_capacitor": "Flux Capacitor",
+  "item.cubliminal.silver_ingot": "Silver Ingot",
   "item.cubliminal.emergency_exit_door_0": "Emergency Exit Door (0)",
   "item.cubliminal.exit_sign": "Exit Sign",
   "commands.noclip.success.multiple": "Noclipping %s players",
@@ -58,7 +59,7 @@
   "subtitle.noclipping": "Null",
   "subtitle.block.sink_open": "Squeak",
   "subtitle.block.sink_ambient": "Open water source",
-  "subtitle.block.flux_capacitor": "Energy accumulates",
+  "subtitle.block.flux_capacitor": "Energy accumulating",
   "text.autoconfig.cubliminal.title": "Cubliminal",
   "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Disable abrupt changes in graphics"
 }

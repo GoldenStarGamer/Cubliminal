@@ -46,6 +46,7 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.SHOWER);
                         entries.add(CubliminalItems.WOODEN_PLANK);
                         entries.add(CubliminalItems.NAILED_BAT);
+                        entries.add(CubliminalItems.SILVER_INGOT);
                         entries.add(CubliminalBlocks.FLUX_CAPACITOR);
 
                     }).build());

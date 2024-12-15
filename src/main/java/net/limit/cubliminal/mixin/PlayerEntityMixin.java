@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,6 +21,9 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> type, World world) {
 		super(type, world);
 	}
+
+	@Unique
+	private static boolean INVIS_PLAYERS_LVL_0 = false;
 
 	@Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", shift = At.Shift.AFTER))
 	private void onTickAfterNoClip(CallbackInfo ci) {
@@ -51,8 +55,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	private void cancelAttack(Entity target, CallbackInfo ci) {
-		if (target.isPlayer() && this.getWorld().getRegistryKey().equals(CubliminalRegistrar.THE_LOBBY_KEY)
-				&& this.getBlockY() < 8) ci.cancel();
+		if (INVIS_PLAYERS_LVL_0 && target.isPlayer() && this.getWorld().getRegistryKey()
+				.equals(CubliminalRegistrar.THE_LOBBY_KEY) && this.getBlockY() < 8) ci.cancel();
 	}
 	//cancel player interactions below level 0 gabbro ceiling
 }

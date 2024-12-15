@@ -44,6 +44,8 @@ public class CubliminalItems {
             -2.2f,
             new Item.Settings().maxCount(1));
 
+    public static final Item SILVER_INGOT = register("silver_ingot", Item::new, new Item.Settings());
+
 
 
     private static Item register(String id, Function<Item.Settings, Item> itemFactory, Item.Settings itemSettings) {

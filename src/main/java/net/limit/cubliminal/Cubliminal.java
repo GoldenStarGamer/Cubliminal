@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.config.CubliminalConfig;
@@ -19,6 +20,11 @@ import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.util.IEntityDataSaver;
 import net.limit.cubliminal.util.NoClipEngine;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.SetCountLootFunction;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -41,6 +47,7 @@ public class Cubliminal implements ModInitializer {
 
 	public static final RegistryKey<DamageType> MENTAL_COLLAPSE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, id("mental_collapse"));
 
+	public static final Identifier BURIED_TREASURE_ID = Identifier.ofVanilla("chests/buried_treasure");
 
 	@Override
 	public void onInitialize() {
@@ -74,5 +81,16 @@ public class Cubliminal implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(NoClipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> LVL_0 = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
+
+		LootTableEvents.MODIFY.register(((key, tableBuilder, source, registries) -> {
+			if (source.isBuiltin() && key.getValue().equals(BURIED_TREASURE_ID)) {
+				LootPool.Builder builder = LootPool.builder()
+						.rolls(ConstantLootNumberProvider.create(1f))
+						.with(ItemEntry.builder(CubliminalItems.SILVER_INGOT))
+						.apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(2f, 4f)).build());
+
+				tableBuilder.pool(builder.build());
+			}
+		}));
 	}
 }

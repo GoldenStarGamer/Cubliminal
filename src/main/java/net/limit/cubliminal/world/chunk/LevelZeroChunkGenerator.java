@@ -264,8 +264,13 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 			}
 		} else if (state.isOf(Blocks.BROWN_MUSHROOM)) {
 			if (randomInt2 != 0) {
-				region.setBlockState(pos, Blocks.AIR.getDefaultState(),
-						Block.FORCE_STATE, 1);
+				if (randomInt2 == 1) {
+					region.setBlockState(pos, Blocks.RED_MUSHROOM.getDefaultState(),
+							Block.FORCE_STATE, 1);
+				} else {
+					region.setBlockState(pos, Blocks.AIR.getDefaultState(),
+							Block.FORCE_STATE, 1);
+				}
 			}
 		} else if (state.isOf(CubliminalBlocks.MOLD)) {
 			if (randomInt != 0) {

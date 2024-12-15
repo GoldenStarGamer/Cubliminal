@@ -22,7 +22,6 @@ public abstract class ItemRendererMixin {
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useNailedBatModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (stack.isOf(CubliminalItems.NAILED_BAT) && renderMode != ModelTransformationMode.GUI) {
-            //return ((ItemRendererAccessor) this).mccourse$getModels().getModel();
             return MinecraftClient.getInstance().getBakedModelManager().getModel(new ModelIdentifier(Cubliminal.id("nailed_bat_3d"), "inventory"));
         }
         return value;
