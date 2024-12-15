@@ -271,7 +271,7 @@ public class CubliminalBlocks {
 	public static final Block FLUX_CAPACITOR = register("flux_capacitor", FluxCapacitorBlock::new,
 			AbstractBlock.Settings.copy(Blocks.OBSIDIAN)
 					.mapColor(MapColor.GRAY)
-					.luminance(isPowered(10)));
+					.luminance(isPowered(15)));
 
 	public static final Block GABBRO = register("gabbro", Block::new,
 			AbstractBlock.Settings.copy(Blocks.STONE)
