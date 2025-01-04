@@ -2,7 +2,6 @@ package net.limit.cubliminal.util;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.event.ServerTickHandler;
 import net.limit.cubliminal.init.CubliminalPackets;
 import net.limit.cubliminal.init.CubliminalSounds;
 import net.limit.cubliminal.init.CubliminalRegistrar;
@@ -62,9 +61,13 @@ public class NoClipEngine {
         ServerPlayerEntity player = (ServerPlayerEntity) playerEntity;
         CubliminalSounds.clientPlaySoundSingle(player, CubliminalSounds.NOCLIPPING, SoundCategory.MASTER,
                 player.getX(), player.getY(), player.getZ(),1f, 1f, 1);
+        RegistryKey<World> registryKey = player.getWorld().getRegistryKey();
 
-        if (ServerTickHandler.inBackrooms(player.getWorld().getRegistryKey())) NOCLIP_MAP.put(player,
-                RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD));
+        if (registryKey.equals(CubliminalRegistrar.THE_LOBBY_KEY)) {
+            NOCLIP_MAP.put(player, CubliminalRegistrar.HABITABLE_ZONE_KEY);
+        } else if (registryKey.equals(CubliminalRegistrar.HABITABLE_ZONE_KEY)) {
+            NOCLIP_MAP.put(player, RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD));
+        }
 
         NbtCompound nbt = IEntityDataSaver.cast(playerEntity);
         nbt.putInt("ticksToNc", -1);

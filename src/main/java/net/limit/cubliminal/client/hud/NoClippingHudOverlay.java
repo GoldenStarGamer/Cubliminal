@@ -79,14 +79,11 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 		RenderSystem.disableDepthTest();
 		RenderSystem.depthMask(false);
 		RenderSystem.enableBlend();
-		//drawContext.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
-		//drawContext.drawTexture(texture, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
 		drawContext.drawTexture(RenderLayer::getGuiTextured, texture, 0, 0, 0.0f, 0.0f, width, height, width, height);
 		RenderSystem.disableBlend();
 		RenderSystem.depthMask(true);
 		RenderSystem.enableDepthTest();
-		//drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 

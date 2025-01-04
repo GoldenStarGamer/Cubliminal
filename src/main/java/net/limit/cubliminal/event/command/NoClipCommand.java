@@ -16,6 +16,7 @@ import java.util.Collection;
 public class NoClipCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(CommandManager.literal("noclip").requires(source -> source.hasPermissionLevel(2))
+                .executes(context -> execute(context.getSource()))
                 .then(CommandManager.argument("targets", EntityArgumentType.players())
                         .executes(context -> execute(context.getSource(), EntityArgumentType.getPlayers(context, "targets")))
                         .then(CommandManager.argument("dimension", DimensionArgumentType.dimension())
@@ -23,6 +24,15 @@ public class NoClipCommand {
                                         DimensionArgumentType.getDimensionArgument(context, "dimension")))
                         ))
         );
+    }
+
+    private static int execute(ServerCommandSource source) {
+        if (source.getWorld().isClient()) return 0;
+        NoClipEngine.noClip(source.getPlayer());
+
+        source.sendFeedback(() -> Text.translatable("commands.noclip.success.single", source.getDisplayName()), true);
+
+        return 1;
     }
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {

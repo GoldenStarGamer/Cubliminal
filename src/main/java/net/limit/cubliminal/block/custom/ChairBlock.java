@@ -1,5 +1,6 @@
 package net.limit.cubliminal.block.custom;
 
+import net.limit.cubliminal.block.custom.template.SeatBlock;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;

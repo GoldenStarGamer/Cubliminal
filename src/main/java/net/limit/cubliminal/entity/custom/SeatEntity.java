@@ -1,7 +1,7 @@
 package net.limit.cubliminal.entity.custom;
 
 import com.google.common.base.Predicates;
-import net.limit.cubliminal.block.custom.SeatBlock;
+import net.limit.cubliminal.block.custom.template.SeatBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;

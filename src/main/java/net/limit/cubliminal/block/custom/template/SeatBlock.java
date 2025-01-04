@@ -1,4 +1,4 @@
-package net.limit.cubliminal.block.custom;
+package net.limit.cubliminal.block.custom.template;
 
 import com.google.common.base.Predicates;
 import net.limit.cubliminal.entity.custom.SeatEntity;
@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class SeatBlock extends Block {
+public abstract class SeatBlock extends Block {
     public SeatBlock(Settings settings) {
         super(settings);
     }

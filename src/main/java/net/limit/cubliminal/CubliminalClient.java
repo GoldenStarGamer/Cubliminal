@@ -16,8 +16,6 @@ import net.limit.cubliminal.entity.client.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.util.IEntityDataSaver;
-import net.minecraft.client.gl.ShaderProgramKey;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
@@ -34,6 +32,7 @@ public class CubliminalClient implements ClientModInitializer {
 				CubliminalBlocks.MOLD,
 				CubliminalBlocks.JUMBLED_DOCUMENTS,
 				CubliminalBlocks.EXIT_SIGN,
+				CubliminalBlocks.LETTER_F,
 				CubliminalBlocks.SMOKE_DETECTOR,
 				CubliminalBlocks.FLUX_CAPACITOR);
 

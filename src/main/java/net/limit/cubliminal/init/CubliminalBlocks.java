@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
+import net.limit.cubliminal.block.custom.template.RotatableWallBlock;
 import net.limit.cubliminal.item.AlmondWaterBlockItem;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
@@ -48,6 +49,14 @@ public class CubliminalBlocks {
 
 	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings) {
 		return register(id, blockFactory, blockSettings, BlockItem::new, new Item.Settings());
+	}
+
+	private static Block registerBlock(String id, Block block, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
+		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
+		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
+		BlockItem item = itemFactory.apply(block, itemSettings.registryKey(itemKey));
+		Registry.register(Registries.ITEM, itemKey, item);
+		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
 
@@ -161,13 +170,15 @@ public class CubliminalBlocks {
 				.pistonBehavior(PistonBehavior.DESTROY)
 				.requiresTool());
 
-	public static final Block SOCKET = register("socket", SocketBlock::new,
+	public static final Block SOCKET = registerBlock("socket", new RotatableWallBlock(
 			AbstractBlock.Settings.create()
-				.mapColor(MapColor.WHITE_GRAY)
-				.strength(3, 3)
-				.sounds(BlockSoundGroup.CALCITE)
-				.pistonBehavior(PistonBehavior.DESTROY)
-				.requiresTool());
+					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("socket")))
+					.mapColor(MapColor.WHITE_GRAY)
+					.strength(3, 3)
+					.sounds(BlockSoundGroup.CALCITE)
+					.pistonBehavior(PistonBehavior.DESTROY)
+					.requiresTool())
+			.voxelShapes(4.5, 4, 0, 11.5, 12.5, 0.5), BlockItem::new, new Item.Settings());
 
 	public static final Block ALMOND_WATER = register("almond_water", AlmondWaterBlock::new,
 			AbstractBlock.Settings.create()
@@ -224,13 +235,15 @@ public class CubliminalBlocks {
 						.requiresTool(),
 			BlockSetType.IRON, BlockItem::new, new Item.Settings());
 
-	public static final Block EXIT_SIGN = register("exit_sign", ExitSignBlock::new,
+	public static final Block EXIT_SIGN = registerBlock("exit_sign", new RotatableWallBlock(
 			AbstractBlock.Settings.create()
+					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("exit_sign")))
 					.mapColor(MapColor.PALE_GREEN)
 					.strength(3, 3)
 					.sounds(BlockSoundGroup.CALCITE)
 					.pistonBehavior(PistonBehavior.DESTROY)
-					.requiresTool());
+					.requiresTool())
+			.voxelShapes(0, 4, 0, 16, 13, 1), BlockItem::new, new Item.Settings());
 
 	public static final Block COMPUTER = register("computer", ComputerBlock::new,
 			AbstractBlock.Settings.create()
@@ -258,6 +271,40 @@ public class CubliminalBlocks {
 					.nonOpaque()
 					.pistonBehavior(PistonBehavior.BLOCK)
 					.requiresTool());
+
+	public static final Block VERTICAL_LIGHT_TUBE = register("vertical_light_tube", VerticalLightTubeBlock::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.WHITE)
+					.strength(1, 2)
+					.ticksRandomly()
+					.luminance(isLit(15))
+					.sounds(BlockSoundGroup.GLASS)
+					.nonOpaque()
+					.requiresTool());
+
+	public static final Block SMALL_HANGING_PIPE = register("small_hanging_pipe", SmallHangingPipeBlock::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.LIGHT_GRAY)
+					.strength(2.6f, 2.6f)
+					.pistonBehavior(PistonBehavior.BLOCK)
+					.requiresTool()
+					.sounds(BlockSoundGroup.METAL)
+					.nonOpaque());
+
+	public static final Block LETTER_F = registerBlock("letter_f", new RotatableWallBlock(
+			AbstractBlock.Settings.create()
+					.pistonBehavior(PistonBehavior.DESTROY)
+					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("letter_f")))
+					.breakInstantly()
+					.sounds(new BlockSoundGroup(0.0f, 1.0f, SoundEvents.INTENTIONALLY_EMPTY, SoundEvents.INTENTIONALLY_EMPTY, SoundEvents.INTENTIONALLY_EMPTY,
+							SoundEvents.INTENTIONALLY_EMPTY, SoundEvents.INTENTIONALLY_EMPTY))
+					.nonOpaque()
+					.noCollision()
+					.noBlockBreakParticles())
+					.voxelShapes(0, 0, 0, 16, 16, 0.1)
+					.setCollidable(false)
+					.setSolidBoundingBox(false),
+			BlockItem::new, new Item.Settings());
 
 	public static final Block THE_LOBBY_GATEWAY_BLOCK = register("the_lobby_gateway_block", TheLobbyGatewayBlock::new,
 			AbstractBlock.Settings.copy(Blocks.GLASS)
@@ -314,6 +361,10 @@ public class CubliminalBlocks {
 
 	public static ToIntFunction<BlockState> isPowered(int litLevel) {
 		return (state) -> state.get(Properties.POWERED) ? litLevel : 0;
+	}
+
+	public static ToIntFunction<BlockState> isLit(int litLevel) {
+		return (state) -> state.get(Properties.LIT) ? litLevel : 0;
 	}
 
 

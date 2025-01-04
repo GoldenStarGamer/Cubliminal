@@ -222,6 +222,8 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 	@Override
 	protected void modifyStructure(ChunkRegion region, BlockPos pos, BlockState state, Optional<NbtCompound> blockEntityNbt) {
 
+		if (state.isAir() || state.isOf(Blocks.LIGHT)) return;
+
 		super.modifyStructure(region, pos, state, blockEntityNbt);
 
 		Random random = Random
