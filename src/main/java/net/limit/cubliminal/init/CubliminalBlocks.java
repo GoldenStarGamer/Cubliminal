@@ -286,7 +286,6 @@ public class CubliminalBlocks {
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.LIGHT_GRAY)
 					.strength(2.6f, 2.6f)
-					.pistonBehavior(PistonBehavior.BLOCK)
 					.requiresTool()
 					.sounds(BlockSoundGroup.METAL)
 					.nonOpaque());
@@ -296,8 +295,7 @@ public class CubliminalBlocks {
 					.pistonBehavior(PistonBehavior.DESTROY)
 					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("letter_f")))
 					.breakInstantly()
-					.sounds(new BlockSoundGroup(0.0f, 1.0f, SoundEvents.INTENTIONALLY_EMPTY, SoundEvents.INTENTIONALLY_EMPTY, SoundEvents.INTENTIONALLY_EMPTY,
-							SoundEvents.INTENTIONALLY_EMPTY, SoundEvents.INTENTIONALLY_EMPTY))
+					.sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)
 					.nonOpaque()
 					.noCollision()
 					.noBlockBreakParticles())
@@ -305,6 +303,13 @@ public class CubliminalBlocks {
 					.setCollidable(false)
 					.setSolidBoundingBox(false),
 			BlockItem::new, new Item.Settings());
+
+	public static final Block VENTILATION_DUCT = register("ventilation_duct", VentilationDuctBlock::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.LIGHT_GRAY)
+					.strength(5.0f, 6.0f)
+					.requiresTool()
+					.sounds(BlockSoundGroup.METAL));
 
 	public static final Block THE_LOBBY_GATEWAY_BLOCK = register("the_lobby_gateway_block", TheLobbyGatewayBlock::new,
 			AbstractBlock.Settings.copy(Blocks.GLASS)

@@ -33,6 +33,7 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.TOP_MANILA_WALLPAPERS);
                         entries.add(CubliminalBlocks.VERTICAL_LIGHT_TUBE);
                         entries.add(CubliminalBlocks.SMALL_HANGING_PIPE);
+                        entries.add(CubliminalBlocks.VENTILATION_DUCT);
 						entries.add(CubliminalBlocks.EMERGENCY_EXIT_DOOR_0);
 						entries.add(CubliminalBlocks.EXIT_SIGN);
 						entries.add(CubliminalBlocks.GABBRO);

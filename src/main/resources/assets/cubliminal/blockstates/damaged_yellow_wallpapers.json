@@ -2,22 +2,22 @@
   "variants": {
     "": [
       {
-        "model": "cubliminal:block/damaged_yellow_wallpapers/block/0"
+        "model": "cubliminal:block/damaged_yellow_wallpapers/0"
       },
       {
-        "model": "cubliminal:block/damaged_yellow_wallpapers/block/1"
+        "model": "cubliminal:block/damaged_yellow_wallpapers/1"
       },
       {
-        "model": "cubliminal:block/damaged_yellow_wallpapers/block/2"
+        "model": "cubliminal:block/damaged_yellow_wallpapers/2"
       },
       {
-        "model": "cubliminal:block/damaged_yellow_wallpapers/block/3"
+        "model": "cubliminal:block/damaged_yellow_wallpapers/3"
       },
       {
-        "model": "cubliminal:block/damaged_yellow_wallpapers/block/4"
+        "model": "cubliminal:block/damaged_yellow_wallpapers/4"
       },
       {
-        "model": "cubliminal:block/damaged_yellow_wallpapers/block/5"
+        "model": "cubliminal:block/damaged_yellow_wallpapers/5"
       }
     ]
   }

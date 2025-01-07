@@ -34,7 +34,8 @@ public class CubliminalClient implements ClientModInitializer {
 				CubliminalBlocks.EXIT_SIGN,
 				CubliminalBlocks.LETTER_F,
 				CubliminalBlocks.SMOKE_DETECTOR,
-				CubliminalBlocks.FLUX_CAPACITOR);
+				CubliminalBlocks.FLUX_CAPACITOR,
+				CubliminalBlocks.VENTILATION_DUCT);
 
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.THE_LOBBY_GATEWAY_BLOCK_ENTITY, ManilaGatewayRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.FLUX_CAPACITOR_BLOCK_ENTITY, FluxCapacitorRenderer::new);
