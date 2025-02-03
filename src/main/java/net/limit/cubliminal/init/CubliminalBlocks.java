@@ -235,9 +235,28 @@ public class CubliminalBlocks {
 						.requiresTool(),
 			BlockSetType.IRON, BlockItem::new, new Item.Settings());
 
+	public static final Block EMERGENCY_EXIT_DOOR_1 = register("emergency_exit_door_1", DoorBlock::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.GRAY)
+					.strength(5.0f)
+					.nonOpaque()
+					.pistonBehavior(PistonBehavior.DESTROY)
+					.requiresTool(),
+			BlockSetType.COPPER, BlockItem::new, new Item.Settings());
+
 	public static final Block EXIT_SIGN = registerBlock("exit_sign", new RotatableWallBlock(
 			AbstractBlock.Settings.create()
 					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("exit_sign")))
+					.mapColor(MapColor.PALE_GREEN)
+					.strength(3, 3)
+					.sounds(BlockSoundGroup.CALCITE)
+					.pistonBehavior(PistonBehavior.DESTROY)
+					.requiresTool())
+			.voxelShapes(0, 4, 0, 16, 13, 1), BlockItem::new, new Item.Settings());
+
+	public static final Block EXIT_SIGN_2 = registerBlock("exit_sign_2", new RotatableWallBlock(
+			AbstractBlock.Settings.create()
+					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("exit_sign_2")))
 					.mapColor(MapColor.PALE_GREEN)
 					.strength(3, 3)
 					.sounds(BlockSoundGroup.CALCITE)
@@ -276,8 +295,8 @@ public class CubliminalBlocks {
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.WHITE)
 					.strength(1, 2)
-					.ticksRandomly()
-					.luminance(isLit(15))
+					//.ticksRandomly()
+					.luminance(createLightLevelFromLitBlockState(15))
 					.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
 					.requiresTool());
@@ -292,8 +311,8 @@ public class CubliminalBlocks {
 
 	public static final Block LETTER_F = registerBlock("letter_f", new RotatableWallBlock(
 			AbstractBlock.Settings.create()
-					.pistonBehavior(PistonBehavior.DESTROY)
 					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("letter_f")))
+					.pistonBehavior(PistonBehavior.DESTROY)
 					.breakInstantly()
 					.sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)
 					.nonOpaque()
@@ -310,6 +329,15 @@ public class CubliminalBlocks {
 					.strength(5.0f, 6.0f)
 					.requiresTool()
 					.sounds(BlockSoundGroup.METAL));
+
+	public static Block WALL_LIGHT_BULB = registerBlock("wall_light_bulb", new RotatableWallBlock(
+			AbstractBlock.Settings.create()
+					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("wall_light_bulb")))
+					.mapColor(MapColor.OFF_WHITE)
+					.strength(3f, 2.6f)
+					.luminance(state -> 15))
+					.voxelShapes(3.5, 3.5, 0, 12.5, 12.5, 7.5),
+			BlockItem::new, new Item.Settings());
 
 	public static final Block THE_LOBBY_GATEWAY_BLOCK = register("the_lobby_gateway_block", TheLobbyGatewayBlock::new,
 			AbstractBlock.Settings.copy(Blocks.GLASS)
@@ -367,11 +395,6 @@ public class CubliminalBlocks {
 	public static ToIntFunction<BlockState> isPowered(int litLevel) {
 		return (state) -> state.get(Properties.POWERED) ? litLevel : 0;
 	}
-
-	public static ToIntFunction<BlockState> isLit(int litLevel) {
-		return (state) -> state.get(Properties.LIT) ? litLevel : 0;
-	}
-
 
 
     public static void init() {

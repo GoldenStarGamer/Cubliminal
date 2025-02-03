@@ -4,8 +4,8 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public enum LevelOneBiomeEntries {
-    HABITABLE_ZONE(1.5, 1.5, 0.8),
-    PARKING_ZONE(2.2, 2.2, 1.2);
+    HABITABLE_ZONE(0, 0, 0),
+    PARKING_ZONE(1.6, 1.8, 1.7);
 
     RegistryEntry.Reference<Biome> biome;
     final double rarity;

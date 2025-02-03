@@ -68,7 +68,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// dim effects
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
 
-		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, true, 0f));
+		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", true, false, false, 0f));
 
 		// post effects
 		getPostEffects("paranoia", new StaticPostEffect(Cubliminal.id("paranoia")));
@@ -105,7 +105,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										new LevelOneBiomeSource(
 												registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.HABITABLE_ZONE_BIOME).get(),
 												registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.PARKING_ZONE_BIOME).get()),
-										LevelOneChunkGenerator.createGroup(), 3))));
+										LevelOneChunkGenerator.createGroup(), 8, 8, 4, 0))));
 
 
 		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT));

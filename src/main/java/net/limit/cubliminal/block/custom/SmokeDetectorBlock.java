@@ -23,7 +23,7 @@ public class SmokeDetectorBlock extends Block {
 
 	@Override
 	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		BlockPos blockPos = pos.offset(Direction.DOWN.getOpposite());
+		BlockPos blockPos = pos.offset(Direction.UP);
 		BlockState blockState = world.getBlockState(blockPos);
 		return blockState.isSideSolidFullSquare(world, blockPos, Direction.DOWN);
 	}

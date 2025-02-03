@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/wall_light_bulb",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/wall_light_bulb"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/wall_light_bulb",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/wall_light_bulb",
+      "y": 270
+    }
+  }
+}

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "cubliminal:emergency_exit_door_0"
+    "cubliminal:emergency_exit_door_0",
+    "cubliminal:emergency_exit_door_1"
   ]
 }

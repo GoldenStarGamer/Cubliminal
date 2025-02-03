@@ -32,10 +32,13 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.MANILA_WALLPAPERS);
 						entries.add(CubliminalBlocks.TOP_MANILA_WALLPAPERS);
                         entries.add(CubliminalBlocks.VERTICAL_LIGHT_TUBE);
+                        entries.add(CubliminalBlocks.WALL_LIGHT_BULB);
                         entries.add(CubliminalBlocks.SMALL_HANGING_PIPE);
                         entries.add(CubliminalBlocks.VENTILATION_DUCT);
 						entries.add(CubliminalBlocks.EMERGENCY_EXIT_DOOR_0);
+						entries.add(CubliminalBlocks.EMERGENCY_EXIT_DOOR_1);
 						entries.add(CubliminalBlocks.EXIT_SIGN);
+						entries.add(CubliminalBlocks.EXIT_SIGN_2);
 						entries.add(CubliminalBlocks.GABBRO);
                         entries.add(CubliminalBlocks.MOLD);
 						entries.add(CubliminalBlocks.SMOKE_DETECTOR);

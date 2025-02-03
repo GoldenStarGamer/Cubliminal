@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/exit_sign_2",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/exit_sign_2"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/exit_sign_2",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/exit_sign_2",
+      "y": 270
+    }
+  }
+}

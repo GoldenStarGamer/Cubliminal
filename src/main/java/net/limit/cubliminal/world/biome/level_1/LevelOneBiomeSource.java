@@ -4,8 +4,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.init.CubliminalBiomes;
+import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.SimplexNoiseSampler;
 import net.minecraft.util.math.random.ChunkRandom;
 import net.minecraft.util.math.random.Random;
@@ -38,19 +40,25 @@ public class LevelOneBiomeSource extends BiomeSource {
 
     @Override
     public RegistryEntry.Reference<Biome> getBiome(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
-        if (Math.abs(x) + Math.abs(z) < 200) return baseBiome;
+
         if (!bl) {
             // initialize noise samplers
             Random random = Random.create(Cubliminal.LVL_0.getSeed());
+
             this.rarity = new SimplexNoiseSampler(new ChunkRandom(random));
             this.spacing = new SimplexNoiseSampler(new ChunkRandom(random));
             this.safety = new SimplexNoiseSampler(new ChunkRandom(random));
             bl = true;
         }
-        // get noise value at the given position (range of 0 - 3)
-        double rarityValue = (rarity.sample(x * 0.005,z * 0.005) + 1) * 1.5;
-        double spacingValue = (spacing.sample(x * 0.005,z * 0.005) + 1) * 1.5;
-        double safetyValue = (safety.sample(x * 0.005,z * 0.005) + 1) * 1.5;
+
+        BlockPos grandPos = new BlockPos(
+                x - Math.floorMod(x, 16),
+                y,
+                z - Math.floorMod(z, 16));
+        // get noise value at the given position (range of 0 - 2)
+        double rarityValue = Math.pow((rarity.sample(grandPos.getX() * 6.9, grandPos.getZ() * 6.9) + 1) / 1.5, 3.5);
+        double spacingValue = Math.pow((spacing.sample(grandPos.getX() * 6.9, grandPos.getZ() * 6.9) + 1) / 1.5, 3.5);
+        double safetyValue = Math.pow((safety.sample(grandPos.getX() * 6.9, grandPos.getZ() * 6.9) + 1) / 1.5, 3.5);
 
         // return most suitable biome entry by making use of helper enum
         return getBiomeReference(rarityValue, spacingValue, safetyValue);
