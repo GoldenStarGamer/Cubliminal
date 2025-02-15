@@ -105,7 +105,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										new LevelOneBiomeSource(
 												registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.HABITABLE_ZONE_BIOME).get(),
 												registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.PARKING_ZONE_BIOME).get()),
-										LevelOneChunkGenerator.createGroup(), 8, 8, 4, 0))));
+										LevelOneChunkGenerator.createGroup(), 16, 16, 0))));
 
 
 		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT));

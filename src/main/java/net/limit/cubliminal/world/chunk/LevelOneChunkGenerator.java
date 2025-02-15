@@ -9,7 +9,8 @@ import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.util.ChunkAccessor;
 import net.limit.cubliminal.world.biome.level_1.LevelOneBiomeSource;
-import net.limit.cubliminal.world.maze.StraightDepthFirstMaze;
+import net.limit.cubliminal.world.maze.ClusteredDepthFirstMaze;
+import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
 import net.ludocrypt.limlib.api.world.NbtGroup;
 import net.ludocrypt.limlib.api.world.chunk.AbstractNbtChunkGenerator;
@@ -32,11 +33,11 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 
 public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	public static final MapCodec<LevelOneChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -44,25 +45,26 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 					(chunkGenerator) -> chunkGenerator.biomeSource), NbtGroup.CODEC.fieldOf("group").stable().forGetter(
 							(chunkGenerator) -> chunkGenerator.nbtGroup), Codec.INT.fieldOf("maze_width").stable().forGetter(
 									(chunkGenerator) -> chunkGenerator.mazeWidth), Codec.INT.fieldOf("maze_height").stable().forGetter(
-											(chunkGenerator) -> chunkGenerator.mazeHeight), Codec.INT.fieldOf("maze_dilation").stable().forGetter(
-													(chunkGenerator) -> chunkGenerator.mazeDilation), Codec.LONG.fieldOf("seed_modifier").stable().forGetter(
+											(chunkGenerator) -> chunkGenerator.mazeHeight), Codec.LONG.fieldOf("seed_modifier").stable().forGetter(
 															(chunkGenerator) -> chunkGenerator.mazeSeedModifier))
 					.apply(instance, instance.stable(LevelOneChunkGenerator::new)));
 
 	private MazeGenerator<MazeComponent> mazeGenerator;
-	private int mazeWidth;
-	private int mazeHeight;
-	private int mazeDilation;
-	private long mazeSeedModifier;
+	private final int mazeWidth;
+	private final int mazeHeight;
+	private final int thicknessX;
+	private final int thicknessY;
+	private final long mazeSeedModifier;
+	private int bottomSectionCoord;
 
-	public LevelOneChunkGenerator(BiomeSource biomeSource, NbtGroup group, int mazeWidth, int mazeHeight,
-								  int mazeDilation, long mazeSeedModifier) {
+	public LevelOneChunkGenerator(BiomeSource biomeSource, NbtGroup group, int mazeWidth, int mazeHeight, long mazeSeedModifier) {
 		super(biomeSource, group);
+		this.thicknessX = 16;
+		this.thicknessY = 16;
 		this.mazeWidth = mazeWidth;
 		this.mazeHeight = mazeHeight;
-		this.mazeDilation = mazeDilation;
 		this.mazeSeedModifier = mazeSeedModifier;
-		this.mazeGenerator = new MazeGenerator<>(mazeWidth, mazeHeight, 8, 8, 0);
+		this.mazeGenerator = new MazeGenerator<>(mazeWidth, mazeHeight, this.thicknessX, this.thicknessY, 0);
 	}
 
 	public static NbtGroup createGroup() {
@@ -82,8 +84,51 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	public MazeComponent newMaze(ChunkRegion region, Vec2i mazePos, int width, int height, Random random) {
-		StraightDepthFirstMaze maze = new StraightDepthFirstMaze(width, height, random, 0.45);
+		List<Vec2i> checkpoints = Lists.newArrayList();
+
+		Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.up(height * thicknessY - 1).toBlock()));
+		Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.down().toBlock()));
+		Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos.toBlock()));
+		Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.right(width * thicknessX).toBlock()));
+
+		// Include 4 additional connections to other mazes
+		List<Vec2i> connections = Lists.newArrayList();
+
+		connections.add(new Vec2i(height - 1, randomUp.nextInt(width)));
+		connections.add(new Vec2i(0, randomDown.nextInt(width)));
+		connections.add(new Vec2i(randomLeft.nextInt(height), 0));
+		connections.add(new Vec2i(randomRight.nextInt(height), width - 1));
+
+		checkpoints.addAll(connections);
+
+		// Check 4x4 cell cluster biomes as well, include into 'must visit' list to avoid inescapable parking zones
+		for (int x = 0; x < height; x += 4) {
+			for (int y = 0; y < width; y += 4) {
+
+				RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) biomeSource)
+						.calcBiome(mazePos.add(x * thicknessX, y * thicknessY).toBlock(), bottomSectionCoord);
+
+				if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
+					Random randomX = Random.create(LimlibHelper.blockSeed(mazePos.add(x, 0).toBlock()));
+					Random randomY = Random.create(LimlibHelper.blockSeed(mazePos.add(0, y).toBlock()));
+					Vec2i randomCell = new Vec2i(x + randomX.nextInt(4), y + randomY.nextInt(4));
+
+					// Add a random cell from the 4x4 cluster
+					if (!checkpoints.contains(randomCell)) {
+						checkpoints.add(randomCell);
+					}
+				}
+			}
+		}
+
+        Cubliminal.LOGGER.info("Maze: {}; Checkpoints: {}", mazePos, checkpoints);
+
+		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, random, 0.15f, checkpoints);
+		for (int i = 0; i < connections.size(); ++i) {
+			maze.cellState(connections.get(i)).go(Face.values()[i]);
+		}
 		maze.generateMaze();
+
 		return maze;
 	}
 
@@ -109,27 +154,8 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 				}
 			}
 
-			/*
-			for (Direction direction : Direction.values()) {
-				if (direction.getAxis() != Direction.Axis.Y) {
-
-					BlockPos adjPos = startPos.add(direction.getVector().multiply(16)).add(8, 0, 8);
-					// Some adjacent chunks might be still empty, so we have to make use of the biome source
-					//ChunkSectionPos sectionPos = ChunkSectionPos.from(adjPos);
-					RegistryEntry.Reference<Biome> adjBiome = ((LevelOneBiomeSource) this.biomeSource)
-							.calcBiome(adjPos, chunk.getHeightLimitView().getBottomSectionCoord());
-
-					if (adjBiome.matchesKey(CubliminalBiomes.HABITABLE_ZONE_BIOME)) {
-                        Cubliminal.LOGGER.info("Pos: {}, chunkOrigin: {}, ref: {}", startPos.add(8, 1, 8).add(direction.getVector().multiply(6)), startPos, adjPos);
-						region.setBlockState(startPos.add(8, 1, 8).add(direction.getVector().multiply(6)),
-								Blocks.DIAMOND_BLOCK.getDefaultState(), 0);
-					}
-				}
-			}
-			 */
-
-
 		} else {
+			this.bottomSectionCoord = chunk.getBottomSectionCoord();
 			this.mazeGenerator.generateMaze(new MazeComponent.Vec2i(startPos), region, this::newMaze, this::decorateCell);
 		}
 		return CompletableFuture.completedFuture(chunk);

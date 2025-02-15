@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.8-SNAPSHOT'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -17,7 +17,7 @@ loom {
 repositories {
 	mavenCentral()
 	maven {
-		url = "https://maven.fabricmc.net"
+		url = "https://maven2.fabricmc.net"
 	}
 	maven {
 		url = "https://jitpack.io"

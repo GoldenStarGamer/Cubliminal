@@ -30,7 +30,9 @@ public abstract class ChunkMixin implements ChunkAccessor {
     @Unique
     public void cubliminal$populateBiomes(BiomeSupplier biomeSupplier, MultiNoiseUtil.MultiNoiseSampler sampler) {
         ChunkPos chunkPos = this.getPos();
+        //int i = BiomeCoords.fromBlock(chunkPos.getStartX() + 32);
         int i = BiomeCoords.fromBlock(chunkPos.getStartX());
+        //int j = BiomeCoords.fromBlock(chunkPos.getStartZ() + 32);
         int j = BiomeCoords.fromBlock(chunkPos.getStartZ());
         HeightLimitView heightLimitView = this.getHeightLimitView();
 

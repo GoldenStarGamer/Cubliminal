@@ -68,8 +68,10 @@ public class LevelOneBiomeSource extends BiomeSource {
     }
 
     public RegistryEntry.Reference<Biome> calcBiome(BlockPos startPos, int bottomSectionCoord) {
+        //int x = BiomeCoords.fromBlock(startPos.getX() + 32);
         int x = BiomeCoords.fromBlock(startPos.getX());
         int y = BiomeCoords.fromChunk(bottomSectionCoord);
+        //int z = BiomeCoords.fromBlock(startPos.getZ() + 32);
         int z = BiomeCoords.fromBlock(startPos.getZ());
 
         if (!bl2) {
