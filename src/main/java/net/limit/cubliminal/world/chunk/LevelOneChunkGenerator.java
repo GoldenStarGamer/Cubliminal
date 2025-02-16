@@ -94,16 +94,16 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 		// Include 4 additional connections to other mazes
 		List<Vec2i> connections = Lists.newArrayList();
 
-		connections.add(new Vec2i(height - 1, randomUp.nextInt(width)));
-		connections.add(new Vec2i(0, randomDown.nextInt(width)));
-		connections.add(new Vec2i(randomLeft.nextInt(height), 0));
-		connections.add(new Vec2i(randomRight.nextInt(height), width - 1));
+		connections.add(new Vec2i(width - 1, randomUp.nextInt(height)));
+		connections.add(new Vec2i(0, randomDown.nextInt(height)));
+		connections.add(new Vec2i(randomLeft.nextInt(width), 0));
+		connections.add(new Vec2i(randomRight.nextInt(width), height - 1));
 
 		checkpoints.addAll(connections);
 
 		// Check 4x4 cell cluster biomes as well, include into 'must visit' list to avoid inescapable parking zones
-		for (int x = 0; x < height; x += 4) {
-			for (int y = 0; y < width; y += 4) {
+		for (int x = 0; x < width; x += 4) {
+			for (int y = 0; y < height; y += 4) {
 
 				RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) biomeSource)
 						.calcBiome(mazePos.add(x * thicknessX, y * thicknessY).toBlock(), bottomSectionCoord);
@@ -121,9 +121,9 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 			}
 		}
 
-        Cubliminal.LOGGER.info("Maze: {}; Checkpoints: {}", mazePos, checkpoints);
+        //Cubliminal.LOGGER.info("Maze: {}; Checkpoints: {}", mazePos, checkpoints);
 
-		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, random, 0.15f, checkpoints);
+		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, random, 0.05f, checkpoints);
 		for (int i = 0; i < connections.size(); ++i) {
 			maze.cellState(connections.get(i)).go(Face.values()[i]);
 		}
