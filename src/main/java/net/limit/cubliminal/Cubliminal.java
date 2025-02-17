@@ -43,7 +43,7 @@ public class Cubliminal implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static ServerWorld LVL_0;
+	public static ServerWorld SERVER;
 
 	public static final RegistryKey<DamageType> MENTAL_COLLAPSE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, id("mental_collapse"));
 
@@ -80,7 +80,7 @@ public class Cubliminal implements ModInitializer {
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(ServerTickHandler::afterWorldChange);
 		CommandRegistrationCallback.EVENT.register(NoClipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> LVL_0 = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 
 		LootTableEvents.MODIFY.register(((key, tableBuilder, source, registries) -> {
 			if (source.isBuiltin() && key.getValue().equals(BURIED_TREASURE_ID)) {

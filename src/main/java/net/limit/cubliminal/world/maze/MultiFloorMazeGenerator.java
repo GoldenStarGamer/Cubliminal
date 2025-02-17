@@ -9,7 +9,7 @@ import net.minecraft.world.ChunkRegion;
 import java.util.HashMap;
 
 public class MultiFloorMazeGenerator<M extends MazeComponent> {
-    private final HashMap<BlockPos, M> mazes = new HashMap(30);
+    private final HashMap<BlockPos, M> mazes = new HashMap<>(30);
     public final int width;
     public final int height;
     public final int thicknessX;
@@ -26,9 +26,9 @@ public class MultiFloorMazeGenerator<M extends MazeComponent> {
         this.seedModifier = seedModifier;
     }
 
-    public void generateMaze(BlockPos pos, ChunkRegion region, MultiFloorMazeGenerator.MazeCreator<M> mazeCreator, MultiFloorMazeGenerator.CellDecorator<M> cellDecorator) {
+    public void generateMaze(BlockPos pos, ChunkRegion region, int worldHeight, MultiFloorMazeGenerator.MazeCreator<M> mazeCreator, MultiFloorMazeGenerator.CellDecorator<M> cellDecorator) {
         for (int x = 0; x < 16; ++x) {
-            for (int y = 0; y < 16; ++y) {
+            for (int y = 0; y < worldHeight; ++y) {
                 for (int z = 0; z < 16; ++z) {
                     BlockPos inPos = pos.add(x, y, z);
                     if (Math.floorMod(inPos.getX(), this.thicknessX) == 0 && Math.floorMod(inPos.getY(), this.layerThickness) == 0 && Math.floorMod(inPos.getZ(), this.thicknessZ) == 0) {
@@ -37,7 +37,7 @@ public class MultiFloorMazeGenerator<M extends MazeComponent> {
                         if (this.mazes.containsKey(mazePos)) {
                             maze = this.mazes.get(mazePos);
                         } else {
-                            maze = mazeCreator.newMaze(region, mazePos, this.width, this.layerThickness, this.height, Random.create(LimlibHelper.blockSeed(mazePos.getX(), mazePos.getY() + this.seedModifier + region.getSeed(), mazePos.getZ())));
+                            maze = mazeCreator.newMaze(region, mazePos, this.width, this.height, Random.create(LimlibHelper.blockSeed(mazePos.getX(), mazePos.getY() + this.seedModifier + region.getSeed(), mazePos.getZ())));
                             this.mazes.put(mazePos, maze);
                         }
 
@@ -54,7 +54,7 @@ public class MultiFloorMazeGenerator<M extends MazeComponent> {
 
     @FunctionalInterface
     public interface MazeCreator<M extends MazeComponent> {
-        M newMaze(ChunkRegion var1, BlockPos var2, int var3, int var4, int var5, Random var6);
+        M newMaze(ChunkRegion var1, BlockPos var2, int var3, int var4, Random var5);
     }
 
     @FunctionalInterface

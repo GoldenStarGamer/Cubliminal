@@ -93,7 +93,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 		getWorld(HABITABLE_ZONE,
 				new LimlibWorld(
-						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 64, 64,
+						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 32, 32,
 								TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(HABITABLE_ZONE)), Cubliminal.id(HABITABLE_ZONE),
 								0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 						(registry) -> new DimensionOptions(

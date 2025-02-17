@@ -6,10 +6,12 @@ import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.SimplexNoiseSampler;
 import net.minecraft.util.math.random.ChunkRandom;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
@@ -42,21 +44,47 @@ public class LevelZeroBiomeSource extends BiomeSource {
 
     @Override
     public RegistryEntry.Reference<Biome> getBiome(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
-        if (Math.abs(x) + Math.abs(z) < 200) return baseBiome;
+        if (Math.abs(x) + Math.abs(z) < 200) {
+            return baseBiome;
+        }
+
         if (!bl) {
-            // initialize noise samplers
-            Random random = Random.create(Cubliminal.LVL_0.getSeed());
+            // Initialize noise samplers
+            Random random = Random.create(Cubliminal.SERVER.getSeed());
             this.rarity = new SimplexNoiseSampler(new ChunkRandom(random));
             this.spacing = new SimplexNoiseSampler(new ChunkRandom(random));
             this.safety = new SimplexNoiseSampler(new ChunkRandom(random));
             bl = true;
         }
-        // get noise value at the given position (range of 0 - 3)
+        // Get noise value at the given position (range of 0 - 3)
         double rarityValue = (rarity.sample(x * 0.005,z * 0.005) + 1) * 1.5;
         double spacingValue = (spacing.sample(x * 0.005,z * 0.005) + 1) * 1.5;
         double safetyValue = (safety.sample(x * 0.005,z * 0.005) + 1) * 1.5;
 
-        // return most suitable biome entry by making use of helper enum
+        // Return most suitable biome entry by making use of helper enum
+        return getBiomeReference(rarityValue, spacingValue, safetyValue);
+    }
+
+    public RegistryEntry.Reference<Biome> calcBiome(BlockPos startPos) {
+        int x = BiomeCoords.fromBlock(startPos.getX());
+        int z = BiomeCoords.fromBlock(startPos.getZ());
+
+        if (Math.abs(x) + Math.abs(z) < 200) {
+            return baseBiome;
+        }
+
+        if (!bl) {
+            Random random = Random.create(Cubliminal.SERVER.getSeed());
+            this.rarity = new SimplexNoiseSampler(new ChunkRandom(random));
+            this.spacing = new SimplexNoiseSampler(new ChunkRandom(random));
+            this.safety = new SimplexNoiseSampler(new ChunkRandom(random));
+            bl = true;
+        }
+
+        double rarityValue = (rarity.sample(x * 0.005,z * 0.005) + 1) * 1.5;
+        double spacingValue = (spacing.sample(x * 0.005,z * 0.005) + 1) * 1.5;
+        double safetyValue = (safety.sample(x * 0.005,z * 0.005) + 1) * 1.5;
+
         return getBiomeReference(rarityValue, spacingValue, safetyValue);
     }
 
