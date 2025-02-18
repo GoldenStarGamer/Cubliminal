@@ -48,7 +48,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 															(chunkGenerator) -> chunkGenerator.mazeSeedModifier))
 					.apply(instance, instance.stable(LevelOneChunkGenerator::new)));
 
-	private MultiFloorMazeGenerator<MazeComponent> mazeGenerator;
+	private final MultiFloorMazeGenerator<MazeComponent> mazeGenerator;
 	private final int mazeWidth;
 	private final int mazeHeight;
 	private final int thicknessX;
@@ -124,10 +124,11 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
 		//Cubliminal.LOGGER.info("Maze: {}; Checkpoints: {}", mazePos, checkpoints);
 
-		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, random, 0.05f, checkpoints);
+		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, mazePos, random, 0.05f, checkpoints);
 		for (int i = 0; i < connections.size(); ++i) {
 			maze.cellState(connections.get(i)).go(Face.values()[i]);
 		}
+
 		maze.generateMaze();
 
 		return maze;
@@ -173,7 +174,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
         //Cubliminal.LOGGER.info("Maze: {}; Checkpoints: {}", mazePos, checkpoints);
 
-		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, random, 0.05f, checkpoints);
+		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, mazePos.toBlock(), random, 0.05f, checkpoints);
 		for (int i = 0; i < connections.size(); ++i) {
 			maze.cellState(connections.get(i)).go(Face.values()[i]);
 		}
@@ -195,6 +196,25 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
 		if (piece.getFirst() != MazePiece.E) {
 			generateNbt(region, pos, this.nbtGroup.pick(piece.getFirst().getAsLetter(), random), piece.getSecond());
+			if (state.getExtra().containsKey("elevatorHall")) {
+				Face face = Face.values()[state.getExtra().get("elevatorHall").getByte("elevatorHall")];
+				BlockState bState = Blocks.BLUE_CONCRETE.getDefaultState();
+				switch (face) {
+					case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
+					case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
+					case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
+					case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
+				}
+			}
+		} else if (state.getExtra().containsKey("elevator")) {
+			Face face = Face.values()[state.getExtra().get("elevator").getByte("elevator")];
+			BlockState bState = Blocks.RED_CONCRETE.getDefaultState();
+			switch (face) {
+                case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
+                case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
+                case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
+                case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
+            }
 		}
 	}
 

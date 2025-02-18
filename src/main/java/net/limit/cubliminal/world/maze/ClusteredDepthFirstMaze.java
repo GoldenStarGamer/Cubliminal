@@ -1,6 +1,9 @@
 package net.limit.cubliminal.world.maze;
 
+import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.maze.DepthLikeMaze;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import org.apache.commons.compress.utils.Lists;
 
@@ -8,12 +11,14 @@ import java.util.List;
 
 
 public class ClusteredDepthFirstMaze extends DepthLikeMaze {
+    private final BlockPos mazePos;
     private final Random random;
     private final float bias;
     private List<Vec2i> checkpoints;
 
-    public ClusteredDepthFirstMaze(int width, int height, Random random, float bias, List<Vec2i> checkpoints) {
+    public ClusteredDepthFirstMaze(int width, int height, BlockPos mazePos, Random random, float bias, List<Vec2i> checkpoints) {
         super(width, height);
+        this.mazePos = mazePos;
         this.random = random;
         this.bias = bias;
         this.checkpoints = checkpoints;
@@ -21,10 +26,26 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
 
     @Override
     public void create() {
+        // Generate randomly an elevator
+        Random horizontalRandom = Random.create(LimlibHelper.blockSeed(mazePos.getX(), 0, mazePos.getZ()));
+        Vec2i elevator = new Vec2i(horizontalRandom.nextBetween(-8, width + 8), horizontalRandom.nextBetween(-8, height + 8));
+
+        if (this.fits(elevator) && !checkpoints.contains(elevator)) {
+            // If the selected elevator connecting hall is inside the maze, append the nbt
+            Face elevatorHall = Face.values()[horizontalRandom.nextInt(Face.values().length)];
+            if (this.fits(elevator.go(elevatorHall))) {
+                // Leave the elevator cell empty and append the directions for generation
+                this.visit(elevator);
+                this.putAppendage(elevator, "elevator", elevatorHall);
+                this.putAppendage(elevator.go(elevatorHall), "elevatorHall", elevatorHall.mirror());
+                checkpoints.add(elevator.go(elevatorHall));
+            }
+        }
+
         Vec2i cell = checkpoints.remove(random.nextInt(checkpoints.size()));
         Vec2i end = checkpoints.remove(random.nextInt(checkpoints.size()));
-        visit(cell);
-        visitedCells++;
+        this.visit(cell);
+        this.visitedCells++;
         this.stack.push(cell);
 
         while (true) {
@@ -54,6 +75,7 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
                     }
 
                     neighbours.add(face);
+
                 }
             }
 
@@ -68,11 +90,13 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
 
                  */
 
-                Face nextFace = possibilities.get(random.nextInt(possibilities.size()));
+                Face nextFace;
 
                 // Determine whether the next cell is going to continue straight ahead
                 if (random.nextFloat() > bias && possibilities.contains(this.dir(cell))) {
                     nextFace = this.dir(cell);
+                } else {
+                    nextFace = possibilities.get(random.nextInt(possibilities.size()));
                 }
 
                 this.cellState(cell).go(nextFace);
@@ -80,7 +104,7 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
                 this.visit(cell.go(nextFace));
                 this.stack.push(cell.go(nextFace));
 
-                visitedCells++;
+                this.visitedCells++;
             } else {
                 //Cubliminal.LOGGER.info("Popping current cell: {}", stack.pop());
                 this.stack.pop();
@@ -98,7 +122,9 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
                 end = checkpoints.remove(random.nextInt(checkpoints.size()));
                 //Cubliminal.LOGGER.info("New end: {}", end);
                 for (CellState cellState : this.maze) {
-                    this.visit(cellState.getPosition(), false);
+                    if (!cellState.getExtra().containsKey("elevator")) {
+                        this.visit(cellState.getPosition(), false);
+                    }
                 }
             } else {
                 checkpoints.remove(cell);
@@ -114,5 +140,12 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
 
     public Face dir(Vec2i vec) {
         return cellState(vec).getExtra().containsKey("dir") ? Face.values()[cellState(vec).getExtra().get("dir").getByte("dir")] : null;
+    }
+
+    public NbtCompound putAppendage(Vec2i vec, String key, Face dir) {
+        NbtCompound appendage = new NbtCompound();
+        appendage.putByte(key, (byte) dir.ordinal());
+        cellState(vec).getExtra().put(key, appendage);
+        return appendage;
     }
 }

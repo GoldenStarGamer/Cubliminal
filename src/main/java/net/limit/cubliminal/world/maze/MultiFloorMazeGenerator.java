@@ -28,11 +28,11 @@ public class MultiFloorMazeGenerator<M extends MazeComponent> {
 
     public void generateMaze(BlockPos pos, ChunkRegion region, int worldHeight, MultiFloorMazeGenerator.MazeCreator<M> mazeCreator, MultiFloorMazeGenerator.CellDecorator<M> cellDecorator) {
         for (int x = 0; x < 16; ++x) {
-            for (int y = 0; y < worldHeight; ++y) {
+            for (int y = pos.getY(); y < worldHeight; y += this.layerThickness) {
                 for (int z = 0; z < 16; ++z) {
                     BlockPos inPos = pos.add(x, y, z);
-                    if (Math.floorMod(inPos.getX(), this.thicknessX) == 0 && Math.floorMod(inPos.getY(), this.layerThickness) == 0 && Math.floorMod(inPos.getZ(), this.thicknessZ) == 0) {
-                        BlockPos mazePos = new BlockPos(inPos.getX() - Math.floorMod(inPos.getX(), this.width * this.thicknessX), inPos.getY() - Math.floorMod(inPos.getY(), this.layerThickness), inPos.getZ() - Math.floorMod(inPos.getZ(), this.height * this.thicknessZ));
+                    if (Math.floorMod(inPos.getX(), this.thicknessX) == 0 && Math.floorMod(inPos.getZ(), this.thicknessZ) == 0) {
+                        BlockPos mazePos = new BlockPos(inPos.getX() - Math.floorMod(inPos.getX(), this.width * this.thicknessX), inPos.getY(), inPos.getZ() - Math.floorMod(inPos.getZ(), this.height * this.thicknessZ));
                         M maze;
                         if (this.mazes.containsKey(mazePos)) {
                             maze = this.mazes.get(mazePos);
