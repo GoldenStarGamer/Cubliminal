@@ -15,13 +15,15 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
     private final Random random;
     private final float bias;
     private List<Vec2i> checkpoints;
+    private List<Vec2i> parkingSpots;
 
-    public ClusteredDepthFirstMaze(int width, int height, BlockPos mazePos, Random random, float bias, List<Vec2i> checkpoints) {
+    public ClusteredDepthFirstMaze(int width, int height, BlockPos mazePos, Random random, float bias, List<Vec2i> checkpoints, List<Vec2i> parkingSpots) {
         super(width, height);
         this.mazePos = mazePos;
         this.random = random;
         this.bias = bias;
         this.checkpoints = checkpoints;
+        this.parkingSpots = parkingSpots;
     }
 
     @Override
@@ -30,10 +32,10 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
         Random horizontalRandom = Random.create(LimlibHelper.blockSeed(mazePos.getX(), 0, mazePos.getZ()));
         Vec2i elevator = new Vec2i(horizontalRandom.nextBetween(-8, width + 8), horizontalRandom.nextBetween(-8, height + 8));
 
-        if (this.fits(elevator) && !checkpoints.contains(elevator)) {
+        if (this.fits(elevator) && !parkingSpots.contains(elevator)) {
             // If the selected elevator connecting hall is inside the maze, append the nbt
             Face elevatorHall = Face.values()[horizontalRandom.nextInt(Face.values().length)];
-            if (this.fits(elevator.go(elevatorHall))) {
+            if (this.fits(elevator.go(elevatorHall)) && !parkingSpots.contains(elevator.go(elevatorHall))) {
                 // Leave the elevator cell empty and append the directions for generation
                 this.visit(elevator);
                 this.putAppendage(elevator, "elevator", elevatorHall);
@@ -49,7 +51,6 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
         this.stack.push(cell);
 
         while (true) {
-            //Cubliminal.LOGGER.info("Cell: {} ; End: {}", cell, end);
             List<Face> neighbours = Lists.newArrayList();
             List<Face> optNeighbours = Lists.newArrayList();
             int smallestDistance = Integer.MAX_VALUE;
@@ -106,7 +107,6 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
 
                 this.visitedCells++;
             } else {
-                //Cubliminal.LOGGER.info("Popping current cell: {}", stack.pop());
                 this.stack.pop();
             }
 
@@ -120,7 +120,7 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
                 }
 
                 end = checkpoints.remove(random.nextInt(checkpoints.size()));
-                //Cubliminal.LOGGER.info("New end: {}", end);
+
                 for (CellState cellState : this.maze) {
                     if (!cellState.getExtra().containsKey("elevator")) {
                         this.visit(cellState.getPosition(), false);

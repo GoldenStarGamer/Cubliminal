@@ -2,14 +2,17 @@ package net.limit.cubliminal.world.maze;
 
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent;
+import net.ludocrypt.limlib.api.world.maze.MazeComponent.Vec2i;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class MultiFloorMazeGenerator<M extends MazeComponent> {
     private final HashMap<BlockPos, M> mazes = new HashMap<>(30);
+    private final HashMap<Vec2i, List<Vec2i>> parkingSpots = new HashMap<>(30);
     public final int width;
     public final int height;
     public final int thicknessX;
@@ -66,4 +69,15 @@ public class MultiFloorMazeGenerator<M extends MazeComponent> {
         return this.mazes;
     }
 
+    public List<Vec2i> getParkingSpots(Vec2i mazePos) {
+        return this.parkingSpots.get(mazePos);
+    }
+
+    public void setParkingSpots(Vec2i mazePos, List<Vec2i> spots) {
+        this.parkingSpots.put(mazePos, spots);
+    }
+
+    public boolean isIn(Vec2i mazePos) {
+        return this.parkingSpots.containsKey(mazePos);
+    }
 }

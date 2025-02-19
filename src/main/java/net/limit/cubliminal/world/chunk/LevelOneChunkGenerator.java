@@ -102,19 +102,46 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
 		checkpoints.addAll(connections);
 
-		// Check 4x4 cell cluster biomes as well, include into 'must visit' list to avoid inescapable parking zones
+		// Check 4x4 cell cluster biomes as well if no lists have been generated
+		Vec2i mazeVec = new Vec2i(mazePos.getX(), mazePos.getZ());
+		boolean areSpotsRegistered = this.mazeGenerator.isIn(mazeVec);
+		// All the parking cells within the maze
+		List<Vec2i> parkingSpots = areSpotsRegistered ? this.mazeGenerator.getParkingSpots(mazeVec) : Lists.newArrayList();
+
 		for (int x = 0; x < width; x += 4) {
 			for (int y = 0; y < height; y += 4) {
+				if (!areSpotsRegistered) {
 
-				RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) biomeSource)
-						.calcBiome(mazePos.add(x * thicknessX, 0, y * thicknessZ), bottomSectionCoord);
+					RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) biomeSource)
+							.calcBiome(mazePos.add(x * thicknessX, 0, y * thicknessZ), bottomSectionCoord);
 
-				if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
-					Random randomX = Random.create(LimlibHelper.blockSeed(mazePos.add(x, 0, 0)));
-					Random randomY = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, y)));
-					Vec2i randomCell = new Vec2i(x + randomX.nextInt(4), y + randomY.nextInt(4));
+					if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
+						List<Vec2i> clusterSpots = Lists.newArrayList();
+						// Add all the cells from the cluster to a temp list to later choose a random one
+						for (int dx = 0; dx < 4; dx++) {
+							for (int dy = 0; dy < 4; dy++) {
+								clusterSpots.add(new Vec2i(x + dx, y + dy));
+							}
+						}
+						parkingSpots.addAll(clusterSpots);
+
+						// Add a random cell from the 4x4 cluster
+						Vec2i randomCell = clusterSpots.get(random.nextInt(clusterSpots.size()));
+						if (!checkpoints.contains(randomCell)) {
+							checkpoints.add(randomCell);
+						}
+					}
+				} else if (parkingSpots.contains(new Vec2i(x, y))) {
+
+					List<Vec2i> clusterSpots = Lists.newArrayList();
+					for (int dx = 0; dx < 4; dx++) {
+						for (int dy = 0; dy < 4; dy++) {
+							clusterSpots.add(new Vec2i(x + dx, y + dy));
+						}
+					}
 
 					// Add a random cell from the 4x4 cluster
+					Vec2i randomCell = clusterSpots.get(random.nextInt(clusterSpots.size()));
 					if (!checkpoints.contains(randomCell)) {
 						checkpoints.add(randomCell);
 					}
@@ -122,9 +149,11 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 			}
 		}
 
-		//Cubliminal.LOGGER.info("Maze: {}; Checkpoints: {}", mazePos, checkpoints);
+		if (!areSpotsRegistered) {
+			this.mazeGenerator.setParkingSpots(mazeVec, parkingSpots);
+		}
 
-		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, mazePos, random, 0.05f, checkpoints);
+		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, mazePos, random, 0.05f, checkpoints, parkingSpots);
 		for (int i = 0; i < connections.size(); ++i) {
 			maze.cellState(connections.get(i)).go(Face.values()[i]);
 		}
@@ -132,63 +161,6 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 		maze.generateMaze();
 
 		return maze;
-	}
-
-	public MazeComponent $newMaze2D(ChunkRegion region, Vec2i mazePos, int width, int height, Random random) {
-		List<Vec2i> checkpoints = Lists.newArrayList();
-
-		Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.up(height * thicknessZ - 1).toBlock()));
-		Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.down().toBlock()));
-		Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos.toBlock()));
-		Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.right(width * thicknessX).toBlock()));
-
-		// Include 4 additional connections to other mazes
-		List<Vec2i> connections = Lists.newArrayList();
-
-		connections.add(new Vec2i(width - 1, randomUp.nextInt(height)));
-		connections.add(new Vec2i(0, randomDown.nextInt(height)));
-		connections.add(new Vec2i(randomLeft.nextInt(width), 0));
-		connections.add(new Vec2i(randomRight.nextInt(width), height - 1));
-
-		checkpoints.addAll(connections);
-
-		// Check 4x4 cell cluster biomes as well, include into 'must visit' list to avoid inescapable parking zones
-		for (int x = 0; x < width; x += 4) {
-			for (int y = 0; y < height; y += 4) {
-
-				RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) biomeSource)
-						.calcBiome(mazePos.add(x * thicknessX, y * thicknessZ).toBlock(), bottomSectionCoord);
-
-				if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
-					Random randomX = Random.create(LimlibHelper.blockSeed(mazePos.add(x, 0).toBlock()));
-					Random randomY = Random.create(LimlibHelper.blockSeed(mazePos.add(0, y).toBlock()));
-					Vec2i randomCell = new Vec2i(x + randomX.nextInt(4), y + randomY.nextInt(4));
-
-					// Add a random cell from the 4x4 cluster
-					if (!checkpoints.contains(randomCell)) {
-						checkpoints.add(randomCell);
-					}
-				}
-			}
-		}
-
-        //Cubliminal.LOGGER.info("Maze: {}; Checkpoints: {}", mazePos, checkpoints);
-
-		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, mazePos.toBlock(), random, 0.05f, checkpoints);
-		for (int i = 0; i < connections.size(); ++i) {
-			maze.cellState(connections.get(i)).go(Face.values()[i]);
-		}
-		maze.generateMaze();
-
-		return maze;
-	}
-
-	public void $decorateCell2D(ChunkRegion region, Vec2i pos, Vec2i mazePos, MazeComponent maze, CellState state, Vec2i thickness, Random random) {
-		Pair<MazePiece, Manipulation> piece = MazePiece.getFromCell(state, random);
-
-		if (piece.getFirst() != MazePiece.E) {
-			generateNbt(region, pos.toBlock(), this.nbtGroup.pick(piece.getFirst().getAsLetter(), random), piece.getSecond());
-		}
 	}
 
 	public void decorateCell(ChunkRegion region, BlockPos pos, BlockPos mazePos, MazeComponent maze, CellState state, BlockPos thickness, Random random) {
