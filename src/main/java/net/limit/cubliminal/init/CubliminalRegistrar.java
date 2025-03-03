@@ -68,7 +68,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// dim effects
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
 
-		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", true, false, false, 0f));
+		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, true, 0.7f));
 
 		// post effects
 		getPostEffects("paranoia", new StaticPostEffect(Cubliminal.id("paranoia")));

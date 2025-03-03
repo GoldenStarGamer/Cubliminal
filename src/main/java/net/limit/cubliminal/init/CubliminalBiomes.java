@@ -10,6 +10,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -30,6 +31,7 @@ public class CubliminalBiomes {
 	public static final RegistryKey<Biome> PARKING_ZONE_BIOME = RegistryKey
 			.of(RegistryKeys.BIOME, Cubliminal.id("parking_zone"));
 
+
     public static void init() {
 		getChunkGenerator("the_lobby_chunk_generator", LevelZeroChunkGenerator.CODEC);
 		getBiomeSource("the_lobby_biome_source", LevelZeroBiomeSource.CODEC);
@@ -42,6 +44,10 @@ public class CubliminalBiomes {
 	}
 	public static <C extends BiomeSource, D extends MapCodec<C>> D getBiomeSource(String id, D biomeSourceCodec) {
 		return Registry.register(Registries.BIOME_SOURCE, Cubliminal.id(id), biomeSourceCodec);
+	}
+
+	public static TagKey<Biome> of(String id) {
+		return TagKey.of(RegistryKeys.BIOME, Cubliminal.id(id));
 	}
 
 }

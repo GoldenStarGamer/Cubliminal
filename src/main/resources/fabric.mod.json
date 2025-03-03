@@ -8,7 +8,9 @@
 		"Nhappysmiler (Owner)"
 	],
 	"contact": {
-		"sources": "https://github.com/northernlimit/Cubliminal"
+		"homepage": "https://modrinth.com/mod/cubliminal-mod",
+		"sources": "https://github.com/northernlimit/Cubliminal",
+		"issues": "https://github.com/northernlimit/Cubliminal/issues"
 	},
 	"license": "GPLv3",
 	"icon": "assets/cubliminal/icon.png",
@@ -41,5 +43,12 @@
 		"limlib":"11.3",
 		"cloth-config": "*"
 	},
-	"accessWidener": "cubliminal.accesswidener"
+	"accessWidener": "cubliminal.accesswidener",
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/jEGF5fb"
+			}
+		}
+	}
 }

@@ -14,8 +14,8 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
     private final BlockPos mazePos;
     private final Random random;
     private final float bias;
-    private List<Vec2i> checkpoints;
-    private List<Vec2i> parkingSpots;
+    private final List<Vec2i> checkpoints;
+    private final List<Vec2i> parkingSpots;
 
     public ClusteredDepthFirstMaze(int width, int height, BlockPos mazePos, Random random, float bias, List<Vec2i> checkpoints, List<Vec2i> parkingSpots) {
         super(width, height);
@@ -36,11 +36,24 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
             // If the selected elevator connecting hall is inside the maze, append the nbt
             Face elevatorHall = Face.values()[horizontalRandom.nextInt(Face.values().length)];
             if (this.fits(elevator.go(elevatorHall)) && !parkingSpots.contains(elevator.go(elevatorHall))) {
-                // Leave the elevator cell empty and append the directions for generation
+                // Leave the elevator cell empty and append the directions for cell decoration
+                checkpoints.remove(elevator);
                 this.visit(elevator);
-                this.putAppendage(elevator, "elevator", elevatorHall);
-                this.putAppendage(elevator.go(elevatorHall), "elevatorHall", elevatorHall.mirror());
+                this.append(elevator, "elevator", elevatorHall);
+                this.append(elevator.go(elevatorHall), "elevatorHall", elevatorHall.mirror());
                 checkpoints.add(elevator.go(elevatorHall));
+            }
+        }
+
+        // Generate randomly a ramp
+        if (!parkingSpots.isEmpty()) {
+            Vec2i rampBeginning = this.maze[horizontalRandom.nextInt(this.maze.length)].getPosition();
+            Face randomDir = Face.values()[horizontalRandom.nextInt(Face.values().length)];
+
+            if (parkingSpots.contains(rampBeginning) && parkingSpots.contains(rampBeginning.go(randomDir).go(randomDir))) {
+                this.appendDeferred(rampBeginning, "ramp", (byte) 0, randomDir);
+                this.appendDeferred(rampBeginning.go(randomDir), "ramp", (byte) 1, randomDir);
+                this.appendDeferred(rampBeginning.go(randomDir).go(randomDir), "ramp", (byte) 2, randomDir);
             }
         }
 
@@ -108,6 +121,9 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
                 this.visitedCells++;
             } else {
                 this.stack.pop();
+                if (this.stack.isEmpty()) {
+                    break;
+                }
             }
 
             // Reassign current cell
@@ -142,10 +158,16 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
         return cellState(vec).getExtra().containsKey("dir") ? Face.values()[cellState(vec).getExtra().get("dir").getByte("dir")] : null;
     }
 
-    public NbtCompound putAppendage(Vec2i vec, String key, Face dir) {
+    public void append(Vec2i vec, String key, Face dir) {
         NbtCompound appendage = new NbtCompound();
         appendage.putByte(key, (byte) dir.ordinal());
         cellState(vec).getExtra().put(key, appendage);
-        return appendage;
+    }
+
+    public void appendDeferred(Vec2i vec, String key, byte type, Face dir) {
+        NbtCompound appendage = new NbtCompound();
+        byte[] bytes = {type, (byte) dir.ordinal()};
+        appendage.putByteArray(key, bytes);
+        cellState(vec).getExtra().put(key, appendage);
     }
 }

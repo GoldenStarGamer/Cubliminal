@@ -67,5 +67,6 @@
   "subtitle.block.sink_ambient": "Grifo abierto",
   "subtitle.block.flux_capacitor": "Energía acumulándose",
   "text.autoconfig.cubliminal.title": "Cubliminal",
-  "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Desactivar cambios abruptos en los gráficos"
+  "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Desactivar cambios abruptos en los gráficos",
+  "text.autoconfig.cubliminal.option.enableSuperDenseFog": "Abilitar niebla densa"
 }

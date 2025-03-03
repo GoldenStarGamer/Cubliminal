@@ -21,11 +21,10 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 	private static final Identifier SANITY_BAR_3 = Cubliminal.id("textures/hud/sanity/sanity_bar_3.png");
 	private static final Identifier SANITY_BAR_4 = Cubliminal.id("textures/hud/sanity/sanity_bar_4.png");
 
-	MinecraftClient client = MinecraftClient.getInstance();
-
 	@Override
 	public void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter) {
 
+		MinecraftClient client = MinecraftClient.getInstance();
 		ClientPlayerEntity player = client.player;
 		if (player == null || player.isCreative() || player.isSpectator() ||
 			!player.getWorld().getRegistryKey().getValue().getNamespace()

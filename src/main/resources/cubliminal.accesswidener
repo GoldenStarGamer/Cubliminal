@@ -1,2 +1,3 @@
 accessWidener v2 named
 accessible method net/minecraft/client/gl/ShaderProgramKeys register (Ljava/lang/String;Lnet/minecraft/client/render/VertexFormat;)Lnet/minecraft/client/gl/ShaderProgramKey;
+accessible class net/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier

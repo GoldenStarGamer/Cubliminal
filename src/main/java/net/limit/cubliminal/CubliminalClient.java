@@ -12,6 +12,7 @@ import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
 import net.limit.cubliminal.client.render.ManilaGatewayRenderer;
+import net.limit.cubliminal.client.render.fog.FogSettings;
 import net.limit.cubliminal.entity.client.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.*;
@@ -48,7 +49,7 @@ public class CubliminalClient implements ClientModInitializer {
 				.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
 
 		CubliminalRenderLayers.init();
-
+		FogSettings.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(CubliminalPackets.NoClipSyncPayload.ID, (payload, context) -> {
 			ClientPlayerEntity player = context.player();

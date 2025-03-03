@@ -165,8 +165,37 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
 	public void decorateCell(ChunkRegion region, BlockPos pos, BlockPos mazePos, MazeComponent maze, CellState state, BlockPos thickness, Random random) {
 		Pair<MazePiece, Manipulation> piece = MazePiece.getFromCell(state, random);
+		RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) this.biomeSource)
+				.calcBiome(pos, this.bottomSectionCoord);
 
-		if (piece.getFirst() != MazePiece.E) {
+		if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
+			if (state.getExtra().containsKey("ramp")) {
+				if (pos.getY() > this.getMinimumY()) {
+
+					byte[] bytes = state.getExtra().get("ramp").getByteArray("ramp");
+					BlockState bState;
+					if (bytes[0] == 0) {
+						bState = Blocks.DIAMOND_BLOCK.getDefaultState();
+					} else {
+						bState = Blocks.EMERALD_BLOCK.getDefaultState();
+					}
+
+					switch (Face.values()[bytes[1]]) {
+						case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
+						case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
+						case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
+						case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
+					}
+				}
+			} else {
+				for (int x = 0; x < 16; x++) {
+					for (int z = 0; z < 16; z++) {
+						region.setBlockState(pos.add(x, this.getMinimumY(), z), Blocks.SHROOMLIGHT.getDefaultState(), 0);
+						region.setBlockState(pos.add(x, this.getMinimumY() + this.layerThickness, z), Blocks.SHROOMLIGHT.getDefaultState(), 0);
+					}
+				}
+			}
+		} else if (piece.getFirst() != MazePiece.E) {
 			generateNbt(region, pos, this.nbtGroup.pick(piece.getFirst().getAsLetter(), random), piece.getSecond());
 			if (state.getExtra().containsKey("elevatorHall")) {
 				Face face = Face.values()[state.getExtra().get("elevatorHall").getByte("elevatorHall")];
@@ -194,21 +223,9 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
 												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		BlockPos startPos = chunk.getPos().getStartPos();
-		RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) this.biomeSource)
-				.calcBiome(startPos, chunk.getHeightLimitView().getBottomSectionCoord());
 
-		if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
-			for (int x = 0; x < 16; x++) {
-				for (int z = 0; z < 16; z++) {
-					region.setBlockState(startPos.add(x, this.getMinimumY(), z), Blocks.SHROOMLIGHT.getDefaultState(), 0);
-					region.setBlockState(startPos.add(x, this.getMinimumY() + this.layerThickness, z), Blocks.SHROOMLIGHT.getDefaultState(), 0);
-				}
-			}
-
-		} else {
-			this.bottomSectionCoord = chunk.getBottomSectionCoord();
-			this.mazeGenerator.generateMaze(startPos, region, this.getWorldHeight(), this::newMaze, this::decorateCell);
-		}
+		this.bottomSectionCoord = chunk.getBottomSectionCoord();
+		this.mazeGenerator.generateMaze(startPos, region, this.getWorldHeight(), this::newMaze, this::decorateCell);
 
 		return CompletableFuture.completedFuture(chunk);
 	}

@@ -67,5 +67,6 @@
   "subtitle.block.sink_ambient": "Open water source",
   "subtitle.block.flux_capacitor": "Energy accumulating",
   "text.autoconfig.cubliminal.title": "Cubliminal",
-  "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Disable abrupt changes in graphics"
+  "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Disable abrupt changes in graphics",
+  "text.autoconfig.cubliminal.option.enableSuperDenseFog": "Enable dynamic thick fog"
 }
