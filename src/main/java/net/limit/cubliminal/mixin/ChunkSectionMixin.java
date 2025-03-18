@@ -1,6 +1,6 @@
 package net.limit.cubliminal.mixin;
 
-import net.limit.cubliminal.util.ChunkSectionAccessor;
+import net.limit.cubliminal.access.ChunkSectionAccessor;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkSection;

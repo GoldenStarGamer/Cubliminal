@@ -46,14 +46,15 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
         }
 
         // Generate randomly a ramp
-        if (!parkingSpots.isEmpty()) {
-            Vec2i rampBeginning = this.maze[horizontalRandom.nextInt(this.maze.length)].getPosition();
+        if (!parkingSpots.isEmpty() && horizontalRandom.nextFloat() > 0.6) {
+            //Vec2i rampBeginning = this.maze[horizontalRandom.nextInt(this.maze.length)].getPosition();
+            Vec2i rampBeginning = parkingSpots.get(horizontalRandom.nextInt(parkingSpots.size()));
             Face randomDir = Face.values()[horizontalRandom.nextInt(Face.values().length)];
 
             if (parkingSpots.contains(rampBeginning) && parkingSpots.contains(rampBeginning.go(randomDir).go(randomDir))) {
-                this.appendDeferred(rampBeginning, "ramp", (byte) 0, randomDir);
-                this.appendDeferred(rampBeginning.go(randomDir), "ramp", (byte) 1, randomDir);
-                this.appendDeferred(rampBeginning.go(randomDir).go(randomDir), "ramp", (byte) 2, randomDir);
+                this.appendDeferred(rampBeginning, "ramp", (byte) 1, randomDir);
+                this.appendDeferred(rampBeginning.go(randomDir), "ramp", (byte) 2, randomDir);
+                this.appendDeferred(rampBeginning.go(randomDir).go(randomDir), "ramp", (byte) 3, randomDir);
             }
         }
 
@@ -95,14 +96,13 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
 
             if (!neighbours.isEmpty()) {
                 // If a short path has already been generated, follow it
-                List<Face> possibilities = optNeighbours;
+                List<Face> possibilities;
 
-                /*
                 if (followingPath || random.nextInt(8) > 0) {
                     possibilities = optNeighbours;
-                } else possibilities = neighbours;
-
-                 */
+                } else {
+                    possibilities = neighbours;
+                }
 
                 Face nextFace;
 
@@ -169,5 +169,9 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
         byte[] bytes = {type, (byte) dir.ordinal()};
         appendage.putByteArray(key, bytes);
         cellState(vec).getExtra().put(key, appendage);
+    }
+
+    public List<Vec2i> getParkingSpots() {
+        return this.parkingSpots;
     }
 }

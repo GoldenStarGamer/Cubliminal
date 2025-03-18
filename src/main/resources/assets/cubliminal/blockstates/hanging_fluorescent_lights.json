@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/hanging_fluorescent_lights",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/hanging_fluorescent_lights"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/hanging_fluorescent_lights",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/hanging_fluorescent_lights",
+      "y": 270
+    }
+  }
+}

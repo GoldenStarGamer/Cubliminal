@@ -8,7 +8,7 @@ import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
-import net.limit.cubliminal.util.ChunkAccessor;
+import net.limit.cubliminal.access.ChunkAccessor;
 import net.limit.cubliminal.world.biome.level_0.LevelZeroBiomeSource;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
@@ -269,7 +269,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 
 	@Override
 	public int getWorldHeight() {
-		return 100;
+		return 32;
 	}
 
 	@Override

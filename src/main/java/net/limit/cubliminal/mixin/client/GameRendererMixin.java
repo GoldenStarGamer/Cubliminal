@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.init.CubliminalEffects;
-import net.limit.cubliminal.util.GameRendererAccessor;
+import net.limit.cubliminal.access.GameRendererAccessor;
 import net.ludocrypt.limlib.impl.shader.PostProcesserManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;

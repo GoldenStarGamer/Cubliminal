@@ -16,7 +16,7 @@ import net.limit.cubliminal.client.render.fog.FogSettings;
 import net.limit.cubliminal.entity.client.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.*;
-import net.limit.cubliminal.util.IEntityDataSaver;
+import net.limit.cubliminal.access.IEntityDataSaver;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;

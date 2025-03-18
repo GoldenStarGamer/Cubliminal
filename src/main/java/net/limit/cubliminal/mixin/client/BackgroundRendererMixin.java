@@ -1,5 +1,7 @@
 package net.limit.cubliminal.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.client.render.fog.FogManager;
 import net.limit.cubliminal.client.render.fog.FogSettings;
@@ -21,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@Environment(EnvType.CLIENT)
 @Mixin(BackgroundRenderer.class)
 public abstract class BackgroundRendererMixin {
 

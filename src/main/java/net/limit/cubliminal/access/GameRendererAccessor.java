@@ -1,10 +1,9 @@
-package net.limit.cubliminal.util;
+package net.limit.cubliminal.access;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public interface GameRendererAccessor {

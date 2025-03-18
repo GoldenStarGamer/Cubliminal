@@ -31,6 +31,8 @@ public class CubliminalBiomes {
 	public static final RegistryKey<Biome> PARKING_ZONE_BIOME = RegistryKey
 			.of(RegistryKeys.BIOME, Cubliminal.id("parking_zone"));
 
+	public static final TagKey<Biome> CAN_NOCLIP_TO = of("can_noclip_to");
+
 
     public static void init() {
 		getChunkGenerator("the_lobby_chunk_generator", LevelZeroChunkGenerator.CODEC);

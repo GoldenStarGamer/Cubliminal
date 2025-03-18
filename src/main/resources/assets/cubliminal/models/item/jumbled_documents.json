@@ -1,3 +1,6 @@
 {
-  "parent": "cubliminal:block/jumbled_documents/0"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "cubliminal:item/jumbled_documents"
+  }
 }

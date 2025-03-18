@@ -17,8 +17,9 @@ import net.limit.cubliminal.event.ServerTickHandler;
 import net.limit.cubliminal.event.command.NoClipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
-import net.limit.cubliminal.util.IEntityDataSaver;
+import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.util.NoClipEngine;
+import net.limit.cubliminal.util.NoclipDestination;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.entry.ItemEntry;
@@ -61,6 +62,7 @@ public class Cubliminal implements ModInitializer {
 		CubliminalEntities.init();
 		CubliminalEffects.init();
 		CubliminalBlockEntities.init();
+		NoclipDestination.init();
 
 		PayloadTypeRegistry.playC2S().register(CubliminalPackets.NoClipC2SPayload.ID, CubliminalPackets.NoClipC2SPayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(CubliminalPackets.NoClipSyncPayload.ID, CubliminalPackets.NoClipSyncPayload.CODEC);

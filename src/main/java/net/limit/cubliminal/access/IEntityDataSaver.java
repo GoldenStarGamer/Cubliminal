@@ -1,4 +1,4 @@
-package net.limit.cubliminal.util;
+package net.limit.cubliminal.access;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;

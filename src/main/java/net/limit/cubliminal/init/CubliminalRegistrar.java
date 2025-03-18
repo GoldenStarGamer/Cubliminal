@@ -68,7 +68,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// dim effects
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
 
-		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, true, 0.7f));
+		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, true, 0.5f));
 
 		// post effects
 		getPostEffects("paranoia", new StaticPostEffect(Cubliminal.id("paranoia")));
@@ -76,7 +76,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// worlds
 		getWorld(THE_LOBBY,
 			new LimlibWorld(
-				() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 384, 384,
+				() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 32, 32,
 					TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(THE_LOBBY)), Cubliminal.id(THE_LOBBY),
 					0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 				(registry) -> new DimensionOptions(

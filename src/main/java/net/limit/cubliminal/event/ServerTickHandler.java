@@ -3,7 +3,7 @@ package net.limit.cubliminal.event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.advancements.AdvancementHelper;
-import net.limit.cubliminal.util.IEntityDataSaver;
+import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.util.NoClipEngine;
 import net.limit.cubliminal.util.SanityManager;
 import net.minecraft.nbt.NbtCompound;

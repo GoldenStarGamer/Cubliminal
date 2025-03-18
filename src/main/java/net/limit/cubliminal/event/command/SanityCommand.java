@@ -2,7 +2,7 @@ package net.limit.cubliminal.event.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.limit.cubliminal.util.IEntityDataSaver;
+import net.limit.cubliminal.access.IEntityDataSaver;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.nbt.NbtCompound;

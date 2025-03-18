@@ -1,6 +1,7 @@
 package net.limit.cubliminal.util;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.limit.cubliminal.init.CubliminalPackets;

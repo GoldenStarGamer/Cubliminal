@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "cubliminal:block/wet_gray_asphalt/0"
+      },
+      {
+        "model": "cubliminal:block/wet_gray_asphalt/1"
+      },
+      {
+        "model": "cubliminal:block/wet_gray_asphalt/2"
+      },
+      {
+        "model": "cubliminal:block/wet_gray_asphalt/3"
+      },
+      {
+        "model": "cubliminal:block/wet_gray_asphalt/4"
+      },
+      {
+        "model": "cubliminal:block/wet_gray_asphalt/5"
+      }
+    ]
+  }
+}

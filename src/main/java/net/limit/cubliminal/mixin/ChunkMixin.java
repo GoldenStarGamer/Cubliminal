@@ -1,7 +1,7 @@
 package net.limit.cubliminal.mixin;
 
-import net.limit.cubliminal.util.ChunkAccessor;
-import net.limit.cubliminal.util.ChunkSectionAccessor;
+import net.limit.cubliminal.access.ChunkAccessor;
+import net.limit.cubliminal.access.ChunkSectionAccessor;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;

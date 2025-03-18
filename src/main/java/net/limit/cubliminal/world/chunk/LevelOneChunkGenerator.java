@@ -6,8 +6,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.init.CubliminalBiomes;
+import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
-import net.limit.cubliminal.util.ChunkAccessor;
+import net.limit.cubliminal.access.ChunkAccessor;
+import net.limit.cubliminal.util.Manip;
 import net.limit.cubliminal.world.biome.level_1.LevelOneBiomeSource;
 import net.limit.cubliminal.world.maze.ClusteredDepthFirstMaze;
 import net.limit.cubliminal.world.maze.MultiFloorMazeGenerator;
@@ -18,7 +20,10 @@ import net.ludocrypt.limlib.api.world.chunk.AbstractNbtChunkGenerator;
 import net.ludocrypt.limlib.api.world.maze.*;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent.*;
 import net.minecraft.block.*;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +41,9 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	public static final MapCodec<LevelOneChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -76,6 +83,13 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 				.with("l", 1, 1)
 				.with("n", 1, 1)
 				.with("t", 1, 1)
+				.with("e", 1, 1)
+				.with("parking", 1, 10)
+				.with("ramp",
+						"n_1", "n_2", "n_3",
+						"s_1", "s_2", "s_3",
+						"w_1", "w_2", "w_3",
+						"e_1", "e_2", "e_3")
 			.build();
 	}
 
@@ -153,7 +167,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 			this.mazeGenerator.setParkingSpots(mazeVec, parkingSpots);
 		}
 
-		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, mazePos, random, 0.05f, checkpoints, parkingSpots);
+		MazeComponent maze = new ClusteredDepthFirstMaze(width, height, mazePos, random, 0.2f, checkpoints, parkingSpots);
 		for (int i = 0; i < connections.size(); ++i) {
 			maze.cellState(connections.get(i)).go(Face.values()[i]);
 		}
@@ -170,53 +184,78 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
 		if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
 			if (state.getExtra().containsKey("ramp")) {
-				if (pos.getY() > this.getMinimumY()) {
+				if (pos.getY() == this.getMinimumY()) {
 
 					byte[] bytes = state.getExtra().get("ramp").getByteArray("ramp");
-					BlockState bState;
-					if (bytes[0] == 0) {
-						bState = Blocks.DIAMOND_BLOCK.getDefaultState();
-					} else {
-						bState = Blocks.EMERALD_BLOCK.getDefaultState();
-					}
-
-					switch (Face.values()[bytes[1]]) {
+					generateNbt(region, pos, nbtGroup.nbtId("ramp", rotate(Face.values()[bytes[1]]).concat("_" + bytes[0])));
+				}
+			} else {
+				generateNbt(region, pos, nbtGroup.pick("parking", random));
+			}
+		} else {
+			if (piece.getFirst() != MazePiece.E) {
+				generateNbt(region, pos.up(2), this.nbtGroup.pick(piece.getFirst().getAsLetter(), random), piece.getSecond());
+				if (state.getExtra().containsKey("elevatorHall")) {
+					Face face = Face.values()[state.getExtra().get("elevatorHall").getByte("elevatorHall")];
+					BlockState bState = Blocks.BLUE_CONCRETE.getDefaultState();
+					switch (face) {
 						case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
 						case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
 						case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
 						case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
 					}
 				}
-			} else {
-				for (int x = 0; x < 16; x++) {
-					for (int z = 0; z < 16; z++) {
-						region.setBlockState(pos.add(x, this.getMinimumY(), z), Blocks.SHROOMLIGHT.getDefaultState(), 0);
-						region.setBlockState(pos.add(x, this.getMinimumY() + this.layerThickness, z), Blocks.SHROOMLIGHT.getDefaultState(), 0);
-					}
-				}
-			}
-		} else if (piece.getFirst() != MazePiece.E) {
-			generateNbt(region, pos, this.nbtGroup.pick(piece.getFirst().getAsLetter(), random), piece.getSecond());
-			if (state.getExtra().containsKey("elevatorHall")) {
-				Face face = Face.values()[state.getExtra().get("elevatorHall").getByte("elevatorHall")];
-				BlockState bState = Blocks.BLUE_CONCRETE.getDefaultState();
+			} else if (state.getExtra().containsKey("elevator")) {
+				Face face = Face.values()[state.getExtra().get("elevator").getByte("elevator")];
+				BlockState bState = Blocks.RED_CONCRETE.getDefaultState();
 				switch (face) {
 					case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
 					case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
 					case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
 					case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
 				}
+			} else {
+				for (int x = 0; x < thicknessX; x++) {
+					for (int y = 0; y < layerThickness; y++) {
+						for (int z = 0; z < thicknessZ; z++) {
+
+							BlockState state1 = Blocks.STONE.getDefaultState();
+							if (y == 0 || y == layerThickness - 1) {
+								state1 = CubliminalBlocks.GABBRO.getDefaultState();
+							}
+
+							region.setBlockState(pos.add(x, y, z), state1, 0);
+						}
+					}
+				}
 			}
-		} else if (state.getExtra().containsKey("elevator")) {
-			Face face = Face.values()[state.getExtra().get("elevator").getByte("elevator")];
-			BlockState bState = Blocks.RED_CONCRETE.getDefaultState();
-			switch (face) {
-                case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
-                case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
-                case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
-                case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
-            }
+
+			for (Face face : Face.values()) {
+				Vec2i adjCell = state.getPosition().go(face);
+				boolean parking = ((ClusteredDepthFirstMaze) maze).getParkingSpots().contains(adjCell);
+
+				if (!parking) {
+					BlockPos adjPos = mazePos.add(thicknessX * adjCell.getX(), 0, thicknessZ * adjCell.getY());
+					parking = ((LevelOneBiomeSource) biomeSource).calcBiome(adjPos, bottomSectionCoord).matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME);
+				}
+				if (parking) {
+					if (state.goes(face)) {
+						region.setBlockState(pos.add(8, 8, 8), Blocks.SHROOMLIGHT.getDefaultState(), 0);
+					} else {
+						generateNbt(region, pos, nbtGroup.pick("e", random), Manip.get(face));
+					}
+				}
+			}
 		}
+	}
+
+	private static String rotate(Face face) {
+		return switch (face) {
+            case UP -> "e";
+            case DOWN -> "w";
+            case LEFT -> "n";
+            case RIGHT -> "s";
+        };
 	}
 
 	@Override
@@ -236,6 +275,60 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 			((ChunkAccessor) chunk).cubliminal$populateBiomes(this.biomeSource, noiseConfig.getMultiNoiseSampler());
 			return chunk;
 		}, Util.getMainWorkerExecutor().named("init_biomes"));
+	}
+
+	@Override
+	protected void modifyStructure(ChunkRegion region, BlockPos pos, BlockState state, Optional<NbtCompound> blockEntityNbt, int update) {
+		if (state.isAir()) {
+			return;
+		}
+
+		super.modifyStructure(region, pos, state, blockEntityNbt, update);
+
+		BiFunction<ChunkRegion, BlockPos, Random> random = (region1, pos1) -> Random.create(region1.getSeed() + LimlibHelper.blockSeed(pos1));
+
+		if (state.isOf(Blocks.TUFF_BRICKS)) {
+			if (random.apply(region, pos).nextFloat() > 0.8) {
+				region.setBlockState(pos, Blocks.POLISHED_TUFF.getDefaultState(), 0);
+			}
+		} else if (state.isOf(Blocks.YELLOW_CONCRETE)) {
+			if (random.apply(region, pos).nextFloat() < 0.8) {
+				region.setBlockState(pos, Blocks.STONE.getDefaultState(), 0);
+			} else {
+				region.setBlockState(pos, Blocks.ANDESITE.getDefaultState(), 0);
+			}
+		} else if (state.isOf(CubliminalBlocks.WET_GRAY_ASPHALT)) {
+			if (random.apply(region, pos).nextFloat() > 0.4) {
+				region.setBlockState(pos, CubliminalBlocks.GRAY_ASPHALT.getDefaultState(), 0);
+			}
+		} else if (state.isOf(CubliminalBlocks.VERTICAL_LIGHT_TUBE)) {
+			if (random.apply(region, pos).nextFloat() > 0.9) {
+				region.setBlockState(pos, state.with(Properties.LIT, false), 0);
+			}
+		} else if (state.isOf(CubliminalBlocks.SMOKE_DETECTOR)) {
+			if (random.apply(region, pos).nextFloat() > 0.1) {
+				region.setBlockState(pos, Blocks.AIR.getDefaultState(), 0);
+			}
+		} else if (state.isOf(Blocks.ANDESITE_STAIRS)) {
+			if (random.apply(region, pos).nextFloat() > 0.5) {
+				region.setBlockState(pos, Blocks.ANDESITE.getDefaultState(), 0);
+			}
+		} else if (state.isOf(Blocks.STONE_STAIRS)) {
+			if (random.apply(region, pos).nextFloat() > 0.5) {
+				region.setBlockState(pos, Blocks.STONE.getDefaultState(), 0);
+			}
+		} else if (state.isOf(Blocks.BLUE_CONCRETE)) {
+			if (random.apply(region, pos).nextFloat() > 0.03) {
+				region.setBlockState(pos, Blocks.STONE.getDefaultState(), 0);
+			} else {
+				region.setBlockState(pos, Blocks.WATER.getDefaultState(), 0);
+				region.scheduleFluidTick(pos, Fluids.WATER, 0);
+			}
+		} else if (state.isOf(CubliminalBlocks.WOODEN_CRATE)) {
+			if (random.apply(region, pos).nextFloat() > 0.7) {
+				region.setBlockState(pos, Blocks.DARK_OAK_PLANKS.getDefaultState(), 0);
+			}
+		}
 	}
 
 	@Override

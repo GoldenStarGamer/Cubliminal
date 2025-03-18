@@ -25,14 +25,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-public class RotatableWallBlock extends HorizontalFacingBlock implements Waterloggable {
-    public static MapCodec<RotatableWallBlock> CODEC = RotatableWallBlock.createCodec(RotatableWallBlock::new);
+public class RotatableBlock extends HorizontalFacingBlock implements Waterloggable {
+    public static MapCodec<RotatableBlock> CODEC = RotatableBlock.createCodec(RotatableBlock::new);
+
     private IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> randomTick = (state, world, pos, random) -> null;
     private IOQuadFunction<BlockState, World, BlockPos, Random, Void> randomDisplayTick = (state, world, pos, random) -> null;
     private IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> scheduledTick = (state, world, pos, random) -> null;
     private boolean solid = true;
     private boolean collidable = true;
-    private boolean needsAttachment = true;
+    private boolean needsAttachment = false;
     private VoxelShape WEST_SHAPE = VoxelShapes.fullCube();
     private VoxelShape EAST_SHAPE = VoxelShapes.fullCube();
     private VoxelShape SOUTH_SHAPE = VoxelShapes.fullCube();
@@ -45,42 +46,42 @@ public class RotatableWallBlock extends HorizontalFacingBlock implements Waterlo
         return CODEC;
     }
 
-    public RotatableWallBlock(Settings settings) {
+    public RotatableBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
     }
 
-    public RotatableWallBlock onRandomTick(IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> randomTick) {
+    public RotatableBlock onRandomTick(IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> randomTick) {
         this.randomTick = randomTick;
         return this;
     }
 
-    public RotatableWallBlock onRandomDisplayTick(IOQuadFunction<BlockState, World, BlockPos, Random, Void> randomDisplayTick) {
+    public RotatableBlock onRandomDisplayTick(IOQuadFunction<BlockState, World, BlockPos, Random, Void> randomDisplayTick) {
         this.randomDisplayTick = randomDisplayTick;
         return this;
     }
 
-    public RotatableWallBlock onScheduledTick(IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> scheduledTick) {
+    public RotatableBlock onScheduledTick(IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> scheduledTick) {
         this.scheduledTick = scheduledTick;
         return this;
     }
 
-    public RotatableWallBlock setSolidBoundingBox(boolean solid) {
-        this.solid = solid;
+    public RotatableBlock notSolid() {
+        this.solid = false;
         return this;
     }
 
-    public RotatableWallBlock setCollidable(boolean collidable) {
-        this.collidable = collidable;
+    public RotatableBlock notCollidable() {
+        this.collidable = false;
         return this;
     }
 
-    public RotatableWallBlock needsAttachment(boolean needs) {
-        this.needsAttachment = needs;
+    public RotatableBlock needsAttachment() {
+        this.needsAttachment = true;
         return this;
     }
 
-    public RotatableWallBlock voxelShapes(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public RotatableBlock voxelShapes(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         this.WEST_SHAPE = Block.createCuboidShape(16 - maxZ, minY, minX, 16 - minZ, maxY, maxX);
         this.EAST_SHAPE = Block.createCuboidShape(minZ, minY, 16 - maxX, maxZ, maxY, 16 - minX);
         this.SOUTH_SHAPE = Block.createCuboidShape(minX, minY, minZ, maxX, maxY, maxZ);

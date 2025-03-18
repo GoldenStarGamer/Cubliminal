@@ -31,7 +31,11 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.FUSED_FLUORESCENT_LIGHT);
 						entries.add(CubliminalBlocks.MANILA_WALLPAPERS);
 						entries.add(CubliminalBlocks.TOP_MANILA_WALLPAPERS);
+                        entries.add(CubliminalBlocks.GRAY_ASPHALT);
+                        entries.add(CubliminalBlocks.GRAY_ASPHALT_SLAB);
+                        entries.add(CubliminalBlocks.WET_GRAY_ASPHALT);
                         entries.add(CubliminalBlocks.VERTICAL_LIGHT_TUBE);
+                        entries.add(CubliminalBlocks.HANGING_FLUORESCENT_LIGHTS);
                         entries.add(CubliminalBlocks.WALL_LIGHT_BULB);
                         entries.add(CubliminalBlocks.SMALL_HANGING_PIPE);
                         entries.add(CubliminalBlocks.VENTILATION_DUCT);
@@ -51,6 +55,7 @@ public class CubliminalItemGroups {
 						entries.add(CubliminalBlocks.SINK);
 						entries.add(CubliminalBlocks.SHOWER);
                         entries.add(CubliminalItems.WOODEN_PLANK);
+                        entries.add(CubliminalBlocks.WOODEN_CRATE);
                         entries.add(CubliminalItems.NAILED_BAT);
                         entries.add(CubliminalItems.SILVER_INGOT);
                         entries.add(CubliminalBlocks.FLUX_CAPACITOR);

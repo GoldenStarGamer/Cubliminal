@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "cubliminal:block/gray_asphalt_slab"
+    },
+    "type=double": {
+      "model": "cubliminal:block/gray_asphalt"
+    },
+    "type=top": {
+      "model": "cubliminal:block/gray_asphalt_slab_top"
+    }
+  }
+}

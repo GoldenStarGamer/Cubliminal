@@ -1,4 +1,4 @@
-package net.limit.cubliminal.util;
+package net.limit.cubliminal.access;
 
 import net.minecraft.world.biome.source.BiomeSupplier;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;

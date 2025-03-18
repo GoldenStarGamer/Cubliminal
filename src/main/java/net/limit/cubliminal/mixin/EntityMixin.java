@@ -1,6 +1,6 @@
 package net.limit.cubliminal.mixin;
 
-import net.limit.cubliminal.util.IEntityDataSaver;
+import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.util.NoClipEngine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

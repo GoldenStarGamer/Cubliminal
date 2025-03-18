@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=west": {
-      "model": "cubliminal:block/vertical_light_tube",
+    "facing=west,lit=false": {
+      "model": "cubliminal:block/vertical_light_tube_off",
       "y": 90
     },
-    "facing=south": {
-      "model": "cubliminal:block/vertical_light_tube"
+    "facing=south,lit=false": {
+      "model": "cubliminal:block/vertical_light_tube_off"
     },
-    "facing=north": {
-      "model": "cubliminal:block/vertical_light_tube",
+    "facing=north,lit=false": {
+      "model": "cubliminal:block/vertical_light_tube_off",
       "y": 180
     },
-    "facing=east": {
-      "model": "cubliminal:block/vertical_light_tube",
+    "facing=east,lit=false": {
+      "model": "cubliminal:block/vertical_light_tube_off",
+      "y": 270
+    },
+    "facing=west,lit=true": {
+      "model": "cubliminal:block/vertical_light_tube_on",
+      "y": 90
+    },
+    "facing=south,lit=true": {
+      "model": "cubliminal:block/vertical_light_tube_on"
+    },
+    "facing=north,lit=true": {
+      "model": "cubliminal:block/vertical_light_tube_on",
+      "y": 180
+    },
+    "facing=east,lit=true": {
+      "model": "cubliminal:block/vertical_light_tube_on",
       "y": 270
     }
   }
