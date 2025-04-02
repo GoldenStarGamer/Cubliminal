@@ -36,33 +36,32 @@ public class ShowerBlockEntity extends BlockEntity {
 		++blockEntity.age;
 		if (state.get(Properties.ENABLED)) {
 			float offsetX = 0;
-			float offsetZ = 0;
-			switch (state.get(ShowerBlock.FACING)) {
-				case NORTH:
-					offsetX = 0.375f;
-					offsetZ = 0.5f;
-					break;
-				case SOUTH:
-					offsetX = 0.375f;
-					offsetZ = 0.25f;
-					break;
-				case WEST:
-					offsetX = 0.5f;
-					offsetZ = 0.375f;
-					break;
-				case EAST:
-					offsetX = 0.25f;
-					offsetZ = 0.375f;
-					break;
-			}
-			for (float x = 0; x <= 0.25f; x += 0.125f) {
+			float offsetZ = switch (state.get(ShowerBlock.FACING)) {
+                case NORTH -> {
+                    offsetX = 0.375f;
+                    yield 0.5f;
+                }
+                case SOUTH -> {
+                    offsetX = 0.375f;
+                    yield 0.25f;
+                }
+                case WEST -> {
+                    offsetX = 0.5f;
+                    yield 0.375f;
+                }
+                case EAST -> {
+                    offsetX = 0.25f;
+                    yield 0.375f;
+                }
+                default -> 0;
+            };
+            for (float x = 0; x <= 0.25f; x += 0.125f) {
 				for (float z = 0; z <= 0.25f; z += 0.125f) {
 					world.addParticle(ParticleTypes.FALLING_WATER, pos.getX() + x + offsetX,
 						pos.getY() + 1.65, pos.getZ() + z + offsetZ, 0, 0, 0);
 				}
 			}
 			if (blockEntity.age % 12 == 0) {
-				//CubliminalSounds.blockPlaySound(world, pos, CubliminalSounds.SINK_AMBIENT.value());
 				world.playSoundAtBlockCenter(pos, CubliminalSounds.SINK_AMBIENT.value(), SoundCategory.BLOCKS, 1.0f, 1.0f, true);
 			}
 		}

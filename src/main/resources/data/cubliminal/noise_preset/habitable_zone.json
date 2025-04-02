@@ -1,0 +1,23 @@
+{
+  "dimension": "cubliminal:habitable_zone",
+  "global_settings": {
+    "rarity": 0.2,
+    "spacing": 4.5,
+    "safety": 4.0,
+    "decay_factor": 0.2
+  },
+  "biomes": {
+    "cubliminal:habitable_zone": {
+      "rarity": 0.0,
+      "spacing": 0.0,
+      "safety": 4.1,
+      "decay_factor": 0.25
+    },
+    "cubliminal:parking_zone": {
+      "rarity": 2.0,
+      "spacing": 3.5,
+      "safety": 3.8,
+      "decay_factor": 0.1
+    }
+  }
+}

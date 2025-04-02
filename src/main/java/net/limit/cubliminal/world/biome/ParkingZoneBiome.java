@@ -1,9 +1,9 @@
-package net.limit.cubliminal.world.biome.level_1;
+package net.limit.cubliminal.world.biome;
 
+import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
@@ -11,7 +11,7 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
-public class HabitableZoneBiome {
+public class ParkingZoneBiome {
     public static Biome create(RegistryEntryLookup<PlacedFeature> features, RegistryEntryLookup<ConfiguredCarver<?>> carvers) {
         Biome.Builder biome = new Biome.Builder();
 
@@ -19,7 +19,7 @@ public class HabitableZoneBiome {
         GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
         BiomeEffects.Builder biomeEffects = new BiomeEffects.Builder();
 
-        biomeEffects.loopSound(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP);
+        biomeEffects.loopSound(CubliminalSounds.AMBIENT_PILLARS_LEVEL_0);
         biomeEffects.skyColor(10989753);
         biomeEffects.fogColor(197388);
         biomeEffects.waterColor(6911607);
@@ -27,13 +27,12 @@ public class HabitableZoneBiome {
         BiomeEffects effects = biomeEffects.build();
 
         spawnSettings.spawn(SpawnGroup.MONSTER,
-                new SpawnSettings.SpawnEntry(EntityType.ZOMBIE, 515, 1, 1));
-        spawnSettings.creatureSpawnProbability(0.003f);
+                new SpawnSettings.SpawnEntry(EntityType.ZOMBIE, 10, 1, 3));
 
         biome.spawnSettings(spawnSettings.build());
         biome.generationSettings(generationSettings.build());
         biome.temperature(0.4f);
-        biome.downfall(0.7f);
+        biome.downfall(0.9f);
         biome.precipitation(false);
         biome.effects(effects);
 

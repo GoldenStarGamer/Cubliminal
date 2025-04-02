@@ -5,12 +5,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.block.custom.template.RotatableLightBlock;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.access.ChunkAccessor;
 import net.limit.cubliminal.util.Manip;
-import net.limit.cubliminal.world.biome.level_1.LevelOneBiomeSource;
+import net.limit.cubliminal.world.biome.source.ClusteredBiomeSource;
 import net.limit.cubliminal.world.maze.ClusteredDepthFirstMaze;
 import net.limit.cubliminal.world.maze.MultiFloorMazeGenerator;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
@@ -30,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.AbstractChunkHolder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkGenerationContext;
@@ -38,23 +38,23 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
-import org.apache.commons.compress.utils.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
 public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
-	public static final MapCodec<LevelOneChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
-			(instance) -> instance.group(BiomeSource.CODEC.fieldOf("biome_source").stable().forGetter(
-					(chunkGenerator) -> chunkGenerator.biomeSource), NbtGroup.CODEC.fieldOf("group").stable().forGetter(
-							(chunkGenerator) -> chunkGenerator.nbtGroup), Codec.INT.fieldOf("maze_width").stable().forGetter(
-									(chunkGenerator) -> chunkGenerator.mazeWidth), Codec.INT.fieldOf("maze_height").stable().forGetter(
-											(chunkGenerator) -> chunkGenerator.mazeHeight), Codec.LONG.fieldOf("seed_modifier").stable().forGetter(
-															(chunkGenerator) -> chunkGenerator.mazeSeedModifier))
-					.apply(instance, instance.stable(LevelOneChunkGenerator::new)));
+	public static final MapCodec<LevelOneChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			ClusteredBiomeSource.CODEC.fieldOf("biome_source").stable().forGetter(chunkGenerator -> chunkGenerator.biomeSource),
+					NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup),
+					Codec.INT.fieldOf("maze_width").stable().forGetter(chunkGenerator -> chunkGenerator.mazeWidth),
+					Codec.INT.fieldOf("maze_height").stable().forGetter(chunkGenerator -> chunkGenerator.mazeHeight),
+					Codec.LONG.fieldOf("seed_modifier").stable().forGetter(chunkGenerator -> chunkGenerator.mazeSeedModifier)
+			).apply(instance, instance.stable(LevelOneChunkGenerator::new)));
 
+	private final ClusteredBiomeSource biomeSource;
 	private final MultiFloorMazeGenerator<MazeComponent> mazeGenerator;
 	private final int mazeWidth;
 	private final int mazeHeight;
@@ -62,10 +62,10 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	private final int layerThickness;
 	private final int thicknessZ;
 	private final long mazeSeedModifier;
-	private int bottomSectionCoord;
 
-	public LevelOneChunkGenerator(BiomeSource biomeSource, NbtGroup group, int mazeWidth, int mazeHeight, long mazeSeedModifier) {
+	public LevelOneChunkGenerator(ClusteredBiomeSource biomeSource, NbtGroup group, int mazeWidth, int mazeHeight, long mazeSeedModifier) {
 		super(biomeSource, group);
+		this.biomeSource = biomeSource;
 		this.thicknessX = 16;
 		this.layerThickness = this.getWorldHeight() / 2;
 		this.thicknessZ = 16;
@@ -90,6 +90,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 						"s_1", "s_2", "s_3",
 						"w_1", "w_2", "w_3",
 						"e_1", "e_2", "e_3")
+				.with("entrance")
 			.build();
 	}
 
@@ -99,38 +100,36 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	public MazeComponent newMaze(ChunkRegion region, BlockPos mazePos, int width, int height, Random random) {
-		List<Vec2i> checkpoints = Lists.newArrayList();
 
-		Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)));
+        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)));
 		Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)));
 		Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos));
 		Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)));
 
 		// Include 4 additional connections to other mazes
-		List<Vec2i> connections = Lists.newArrayList();
+		List<Vec2i> connections = new ArrayList<>();
 
 		connections.add(new Vec2i(width - 1, randomUp.nextInt(height)));
 		connections.add(new Vec2i(0, randomDown.nextInt(height)));
 		connections.add(new Vec2i(randomLeft.nextInt(width), 0));
 		connections.add(new Vec2i(randomRight.nextInt(width), height - 1));
 
-		checkpoints.addAll(connections);
+        List<Vec2i> checkpoints = new ArrayList<>(connections);
 
 		// Check 4x4 cell cluster biomes as well if no lists have been generated
 		Vec2i mazeVec = new Vec2i(mazePos.getX(), mazePos.getZ());
 		boolean areSpotsRegistered = this.mazeGenerator.isIn(mazeVec);
 		// All the parking cells within the maze
-		List<Vec2i> parkingSpots = areSpotsRegistered ? this.mazeGenerator.getParkingSpots(mazeVec) : Lists.newArrayList();
+		List<Vec2i> parkingSpots = areSpotsRegistered ? this.mazeGenerator.getParkingSpots(mazeVec) : new ArrayList<>();
 
 		for (int x = 0; x < width; x += 4) {
 			for (int y = 0; y < height; y += 4) {
 				if (!areSpotsRegistered) {
 
-					RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) biomeSource)
-							.calcBiome(mazePos.add(x * thicknessX, 0, y * thicknessZ), bottomSectionCoord);
+					RegistryEntry<Biome> biome = biomeSource.calcBiome(mazePos.add(x * thicknessX, 0, y * thicknessZ));
 
 					if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
-						List<Vec2i> clusterSpots = Lists.newArrayList();
+						List<Vec2i> clusterSpots = new ArrayList<>();
 						// Add all the cells from the cluster to a temp list to later choose a random one
 						for (int dx = 0; dx < 4; dx++) {
 							for (int dy = 0; dy < 4; dy++) {
@@ -147,7 +146,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 					}
 				} else if (parkingSpots.contains(new Vec2i(x, y))) {
 
-					List<Vec2i> clusterSpots = Lists.newArrayList();
+					List<Vec2i> clusterSpots = new ArrayList<>();
 					for (int dx = 0; dx < 4; dx++) {
 						for (int dy = 0; dy < 4; dy++) {
 							clusterSpots.add(new Vec2i(x + dx, y + dy));
@@ -179,15 +178,14 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
 	public void decorateCell(ChunkRegion region, BlockPos pos, BlockPos mazePos, MazeComponent maze, CellState state, BlockPos thickness, Random random) {
 		Pair<MazePiece, Manipulation> piece = MazePiece.getFromCell(state, random);
-		RegistryEntry.Reference<Biome> biome = ((LevelOneBiomeSource) this.biomeSource)
-				.calcBiome(pos, this.bottomSectionCoord);
+		RegistryEntry<Biome> biome = this.biomeSource.calcBiome(pos);
 
 		if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
 			if (state.getExtra().containsKey("ramp")) {
 				if (pos.getY() == this.getMinimumY()) {
 
 					byte[] bytes = state.getExtra().get("ramp").getByteArray("ramp");
-					generateNbt(region, pos, nbtGroup.nbtId("ramp", rotate(Face.values()[bytes[1]]).concat("_" + bytes[0])));
+					generateNbt(region, pos, nbtGroup.nbtId("ramp", Manip.rotString(Face.values()[bytes[1]]).concat("_" + bytes[0])));
 				}
 			} else {
 				generateNbt(region, pos, nbtGroup.pick("parking", random));
@@ -236,34 +234,20 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 
 				if (!parking) {
 					BlockPos adjPos = mazePos.add(thicknessX * adjCell.getX(), 0, thicknessZ * adjCell.getY());
-					parking = ((LevelOneBiomeSource) biomeSource).calcBiome(adjPos, bottomSectionCoord).matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME);
+					parking = this.biomeSource.calcBiome(adjPos).matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME);
 				}
 				if (parking) {
-					if (state.goes(face)) {
-						region.setBlockState(pos.add(8, 8, 8), Blocks.SHROOMLIGHT.getDefaultState(), 0);
-					} else {
-						generateNbt(region, pos, nbtGroup.pick("e", random), Manip.get(face));
-					}
+					String key = state.goes(face) ? "entrance" : "e";
+					generateNbt(region, pos, nbtGroup.pick(key, random), Manip.get(face));
 				}
 			}
 		}
-	}
-
-	private static String rotate(Face face) {
-		return switch (face) {
-            case UP -> "e";
-            case DOWN -> "w";
-            case LEFT -> "n";
-            case RIGHT -> "s";
-        };
 	}
 
 	@Override
 	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
 												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		BlockPos startPos = chunk.getPos().getStartPos();
-
-		this.bottomSectionCoord = chunk.getBottomSectionCoord();
 		this.mazeGenerator.generateMaze(startPos, region, this.getWorldHeight(), this::newMaze, this::decorateCell);
 
 		return CompletableFuture.completedFuture(chunk);
@@ -301,7 +285,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 			if (random.apply(region, pos).nextFloat() > 0.4) {
 				region.setBlockState(pos, CubliminalBlocks.GRAY_ASPHALT.getDefaultState(), 0);
 			}
-		} else if (state.isOf(CubliminalBlocks.VERTICAL_LIGHT_TUBE)) {
+		} else if (state.getBlock() instanceof RotatableLightBlock) {
 			if (random.apply(region, pos).nextFloat() > 0.9) {
 				region.setBlockState(pos, state.with(Properties.LIT, false), 0);
 			}

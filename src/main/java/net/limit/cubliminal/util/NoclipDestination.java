@@ -62,14 +62,14 @@ public record NoclipDestination (RegistryKey<World> destination, Function<Server
         return Pair.of(finalPos, finalPos.toCenterPos().add(0, 2.5, 0));
     });
 
-    public static Pair<RegistryKey<World>, Pair<BlockPos, Vec3d>> getPos(ServerPlayerEntity player) {
+    public static Pair<RegistryKey<World>, NoclipDestination> fromPlayer(ServerPlayerEntity player) {
         NoclipDestination des = DESTINATIONS.getOrDefault(player.getWorld().getRegistryKey(), DEFAULT);
-        return Pair.of(des.destination(), des.locate(player));
+        return Pair.of(des.destination(), des);
     }
 
-    public static Pair<RegistryKey<World>, Pair<BlockPos, Vec3d>> fromDestination(RegistryKey<World> destination, ServerPlayerEntity player) {
+    public static Pair<RegistryKey<World>, NoclipDestination> fromDestination(RegistryKey<World> destination) {
         return Pair.of(destination, DESTINATIONS.values().stream()
-                .filter(d -> d.destination().equals(destination)).findFirst().orElse(DEFAULT).locate(player));
+                .filter(d -> d.destination().equals(destination)).findFirst().orElse(DEFAULT));
     }
 
     public Pair<BlockPos, Vec3d> locate(ServerPlayerEntity player) {

@@ -1,8 +1,8 @@
 {
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "cubliminal:block/hanging_fluorescent_lights",
-		"particle": "cubliminal:block/hanging_fluorescent_lights"
+		"0": "cubliminal:block/hanging_fluorescent_lights_off",
+		"particle": "cubliminal:block/hanging_fluorescent_lights_off"
 	},
 	"elements": [
 		{

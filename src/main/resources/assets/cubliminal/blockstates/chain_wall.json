@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/chain_wall",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/chain_wall"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/chain_wall",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/chain_wall",
+      "y": 270
+    }
+  }
+}

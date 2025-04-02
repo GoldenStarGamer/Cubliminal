@@ -383,6 +383,12 @@ public class CubliminalBlocks {
 					.voxelShapes(3.5, 3.5, 0, 12.5, 12.5, 7.5),
 			BlockItem::new, new Item.Settings());
 
+	public static final Block CHAIN_WALL = registerBlock("chain_wall", new RotatableBlock(
+			AbstractBlock.Settings.copy(Blocks.IRON_BARS)
+					.registryKey(RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id("chain_wall"))))
+			.voxelShapes(0, 0, 14, 16, 16, 16),
+			BlockItem::new, new Item.Settings());
+
 	public static final Block WOODEN_CRATE = register("wooden_crate", Block::new,
 			AbstractBlock.Settings.copy(Blocks.BARREL));
 

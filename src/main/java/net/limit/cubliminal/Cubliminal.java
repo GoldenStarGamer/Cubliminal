@@ -32,6 +32,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.noise.SimplexNoiseSampler;
+import net.minecraft.world.dimension.DimensionOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,12 +79,12 @@ public class Cubliminal implements ModInitializer {
 			}
 		});
 
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD)));
 		ServerTickEvents.START_SERVER_TICK.register(new ServerTickHandler());
 		ServerPlayerEvents.AFTER_RESPAWN.register(ServerTickHandler::onAfterDeath);
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(ServerTickHandler::afterWorldChange);
 		CommandRegistrationCallback.EVENT.register(NoClipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 
 		LootTableEvents.MODIFY.register(((key, tableBuilder, source, registries) -> {
 			if (source.isBuiltin() && key.getValue().equals(BURIED_TREASURE_ID)) {

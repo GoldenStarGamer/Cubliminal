@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import org.apache.commons.compress.utils.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -65,8 +66,8 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
         this.stack.push(cell);
 
         while (true) {
-            List<Face> neighbours = Lists.newArrayList();
-            List<Face> optNeighbours = Lists.newArrayList();
+            List<Face> neighbours = new ArrayList<>();
+            List<Face> optNeighbours = new ArrayList<>();
             int smallestDistance = Integer.MAX_VALUE;
             boolean followingPath = false;
 

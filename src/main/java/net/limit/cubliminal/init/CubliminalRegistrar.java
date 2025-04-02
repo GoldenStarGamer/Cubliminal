@@ -1,15 +1,15 @@
 package net.limit.cubliminal.init;
 
-import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.world.biome.level_0.RedroomsBiome;
-import net.limit.cubliminal.world.biome.level_0.LevelZeroBiomeSource;
-import net.limit.cubliminal.world.biome.level_0.PillarBiome;
-import net.limit.cubliminal.world.biome.level_0.TheLobbyBiome;
-import net.limit.cubliminal.world.biome.level_1.HabitableZoneBiome;
-import net.limit.cubliminal.world.biome.level_1.LevelOneBiomeSource;
-import net.limit.cubliminal.world.biome.level_1.ParkingZoneBiome;
+import net.limit.cubliminal.world.biome.RedroomsBiome;
+import net.limit.cubliminal.world.biome.PillarBiome;
+import net.limit.cubliminal.world.biome.TheLobbyBiome;
+import net.limit.cubliminal.world.biome.HabitableZoneBiome;
+import net.limit.cubliminal.world.biome.ParkingZoneBiome;
+import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
+import net.limit.cubliminal.world.biome.source.ClusteredBiomeSource;
+import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
 import net.limit.cubliminal.world.chunk.LevelOneChunkGenerator;
 import net.limit.cubliminal.world.chunk.LevelZeroChunkGenerator;
 import net.ludocrypt.limlib.api.LimlibRegistrar;
@@ -35,6 +35,7 @@ import net.minecraft.world.dimension.DimensionType.MonsterSettings;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -42,11 +43,11 @@ import java.util.OptionalLong;
 
 public class CubliminalRegistrar implements LimlibRegistrar {
 
-	private static final List<Pair<RegistryKey<LimlibWorld>, LimlibWorld>> WORLDS = Lists.newArrayList();
-	private static final List<Pair<RegistryKey<SoundEffects>, SoundEffects>> SOUND_EFFECTS = Lists.newArrayList();
-	private static final List<Pair<RegistryKey<Skybox>, Skybox>> SKYBOXES = Lists.newArrayList();
-	private static final List<Pair<RegistryKey<LDimensionEffects>, LDimensionEffects>> DIMENSION_EFFECTS = Lists.newArrayList();
-	private static final List<Pair<RegistryKey<PostEffect>, PostEffect>> POST_EFFECTS = Lists.newArrayList();
+	private static final List<Pair<RegistryKey<LimlibWorld>, LimlibWorld>> WORLDS = new ArrayList<>();
+	private static final List<Pair<RegistryKey<SoundEffects>, SoundEffects>> SOUND_EFFECTS = new ArrayList<>();
+	private static final List<Pair<RegistryKey<Skybox>, Skybox>> SKYBOXES = new ArrayList<>();
+	private static final List<Pair<RegistryKey<LDimensionEffects>, LDimensionEffects>> DIMENSION_EFFECTS = new ArrayList<>();
+	private static final List<Pair<RegistryKey<PostEffect>, PostEffect>> POST_EFFECTS = new ArrayList<>();
 
 	public static String THE_LOBBY = "the_lobby";
 	public static final RegistryKey<World> THE_LOBBY_KEY = RegistryKey.of(RegistryKeys.WORLD, Cubliminal.id(THE_LOBBY));
@@ -75,21 +76,17 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 		// worlds
 		getWorld(THE_LOBBY,
-			new LimlibWorld(
-				() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 32, 32,
-					TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(THE_LOBBY)), Cubliminal.id(THE_LOBBY),
-					0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
-				(registry) -> new DimensionOptions(
-					registry
-						.get(RegistryKeys.DIMENSION_TYPE)
-						.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(THE_LOBBY)))
-						.get(),
-					new LevelZeroChunkGenerator(
-							new LevelZeroBiomeSource(
-								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.THE_LOBBY_BIOME).get(),
-								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.PILLAR_BIOME).get(),
-								registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.REDROOMS_BIOME).get()),
-						LevelZeroChunkGenerator.createGroup(), 1))));
+				new LimlibWorld(
+						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 32, 32,
+								TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(THE_LOBBY)), Cubliminal.id(THE_LOBBY),
+								0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
+						(registry) -> new DimensionOptions(
+								registry
+										.get(RegistryKeys.DIMENSION_TYPE)
+										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(THE_LOBBY)))
+										.get(),
+								new LevelZeroChunkGenerator(
+										new SimplexBiomeSource(THE_LOBBY_KEY, 0.007f), LevelZeroChunkGenerator.createGroup(), 1))));
 
 		getWorld(HABITABLE_ZONE,
 				new LimlibWorld(
@@ -102,10 +99,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(HABITABLE_ZONE)))
 										.get(),
 								new LevelOneChunkGenerator(
-										new LevelOneBiomeSource(
-												registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.HABITABLE_ZONE_BIOME).get(),
-												registry.get(RegistryKeys.BIOME).getOptional(CubliminalBiomes.PARKING_ZONE_BIOME).get()),
-										LevelOneChunkGenerator.createGroup(), 16, 16, 0))));
+										new ClusteredBiomeSource(HABITABLE_ZONE_KEY,  6.9f, 4), LevelOneChunkGenerator.createGroup(), 16, 16, 0))));
 
 
 		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT));
@@ -146,6 +140,8 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 			registry.add(CubliminalBiomes.PARKING_ZONE_BIOME, ParkingZoneBiome.create(features, carvers),
 					RegistryEntryInfo.DEFAULT);
+
+			RegistryNoisePreset.initNoisePresets(registry);
 
 		});
 	}

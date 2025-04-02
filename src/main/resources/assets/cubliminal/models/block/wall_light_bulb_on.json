@@ -2,8 +2,8 @@
 	"parent": "block/cube_all",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "cubliminal:block/wall_light_bulb",
-		"particle": "cubliminal:block/wall_light_bulb"
+		"0": "cubliminal:block/wall_light_bulb_on",
+		"particle": "cubliminal:block/wall_light_bulb_on"
 	},
 	"elements": [
 		{

@@ -1,4 +1,4 @@
-package net.limit.cubliminal.world.biome.level_0;
+package net.limit.cubliminal.world.biome;
 
 import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -9,7 +9,7 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
-public class PillarBiome {
+public class RedroomsBiome {
 	public static Biome create(RegistryEntryLookup<PlacedFeature> features, RegistryEntryLookup<ConfiguredCarver<?>> carvers) {
 		Biome.Builder biome = new Biome.Builder();
 
@@ -17,9 +17,9 @@ public class PillarBiome {
 		GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
 		BiomeEffects.Builder biomeEffects = new BiomeEffects.Builder();
 
-		biomeEffects.loopSound(CubliminalSounds.AMBIENT_PILLARS_LEVEL_0);
-		biomeEffects.skyColor(197378);
-		biomeEffects.fogColor(1315584);
+		biomeEffects.loopSound(CubliminalSounds.AMBIENT_REDROOMS);
+		biomeEffects.skyColor(197122);
+		biomeEffects.fogColor(1312000);
 		biomeEffects.waterColor(15660426);
 		biomeEffects.waterFogColor(12499526);
 		BiomeEffects effects = biomeEffects.build();

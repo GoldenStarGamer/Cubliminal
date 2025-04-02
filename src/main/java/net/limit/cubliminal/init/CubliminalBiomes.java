@@ -2,8 +2,8 @@ package net.limit.cubliminal.init;
 
 import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.world.biome.level_0.LevelZeroBiomeSource;
-import net.limit.cubliminal.world.biome.level_1.LevelOneBiomeSource;
+import net.limit.cubliminal.world.biome.source.ClusteredBiomeSource;
+import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
 import net.limit.cubliminal.world.chunk.LevelOneChunkGenerator;
 import net.limit.cubliminal.world.chunk.LevelZeroChunkGenerator;
 import net.minecraft.registry.Registries;
@@ -35,10 +35,10 @@ public class CubliminalBiomes {
 
 
     public static void init() {
+		getBiomeSource("simplex_biome_source", SimplexBiomeSource.CODEC);
+		getBiomeSource("clustered_biome_source", ClusteredBiomeSource.CODEC);
 		getChunkGenerator("the_lobby_chunk_generator", LevelZeroChunkGenerator.CODEC);
-		getBiomeSource("the_lobby_biome_source", LevelZeroBiomeSource.CODEC);
 		getChunkGenerator("habitable_zone_chunk_generator", LevelOneChunkGenerator.CODEC);
-		getBiomeSource("habitable_zone_biome_source", LevelOneBiomeSource.CODEC);
     }
 
 	public static <C extends ChunkGenerator, D extends MapCodec<C>> D getChunkGenerator(String id, D chunkGeneratorCodec) {

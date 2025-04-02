@@ -2,7 +2,6 @@ package net.limit.cubliminal.util;
 
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.init.*;
 import net.minecraft.entity.Entity;
@@ -23,7 +22,7 @@ import java.util.Map;
 
 
 public class NoClipEngine {
-    private static final Map<ServerPlayerEntity, Pair<RegistryKey<World>, Pair<BlockPos, Vec3d>>> NOCLIP_MAP = new HashMap<>();
+    private static final Map<ServerPlayerEntity, Pair<RegistryKey<World>, NoclipDestination>> NOCLIP_MAP = new HashMap<>();
 
     public static <T extends PlayerEntity> boolean isNoClipping(T player) {
         return ((IEntityDataSaver) player).cubliminal$getPersistentData().getInt("ticksToNc") < 0;
@@ -61,7 +60,7 @@ public class NoClipEngine {
         CubliminalSounds.clientPlaySoundSingle(player, CubliminalSounds.NOCLIPPING, SoundCategory.MASTER,
                 player.getX(), player.getY(), player.getZ(),1f, 1f, 1);
 
-        NOCLIP_MAP.put(player, NoclipDestination.getPos(player));
+        NOCLIP_MAP.put(player, NoclipDestination.fromPlayer(player));
 
         NbtCompound nbt = IEntityDataSaver.cast(playerEntity);
         nbt.putInt("ticksToNc", -1);
@@ -75,20 +74,20 @@ public class NoClipEngine {
         NbtCompound nbt = IEntityDataSaver.cast(playerEntity);
         nbt.putInt("ticksToNc", -1);
 
-        NOCLIP_MAP.put(player, NoclipDestination.fromDestination(registryKey, player));
+        NOCLIP_MAP.put(player, NoclipDestination.fromDestination(registryKey));
     }
 
     private static void noClipDestination(ServerPlayerEntity player) {
-        Pair<RegistryKey<World>, Pair<BlockPos, Vec3d>> pair = NOCLIP_MAP.remove(player);
+        Pair<RegistryKey<World>, NoclipDestination> pair = NOCLIP_MAP.remove(player);
+        Pair<BlockPos, Vec3d> positions = pair.getSecond().locate(player);
         RegistryKey<World> registryKey = pair.getFirst();
 
-        player.setSpawnPoint(registryKey, pair.getSecond().getFirst(), 0f, true, false);
+        player.setSpawnPoint(registryKey, positions.getFirst(), 0f, true, false);
 
         TeleportTarget teleportTarget = new TeleportTarget(player.getServer().getWorld(registryKey),
-                pair.getSecond().getSecond(), Vec3d.ZERO, player.getYaw(), player.getPitch(), NoClipEngine::afterNoCLip);
+                positions.getSecond(), Vec3d.ZERO, player.getYaw(), player.getPitch(), NoClipEngine::afterNoCLip);
 
         player.teleportTo(teleportTarget);
-        Cubliminal.LOGGER.info("Teleporting to: " + teleportTarget.position());
     }
 
     public static <T extends PlayerEntity> void setTimer(T playerEntity, int amount) {

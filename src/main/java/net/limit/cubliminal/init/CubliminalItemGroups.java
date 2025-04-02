@@ -34,6 +34,7 @@ public class CubliminalItemGroups {
                         entries.add(CubliminalBlocks.GRAY_ASPHALT);
                         entries.add(CubliminalBlocks.GRAY_ASPHALT_SLAB);
                         entries.add(CubliminalBlocks.WET_GRAY_ASPHALT);
+                        entries.add(CubliminalBlocks.CHAIN_WALL);
                         entries.add(CubliminalBlocks.VERTICAL_LIGHT_TUBE);
                         entries.add(CubliminalBlocks.HANGING_FLUORESCENT_LIGHTS);
                         entries.add(CubliminalBlocks.WALL_LIGHT_BULB);

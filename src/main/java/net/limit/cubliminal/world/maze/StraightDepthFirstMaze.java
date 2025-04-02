@@ -1,10 +1,10 @@
 package net.limit.cubliminal.world.maze;
 
-import com.google.common.collect.Lists;
 import net.ludocrypt.limlib.api.world.maze.DepthLikeMaze;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.random.Random;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StraightDepthFirstMaze extends DepthLikeMaze {
@@ -24,7 +24,7 @@ public class StraightDepthFirstMaze extends DepthLikeMaze {
         this.stack.push(new Vec2i(0, 0));
 
         while (visitedCells < this.width * this.height) {
-            List<Face> neighbours = Lists.newArrayList();
+            List<Face> neighbours = new ArrayList<>();
 
             for (Face face : Face.values()) {
 

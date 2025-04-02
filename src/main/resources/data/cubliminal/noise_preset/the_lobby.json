@@ -1,0 +1,29 @@
+{
+  "dimension": "cubliminal:the_lobby",
+  "global_settings": {
+    "rarity": 0.2,
+    "spacing": 120.0,
+    "safety": 4.0,
+    "decay_factor": 0.2
+  },
+  "biomes": {
+    "cubliminal:the_lobby": {
+      "rarity": 0.0,
+      "spacing": 0.0,
+      "safety": 4.0,
+      "decay_factor": 0.25
+    },
+    "cubliminal:pillar_biome": {
+      "rarity": 8.0,
+      "spacing": 140.0,
+      "safety": 4.2,
+      "decay_factor": 0.1
+    },
+    "cubliminal:redrooms": {
+      "rarity": -6.0,
+      "spacing": -120.0,
+      "safety": 3.0,
+      "decay_factor": 1.0
+    }
+  }
+}

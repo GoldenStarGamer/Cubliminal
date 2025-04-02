@@ -20,14 +20,12 @@ public class NoClipCommand {
                 .executes(context -> execute(context.getSource()))
                 .then(CommandManager.argument("targets", EntityArgumentType.players())
                         .executes(context -> execute(context.getSource(), EntityArgumentType.getPlayers(context, "targets")))
+                        .then(CommandManager.literal("set").then(CommandManager.argument("ticks", IntegerArgumentType.integer(1))
+                                        .executes(context -> execute(context.getSource(), EntityArgumentType.getPlayers(context, "targets"),
+                                                IntegerArgumentType.getInteger(context, "ticks")))))
                         .then(CommandManager.argument("dimension", DimensionArgumentType.dimension())
                                 .executes(context -> execute(context.getSource(), EntityArgumentType.getPlayers(context, "targets"),
-                                        DimensionArgumentType.getDimensionArgument(context, "dimension")))))
-                .then(CommandManager.literal("set").then(CommandManager.argument("targets", EntityArgumentType.players())
-                        .then(CommandManager.argument("ticks", IntegerArgumentType.integer(1))
-                                .executes(context -> execute(context.getSource(), EntityArgumentType.getPlayers(context, "targets"),
-                                        IntegerArgumentType.getInteger(context, "ticks"))))))
-        );
+                                        DimensionArgumentType.getDimensionArgument(context, "dimension"))))));
     }
 
     private static int execute(ServerCommandSource source) {
