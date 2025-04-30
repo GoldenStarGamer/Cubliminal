@@ -2,22 +2,58 @@
   "dimension": "cubliminal:habitable_zone",
   "global_settings": {
     "rarity": 0.2,
-    "spacing": 4.5,
+    "spacing": 100.0,
     "safety": 4.0,
     "decay_factor": 0.2
   },
   "biomes": {
-    "cubliminal:habitable_zone": {
-      "rarity": 0.0,
-      "spacing": 0.0,
-      "safety": 4.1,
-      "decay_factor": 0.25
+    "cubliminal:aquila_sector": {
+      "rarity": -4.0,
+      "spacing": -60.0,
+      "safety": 4.0,
+      "decay_factor": 0.24
     },
-    "cubliminal:parking_zone": {
-      "rarity": 2.0,
-      "spacing": 3.5,
+    "cubliminal:guild_sector": {
+      "rarity": -4.0,
+      "spacing": 60.0,
+      "safety": 4.2,
+      "decay_factor": 0.15
+    },
+    "cubliminal:gothic_sector": {
+      "rarity": 5.0,
+      "spacing": -80.0,
       "safety": 3.8,
-      "decay_factor": 0.1
+      "decay_factor": 0.3
+    },
+    "cubliminal:ouroboros_sector": {
+      "rarity": 7.5,
+      "spacing": 90.0,
+      "safety": 3.6,
+      "decay_factor": 0.4
+    },
+    "cubliminal:deep_aquila_sector": {
+      "rarity": -4.0,
+      "spacing": -60.0,
+      "safety": 4.0,
+      "decay_factor": 0.24
+    },
+    "cubliminal:deep_guild_sector": {
+      "rarity": -4.0,
+      "spacing": 60.0,
+      "safety": 4.2,
+      "decay_factor": 0.15
+    },
+    "cubliminal:deep_gothic_sector": {
+      "rarity": 5.0,
+      "spacing": -80.0,
+      "safety": 3.8,
+      "decay_factor": 0.3
+    },
+    "cubliminal:deep_ouroboros_sector": {
+      "rarity": 7.5,
+      "spacing": 90.0,
+      "safety": 3.6,
+      "decay_factor": 0.4
     }
   }
 }

@@ -8,6 +8,5 @@ import net.minecraft.world.biome.Biome;
 public interface LiminalBiomeSource {
     RegistryEntry<Biome> calcBiome(int blockX, int blockY, int blockZ);
     RegistryEntry<Biome> calcBiome(BlockPos pos);
-    RegistryEntry<Biome> getBiome(double rarityValue, double spacingValue, double safetyValue);
     Level getLevel();
 }

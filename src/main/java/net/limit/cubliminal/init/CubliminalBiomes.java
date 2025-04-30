@@ -17,22 +17,32 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public class CubliminalBiomes {
-    public static final RegistryKey<Biome> THE_LOBBY_BIOME = RegistryKey
-		.of(RegistryKeys.BIOME, Cubliminal.id(CubliminalRegistrar.THE_LOBBY));
+    public static final RegistryKey<Biome> THE_LOBBY_BIOME = of(CubliminalRegistrar.THE_LOBBY);
 
-	public static final RegistryKey<Biome> PILLAR_BIOME = RegistryKey
-			.of(RegistryKeys.BIOME, Cubliminal.id("pillar_biome"));
+	public static final RegistryKey<Biome> PILLAR_BIOME = of("pillar_biome");
 
-	public static final RegistryKey<Biome> REDROOMS_BIOME = RegistryKey
-			.of(RegistryKeys.BIOME, Cubliminal.id("redrooms"));
+	public static final RegistryKey<Biome> REDROOMS_BIOME = of("redrooms");
 
-	public static final RegistryKey<Biome> HABITABLE_ZONE_BIOME = RegistryKey
-			.of(RegistryKeys.BIOME, Cubliminal.id(CubliminalRegistrar.HABITABLE_ZONE));
+	public static final RegistryKey<Biome> HABITABLE_ZONE_BIOME = of(CubliminalRegistrar.HABITABLE_ZONE);
 
-	public static final RegistryKey<Biome> PARKING_ZONE_BIOME = RegistryKey
-			.of(RegistryKeys.BIOME, Cubliminal.id("parking_zone"));
+	public static final RegistryKey<Biome> PARKING_ZONE_BIOME = of("parking_zone");
 
-	public static final TagKey<Biome> CAN_NOCLIP_TO = of("can_noclip_to");
+	public static final RegistryKey<Biome> AQUILA_SECTOR_BIOME = of("aquila_sector");
+	public static final RegistryKey<Biome> DEEP_AQUILA_SECTOR_BIOME = of("deep_aquila_sector");
+
+	public static final RegistryKey<Biome> GUILD_SECTOR_BIOME = of("guild_sector");
+	public static final RegistryKey<Biome> DEEP_GUILD_SECTOR_BIOME = of("deep_guild_sector");
+
+	public static final RegistryKey<Biome> GOTHIC_SECTOR_BIOME = of("gothic_sector");
+	public static final RegistryKey<Biome> DEEP_GOTHIC_SECTOR_BIOME = of("deep_gothic_sector");
+
+	public static final RegistryKey<Biome> OUROBOROS_SECTOR_BIOME = of("ouroboros_sector");
+	public static final RegistryKey<Biome> DEEP_OUROBOROS_SECTOR_BIOME = of("deep_ouroboros_sector");
+
+
+
+	public static final TagKey<Biome> CAN_NOCLIP_TO = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("can_noclip_to"));
+	public static final TagKey<Biome> DEEP_LEVEL_ONE = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("deep_level_one"));
 
 
     public static void init() {
@@ -50,8 +60,8 @@ public class CubliminalBiomes {
 		return Registry.register(Registries.BIOME_SOURCE, Cubliminal.id(id), biomeSourceCodec);
 	}
 
-	public static TagKey<Biome> of(String id) {
-		return TagKey.of(RegistryKeys.BIOME, Cubliminal.id(id));
+	public static RegistryKey<Biome> of(String id) {
+		return RegistryKey.of(RegistryKeys.BIOME, Cubliminal.id(id));
 	}
 
 }

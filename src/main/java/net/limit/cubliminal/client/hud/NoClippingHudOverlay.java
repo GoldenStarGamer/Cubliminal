@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.client.NoClippingSoundInstance;
 import net.limit.cubliminal.config.CubliminalConfig;
-import net.limit.cubliminal.util.NoClipEngine;
+import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;

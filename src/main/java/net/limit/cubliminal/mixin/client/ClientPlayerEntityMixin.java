@@ -3,7 +3,7 @@ package net.limit.cubliminal.mixin.client;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.limit.cubliminal.util.NoClipEngine;
+import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;

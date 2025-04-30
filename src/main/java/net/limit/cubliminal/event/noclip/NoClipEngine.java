@@ -1,4 +1,4 @@
-package net.limit.cubliminal.util;
+package net.limit.cubliminal.event.noclip;
 
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

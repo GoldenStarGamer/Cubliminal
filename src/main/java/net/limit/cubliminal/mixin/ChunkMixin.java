@@ -52,15 +52,12 @@ public abstract class ChunkMixin implements ChunkAccessor {
 
     @Unique
     public void cubliminal$levelOne(BiomeSupplier biomeSupplier) {
-        ChunkPos chunkPos = this.getPos();
         if (biomeSupplier instanceof LiminalBiomeSource biomeSource) {
-            int i = BiomeCoords.fromBlock(chunkPos.getStartX());
-            int j = BiomeCoords.fromBlock(chunkPos.getStartZ());
+            ChunkPos chunkPos = this.getPos();
             HeightLimitView heightLimitView = this.getHeightLimitView();
-
             int k = heightLimitView.getBottomSectionCoord();
 
-            RegistryEntry<Biome> biome = biomeSource.calcBiome(i, BiomeCoords.fromChunk(k), j);
+            RegistryEntry<Biome> biome = biomeSource.calcBiome(chunkPos.getStartX(), k, chunkPos.getStartZ());
 
             for (; k <= heightLimitView.getTopSectionCoord(); ++k) {
                 ChunkSection chunkSection = this.getSection(this.getHeightLimitView().sectionCoordToIndex(k));

@@ -4,8 +4,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
 import net.limit.cubliminal.init.CubliminalPackets;
-import net.limit.cubliminal.util.NoClipEngine;
-import net.minecraft.client.option.KeyBinding;
+import net.limit.cubliminal.event.noclip.NoClipEngine;
 
 public class KeyInputHandler {
 

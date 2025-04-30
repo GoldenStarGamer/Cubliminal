@@ -2,7 +2,7 @@ package net.limit.cubliminal.event.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.limit.cubliminal.util.NoClipEngine;
+import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;

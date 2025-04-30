@@ -1,8 +1,7 @@
-package net.limit.cubliminal.util;
+package net.limit.cubliminal.event.sanity;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.access.IEntityDataSaver;
-import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.limit.cubliminal.init.CubliminalPackets;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
@@ -10,7 +9,6 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
@@ -18,8 +16,6 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-
-import java.util.Optional;
 
 public class SanityManager {
 

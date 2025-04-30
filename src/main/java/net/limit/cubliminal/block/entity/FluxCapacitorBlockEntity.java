@@ -4,7 +4,7 @@ import net.limit.cubliminal.block.custom.FluxCapacitorBlock;
 import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalSounds;
-import net.limit.cubliminal.util.NoClipEngine;
+import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;

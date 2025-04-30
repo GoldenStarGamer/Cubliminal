@@ -71,7 +71,7 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
         double safetyValue = this.sampleSafety(dx, dz);
         //Cubliminal.LOGGER.info("Noise: " + rarityValue + "; " + spacingValue + "; " + safetyValue);
 
-        return getBiome(rarityValue, spacingValue, safetyValue);
+        return getBiomeReference(rarityValue, spacingValue, safetyValue);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
         double spacingValue = this.sampleSpacing(x, z, dx, dz);
         double safetyValue = this.sampleSafety(dx, dz);
 
-        return getBiome(rarityValue, spacingValue, safetyValue);
+        return getBiomeReference(rarityValue, spacingValue, safetyValue);
     }
 
     private double sampleRarity(double dx, double dz) {
@@ -119,8 +119,7 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
         return this.maxSpacing * Math.pow(Math.cos((Math.PI / this.maxSpacing) * d), 5);
     }
 
-    @Override
-    public RegistryEntry<Biome> getBiome(double rarityValue, double spacingValue, double safetyValue) {
+    public RegistryEntry<Biome> getBiomeReference(double rarityValue, double spacingValue, double safetyValue) {
         double smallestDifference = Double.MAX_VALUE;
         RegistryEntry<Biome> chosenBiome = null;
 

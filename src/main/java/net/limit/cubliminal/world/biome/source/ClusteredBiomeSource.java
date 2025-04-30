@@ -79,7 +79,7 @@ public class ClusteredBiomeSource extends BiomeSource implements LiminalBiomeSou
         double safetyValue = this.sampleSafety(dx, dz);
         //Cubliminal.LOGGER.info("Noise: " + rarityValue + "; " + spacingValue + "; " + safetyValue);
 
-        return getBiome(rarityValue, spacingValue, safetyValue);
+        return getBiomeReference(rarityValue, spacingValue, safetyValue);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ClusteredBiomeSource extends BiomeSource implements LiminalBiomeSou
         double spacingValue = this.sampleSpacing(grandPos.getX(), grandPos.getZ(), dx, dz);
         double safetyValue = this.sampleSafety(dx, dz);
 
-        return getBiome(rarityValue, spacingValue, safetyValue);
+        return getBiomeReference(rarityValue, spacingValue, safetyValue);
     }
 
     private double sampleRarity(double dx, double dz) {
@@ -128,8 +128,7 @@ public class ClusteredBiomeSource extends BiomeSource implements LiminalBiomeSou
         return this.maxSpacing * Math.pow(Math.cos((Math.PI / this.maxSpacing) * d), 5);
     }
 
-    @Override
-    public RegistryEntry<Biome> getBiome(double rarityValue, double spacingValue, double safetyValue) {
+    public RegistryEntry<Biome> getBiomeReference(double rarityValue, double spacingValue, double safetyValue) {
         double smallestDifference = Double.MAX_VALUE;
         RegistryEntry<Biome> chosenBiome = null;
 

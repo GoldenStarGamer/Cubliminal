@@ -4,11 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.level.LevelWithClusteredMaze;
 import net.limit.cubliminal.level.Levels;
-import net.limit.cubliminal.world.biome.RedroomsBiome;
-import net.limit.cubliminal.world.biome.PillarBiome;
-import net.limit.cubliminal.world.biome.TheLobbyBiome;
-import net.limit.cubliminal.world.biome.HabitableZoneBiome;
-import net.limit.cubliminal.world.biome.ParkingZoneBiome;
+import net.limit.cubliminal.world.biome.*;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
 import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
@@ -102,7 +98,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(HABITABLE_ZONE)))
 										.get(),
 								new LevelOneChunkGenerator(
-										new LevelOneBiomeSource(6.9f),
+										new LevelOneBiomeSource(0.008f),
 										LevelOneChunkGenerator.createGroup(), (LevelWithClusteredMaze) Levels.LEVEL_1.getLevel()))));
 
 
@@ -130,20 +126,21 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 			RegistryEntryLookup<PlacedFeature> features = infoLookup.getRegistryInfo(RegistryKeys.PLACED_FEATURE).get().entryLookup();
 			RegistryEntryLookup<ConfiguredCarver<?>> carvers = infoLookup.getRegistryInfo(RegistryKeys.CONFIGURED_CARVER).get().entryLookup();
 
-			registry.add(CubliminalBiomes.THE_LOBBY_BIOME, TheLobbyBiome.create(features, carvers),
-					RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.THE_LOBBY_BIOME, TheLobbyBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.REDROOMS_BIOME, RedroomsBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 
-			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers),
-					RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.HABITABLE_ZONE_BIOME, HabitableZoneBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.PARKING_ZONE_BIOME, ParkingZoneBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 
-			registry.add(CubliminalBiomes.REDROOMS_BIOME, RedroomsBiome.create(features, carvers),
-					RegistryEntryInfo.DEFAULT);
-
-			registry.add(CubliminalBiomes.HABITABLE_ZONE_BIOME, HabitableZoneBiome.create(features, carvers),
-					RegistryEntryInfo.DEFAULT);
-
-			registry.add(CubliminalBiomes.PARKING_ZONE_BIOME, ParkingZoneBiome.create(features, carvers),
-					RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.AQUILA_SECTOR_BIOME, AquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.DEEP_AQUILA_SECTOR_BIOME, DeepAquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.GUILD_SECTOR_BIOME, GuildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.DEEP_GUILD_SECTOR_BIOME, DeepGuildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.GOTHIC_SECTOR_BIOME, GothicSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.DEEP_GOTHIC_SECTOR_BIOME, DeepGothicSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.OUROBOROS_SECTOR_BIOME, OuroborosSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.DEEP_OUROBOROS_SECTOR_BIOME, DeepOuroborosSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 
 			RegistryNoisePreset.initNoisePresets(registry);
 

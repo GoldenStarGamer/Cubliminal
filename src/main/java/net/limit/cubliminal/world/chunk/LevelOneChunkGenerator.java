@@ -43,7 +43,7 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements BackroomsLevel {
 	public static final MapCodec<LevelOneChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -101,7 +101,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		return CODEC;
 	}
 
-	public MazeComponent optimizedNewMaze(ChunkRegion region, BlockPos mazePos, int width, int height, Random random) {
+	public MazeComponent newMaze(ChunkRegion region, BlockPos mazePos, int width, int height, Random random) {
 
 		Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)));
 		Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)));
@@ -275,7 +275,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
 												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		BlockPos startPos = chunk.getPos().getStartPos();
-		this.mazeGenerator.generateMaze(startPos, region, this.getWorldHeight(), this::optimizedNewMaze, this::decorateCell);
+		//this.mazeGenerator.generateMaze(startPos, region, this.getWorldHeight(), this::newMaze, this::decorateCell);
 
 		return CompletableFuture.completedFuture(chunk);
 	}
@@ -296,47 +296,47 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 
 		super.modifyStructure(region, pos, state, blockEntityNbt, update);
 
-		BiFunction<ChunkRegion, BlockPos, Random> random = (region1, pos1) -> Random.create(region1.getSeed() + LimlibHelper.blockSeed(pos1));
+		Supplier<Random> random = () -> Random.create(region.getSeed() + LimlibHelper.blockSeed(pos));
 
 		if (state.isOf(Blocks.TUFF_BRICKS)) {
-			if (random.apply(region, pos).nextFloat() > 0.8) {
+			if (random.get().nextFloat() > 0.8) {
 				region.setBlockState(pos, Blocks.POLISHED_TUFF.getDefaultState(), 0);
 			}
 		} else if (state.isOf(Blocks.YELLOW_CONCRETE)) {
-			if (random.apply(region, pos).nextFloat() < 0.8) {
+			if (random.get().nextFloat() < 0.8) {
 				region.setBlockState(pos, Blocks.STONE.getDefaultState(), 0);
 			} else {
 				region.setBlockState(pos, Blocks.ANDESITE.getDefaultState(), 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.WET_GRAY_ASPHALT)) {
-			if (random.apply(region, pos).nextFloat() > 0.4) {
+			if (random.get().nextFloat() > 0.4) {
 				region.setBlockState(pos, CubliminalBlocks.GRAY_ASPHALT.getDefaultState(), 0);
 			}
 		} else if (state.getBlock() instanceof RotatableLightBlock) {
-			if (random.apply(region, pos).nextFloat() > 0.9) {
+			if (random.get().nextFloat() > 0.9) {
 				region.setBlockState(pos, state.with(Properties.LIT, false), 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.SMOKE_DETECTOR)) {
-			if (random.apply(region, pos).nextFloat() > 0.1) {
+			if (random.get().nextFloat() > 0.1) {
 				region.setBlockState(pos, Blocks.AIR.getDefaultState(), 0);
 			}
 		} else if (state.isOf(Blocks.ANDESITE_STAIRS)) {
-			if (random.apply(region, pos).nextFloat() > 0.5) {
+			if (random.get().nextFloat() > 0.5) {
 				region.setBlockState(pos, Blocks.ANDESITE.getDefaultState(), 0);
 			}
 		} else if (state.isOf(Blocks.STONE_STAIRS)) {
-			if (random.apply(region, pos).nextFloat() > 0.5) {
+			if (random.get().nextFloat() > 0.5) {
 				region.setBlockState(pos, Blocks.STONE.getDefaultState(), 0);
 			}
 		} else if (state.isOf(Blocks.BLUE_CONCRETE)) {
-			if (random.apply(region, pos).nextFloat() > 0.03) {
+			if (random.get().nextFloat() > 0.03) {
 				region.setBlockState(pos, Blocks.STONE.getDefaultState(), 0);
 			} else {
 				region.setBlockState(pos, Blocks.WATER.getDefaultState(), 0);
 				region.scheduleFluidTick(pos, Fluids.WATER, 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.WOODEN_CRATE)) {
-			if (random.apply(region, pos).nextFloat() > 0.7) {
+			if (random.get().nextFloat() > 0.7) {
 				region.setBlockState(pos, Blocks.DARK_OAK_PLANKS.getDefaultState(), 0);
 			}
 		}

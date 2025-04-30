@@ -6,7 +6,7 @@ import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.level.Levels;
-import net.limit.cubliminal.util.SanityManager;
+import net.limit.cubliminal.event.sanity.SanityManager;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
