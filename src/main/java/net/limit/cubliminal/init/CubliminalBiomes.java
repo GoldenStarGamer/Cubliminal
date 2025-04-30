@@ -3,6 +3,7 @@ package net.limit.cubliminal.init;
 import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.world.biome.source.ClusteredBiomeSource;
+import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
 import net.limit.cubliminal.world.chunk.LevelOneChunkGenerator;
 import net.limit.cubliminal.world.chunk.LevelZeroChunkGenerator;
@@ -37,6 +38,7 @@ public class CubliminalBiomes {
     public static void init() {
 		getBiomeSource("simplex_biome_source", SimplexBiomeSource.CODEC);
 		getBiomeSource("clustered_biome_source", ClusteredBiomeSource.CODEC);
+		getBiomeSource("level_one_biome_source", LevelOneBiomeSource.CODEC);
 		getChunkGenerator("the_lobby_chunk_generator", LevelZeroChunkGenerator.CODEC);
 		getChunkGenerator("habitable_zone_chunk_generator", LevelOneChunkGenerator.CODEC);
     }

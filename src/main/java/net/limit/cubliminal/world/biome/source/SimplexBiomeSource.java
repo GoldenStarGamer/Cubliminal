@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.world.biome.noise.NoiseParameters;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
 import net.minecraft.registry.RegistryKey;
@@ -21,9 +22,10 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class SimplexBiomeSource extends BiomeSource implements SpecialBiomeSource {
+public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSource {
     public static final MapCodec<SimplexBiomeSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             World.CODEC.fieldOf("dimension").forGetter(biomeSource -> biomeSource.world),
+            Level.LEVEL_CODEC.fieldOf("level").forGetter(biomeSource -> biomeSource.level),
             Codec.FLOAT.optionalFieldOf("scale", 0.007f).forGetter(biomeSource -> biomeSource.scale)
     ).apply(instance, instance.stable(SimplexBiomeSource::new)));
 
@@ -31,6 +33,7 @@ public class SimplexBiomeSource extends BiomeSource implements SpecialBiomeSourc
     private final RegistryNoisePreset noisePreset;
     private final Set<RegistryEntry<Biome>> biomeList;
     private final float scale;
+    private final Level level;
     private boolean initialized;
     private SimplexNoiseSampler raritySampler;
     private final double rarityScale;
@@ -39,11 +42,12 @@ public class SimplexBiomeSource extends BiomeSource implements SpecialBiomeSourc
     private SimplexNoiseSampler safetySampler;
     private final double levelSafety;
 
-    public SimplexBiomeSource(RegistryKey<World> world, float scale) {
+    public SimplexBiomeSource(RegistryKey<World> world, Level level, float scale) {
         this.world = world;
         this.noisePreset = RegistryNoisePreset.getPreset(world);
         this.biomeList = this.noisePreset.biomes().keySet();
         this.scale = scale;
+        this.level = level;
         this.rarityScale = this.noisePreset.globalSettings().rarity();
         this.maxSpacing = this.noisePreset.globalSettings().spacing();
         this.levelSafety = this.noisePreset.globalSettings().safety();
@@ -65,13 +69,18 @@ public class SimplexBiomeSource extends BiomeSource implements SpecialBiomeSourc
         double rarityValue = this.sampleRarity(dx, dz);
         double spacingValue = this.sampleSpacing(x, z, dx, dz);
         double safetyValue = this.sampleSafety(dx, dz);
-        Cubliminal.LOGGER.info("Noise: " + rarityValue + "; " + spacingValue + "; " + safetyValue);
+        //Cubliminal.LOGGER.info("Noise: " + rarityValue + "; " + spacingValue + "; " + safetyValue);
 
         return getBiome(rarityValue, spacingValue, safetyValue);
     }
 
     @Override
-    public RegistryEntry<Biome> calcBiome(BlockPos startPos) {
+    public RegistryEntry<Biome> calcBiome(BlockPos pos) {
+        return this.calcBiome(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    @Override
+    public RegistryEntry<Biome> calcBiome(int blockX, int blockY, int blockZ) {
         if (!initialized) {
             Random random = Random.create(Cubliminal.SERVER.getSeed());
             this.raritySampler = new SimplexNoiseSampler(new ChunkRandom(random.split()));
@@ -79,8 +88,8 @@ public class SimplexBiomeSource extends BiomeSource implements SpecialBiomeSourc
             this.safetySampler = new SimplexNoiseSampler(new ChunkRandom(random));
             initialized = true;
         }
-        int x = BiomeCoords.fromBlock(startPos.getX());
-        int z = BiomeCoords.fromBlock(startPos.getZ());
+        int x = BiomeCoords.fromBlock(blockX);
+        int z = BiomeCoords.fromBlock(blockZ);
         double dx = x * this.scale;
         double dz = z * this.scale;
 
@@ -127,6 +136,11 @@ public class SimplexBiomeSource extends BiomeSource implements SpecialBiomeSourc
             }
         }
         return chosenBiome;
+    }
+
+    @Override
+    public Level getLevel() {
+        return this.level;
     }
 
     @Override

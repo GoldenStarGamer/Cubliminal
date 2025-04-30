@@ -13,10 +13,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
  */
 public record NoiseParameters(double rarity, double spacing, double safety, double decayFactor) {
     public static final Codec<NoiseParameters> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.DOUBLE.fieldOf("rarity").forGetter(NoiseParameters::rarity),
+            Codec.doubleRange(-8, 8).fieldOf("rarity").forGetter(NoiseParameters::rarity),
             Codec.DOUBLE.fieldOf("spacing").forGetter(NoiseParameters::spacing),
-            Codec.DOUBLE.fieldOf("safety").forGetter(NoiseParameters::safety),
-            Codec.DOUBLE.fieldOf("decay_factor").forGetter(NoiseParameters::decayFactor)
+            Codec.doubleRange(0, 5).fieldOf("safety").forGetter(NoiseParameters::safety),
+            Codec.doubleRange(0, 1).fieldOf("decay_factor").forGetter(NoiseParameters::decayFactor)
     ).apply(instance, instance.stable(NoiseParameters::new)));
 
     public static final NoiseParameters DEFAULT = new NoiseParameters(0, 0, 0, 0);

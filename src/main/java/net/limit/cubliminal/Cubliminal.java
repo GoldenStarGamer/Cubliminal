@@ -18,6 +18,7 @@ import net.limit.cubliminal.event.command.NoClipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.access.IEntityDataSaver;
+import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.util.NoClipEngine;
 import net.limit.cubliminal.util.NoclipDestination;
 import net.minecraft.entity.damage.DamageType;
@@ -32,8 +33,6 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.noise.SimplexNoiseSampler;
-import net.minecraft.world.dimension.DimensionOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,10 +55,12 @@ public class Cubliminal implements ModInitializer {
 	public void onInitialize() {
 		AutoConfig.register(CubliminalConfig.class, GsonConfigSerializer::new);
 
+		Levels.init();
 		CubliminalItemGroups.init();
 		CubliminalItems.init();
 		CubliminalBlocks.init();
 		CubliminalBiomes.init();
+		CubliminalStructures.init();
 		CubliminalSounds.init();
 		CubliminalEntities.init();
 		CubliminalEffects.init();
@@ -79,7 +80,7 @@ public class Cubliminal implements ModInitializer {
 			}
 		});
 
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(RegistryKeys.toWorldKey(DimensionOptions.OVERWORLD)));
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 		ServerTickEvents.START_SERVER_TICK.register(new ServerTickHandler());
 		ServerPlayerEvents.AFTER_RESPAWN.register(ServerTickHandler::onAfterDeath);
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(ServerTickHandler::afterWorldChange);

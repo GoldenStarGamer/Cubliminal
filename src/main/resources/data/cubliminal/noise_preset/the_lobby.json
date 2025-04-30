@@ -23,7 +23,7 @@
       "rarity": -6.0,
       "spacing": -120.0,
       "safety": 3.0,
-      "decay_factor": 1.0
+      "decay_factor": 0.9
     }
   }
 }

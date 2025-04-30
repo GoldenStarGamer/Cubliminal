@@ -1,12 +1,12 @@
 package net.limit.cubliminal.util;
 
 import net.ludocrypt.limlib.api.world.Manipulation;
+import net.ludocrypt.limlib.api.world.maze.MazeComponent;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent.Face;
-import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.Direction;
 
-public class Manip {
+public class MazeUtil {
 
     public static Direction getDirection(Face face) {
         return switch (face) {
@@ -57,5 +57,9 @@ public class Manip {
             case COUNTERCLOCKWISE_90 -> BlockRotation.CLOCKWISE_90;
         };
         return Manipulation.of(rotation, manipulation.getMirror());
+    }
+
+    public static boolean fits(MazeComponent.Vec2i vec, int mazeWidth, int mazeHeight) {
+        return vec.getX() >= 0 && vec.getX() < mazeWidth && vec.getY() >= 0 && vec.getY() < mazeHeight;
     }
 }

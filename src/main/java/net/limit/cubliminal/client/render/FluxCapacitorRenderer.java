@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.block.custom.FluxCapacitorBlock;
 import net.limit.cubliminal.block.entity.FluxCapacitorBlockEntity;
-import net.limit.cubliminal.client.CubliminalRenderLayers;
+import net.limit.cubliminal.client.RenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -56,7 +56,7 @@ public class FluxCapacitorRenderer implements BlockEntityRenderer<FluxCapacitorB
                 matrices.scale(progress, progress, 1.0f);
             }
 
-            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(CubliminalRenderLayers.BLOOM);
+            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayers.getFluxCapacitor());
             switch (direction) {
                 case NORTH -> renderNorth(matrices, vertexConsumer, offset, light);
                 case WEST -> renderWest(matrices, vertexConsumer, offset, light);

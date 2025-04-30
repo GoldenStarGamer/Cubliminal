@@ -35,8 +35,8 @@ public class ServerTickHandler implements ServerTickEvents.StartTick {
 				NoClipEngine.run(player);
 			}
 			// run sanity stuff
-			if (isVulnerable && inBackrooms(player.getWorld().getRegistryKey())
-					&& !player.getWorld().getDifficulty().equals(Difficulty.PEACEFUL)) {
+			if (isVulnerable && inBackrooms(player.getWorld().getRegistryKey()) && !player.getWorld()
+					.getDifficulty().equals(Difficulty.PEACEFUL) && server.getTicks() % 4 == 0) {
 				SanityManager.run(player);
 			}
 		}

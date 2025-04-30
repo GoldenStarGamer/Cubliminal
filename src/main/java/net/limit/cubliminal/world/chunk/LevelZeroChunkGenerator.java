@@ -1,6 +1,5 @@
 package net.limit.cubliminal.world.chunk;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
@@ -9,6 +8,7 @@ import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.access.ChunkAccessor;
+import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
@@ -23,38 +23,42 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.BoundedRegionArray;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.AbstractChunkHolder;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkGenerationContext;
+import net.minecraft.world.chunk.*;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
+public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implements BackroomsLevel {
 	public static final MapCodec<LevelZeroChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			SimplexBiomeSource.CODEC.codec().fieldOf("biome_source").stable().forGetter(chunkGenerator -> chunkGenerator.biomeSource),
 			NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup),
-			Codec.INT.fieldOf("floors").stable().forGetter(chunkGenerator -> chunkGenerator.floors)
+			Level.LEVEL_CODEC.fieldOf("level").stable().forGetter(chunkGenerator -> chunkGenerator.level)
 	).apply(instance, instance.stable(LevelZeroChunkGenerator::new)));
 
-	public final int floors;
 	private final SimplexBiomeSource biomeSource;
+	private final Level level;
+	private final int layerCount;
+	private final int layerHeight;
+	private final int thicknessX;
+	private final int thicknessZ;
 
-	public LevelZeroChunkGenerator(SimplexBiomeSource biomeSource, NbtGroup group, int floors) {
+	public LevelZeroChunkGenerator(SimplexBiomeSource biomeSource, NbtGroup group, Level level) {
 		super(biomeSource, group);
 		this.biomeSource = biomeSource;
-		this.floors = floors;
+		this.level = level;
+		this.layerCount = level.layer_count;
+		this.layerHeight = level.layer_height;
+		this.thicknessX = level.spacing_x;
+		this.thicknessZ = level.spacing_z;
 	}
 
 	public static NbtGroup createGroup() {
@@ -70,7 +74,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 				.with("0twowalls", 1, 2)
 				.with("0wall", 1, 1)
 				.with("manila_gateway", 1, 4)
-				.with("manila_room", 1, 1)
+				.with("manila_room")
 				.with("pillars", 1, 1)
 				.with("r_column", 1, 2)
 				.with("r_corner", 1, 1)
@@ -83,17 +87,17 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 				.with("special", 1, 4)
 			.build();
 	}
+
 	@Override
 	protected MapCodec<? extends ChunkGenerator> getCodec() {
 		return CODEC;
 	}
 
-	private void decorateLobby(ChunkRegion region, BlockPos pos){
-		Random random = Random
-			.create(region.getSeed() + LimlibHelper.blockSeed(pos));
+	private void decorateLobby(ChunkRegion region, BlockPos pos) {
+		Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(pos));
 		int randomInt = random.nextInt(15999);
 
-		if (pos.equals(new BlockPos(0, pos.getY(), 0)) || randomInt < 3200 ) {
+		if (pos.equals(new BlockPos(0, pos.getY(), 0)) || randomInt < 3200) {
 			// 1 : 5
 			generateNbt(region, pos, nbtGroup.nbtId("0space", "0space_1"));
 		} else if (randomInt < 5760) {
@@ -113,9 +117,8 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 		}
 	}
 
-	private void decorateRedRooms(ChunkRegion region, BlockPos pos){
-		Random random = Random
-				.create(region.getSeed() + LimlibHelper.blockSeed(pos));
+	private void decorateRedrooms(ChunkRegion region, BlockPos pos) {
+		Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(pos));
 		int randomInt = random.nextInt(25);
 
 		if (randomInt < 5) {
@@ -141,12 +144,8 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
-												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
-
+	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context, BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		BlockPos startPos = chunk.getPos().getStartPos();
-		int spacing = 8;
-		int cellHeight = 7;
 
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
@@ -154,39 +153,67 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 			}
 		}
 
-		if (startPos.equals(BlockPos.ZERO)) generateNbt(region, startPos.add(0, cellHeight * floors + 1, 0),
-				nbtGroup.nbtId("manila_room", "manila_room_1"));
+		if (startPos.equals(BlockPos.ZERO)) {
+			generateNbt(region, startPos.up(layerHeight * layerCount + 2), nbtGroup.nbtId("manila_room", "manila_room"));
+		}
 
 		RegistryEntry<Biome> biome = this.biomeSource.calcBiome(startPos);
 
+		if (biome.matchesKey(CubliminalBiomes.PILLAR_BIOME)) {
+			for (int layer = 0; layer < this.layerCount; layer++) {
+				BlockPos placingPos = startPos.up(layer * this.layerHeight + 1);
+				Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(placingPos));
+				generateNbt(region, placingPos, nbtGroup.pick("pillars", random));
+			}
+		} else {
+			boolean redrooms = biome.matchesKey(CubliminalBiomes.REDROOMS_BIOME);
+			for (int layer = 0; layer < this.layerCount; layer++) {
+				for (int x = 0; x < 16; x++) {
+					for (int z = 0; z < 16; z++) {
+						BlockPos placingPos = startPos.add(x, layer * this.layerHeight + 1, z);
+						if (Math.floorMod(placingPos.getX(), this.thicknessX) == 0 && Math.floorMod(placingPos.getZ(), this.thicknessZ) == 0) {
+							if (!redrooms) {
+								decorateLobby(region, placingPos);
+							} else {
+								decorateRedrooms(region, placingPos);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/*
 		if (biome.matchesKey(CubliminalBiomes.THE_LOBBY_BIOME)) {
-			for (int y = 0; y < floors; y++) {
+			for (int y = 0; y < layerCount; y++) {
 				for (int x = 0; x < 2; x++) {
 					for (int z = 0; z < 2; z++) {
-						decorateLobby(region, startPos.add(spacing * x, y * cellHeight + 1, spacing * z));
+						decorateLobby(region, startPos.add(spacing * x, y * layerHeight + 1, spacing * z));
 					}
 				}
 			}
 		} else if (biome.matchesKey(CubliminalBiomes.PILLAR_BIOME)) {
 			Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(startPos));
-			for (int y = 0; y < floors; y++) {
+			for (int y = 0; y < layerCount; y++) {
 				if (random.nextInt(160) == 0) {
-					generateNbt(region, startPos.add(0, y * cellHeight + 1, 0),
+					generateNbt(region, startPos.add(0, y * layerHeight + 1, 0),
 							nbtGroup.nbtId("special", "special_3"), Manipulation.random(random));
 				} else {
-					generateNbt(region, startPos.add(0, y * cellHeight + 1, 0),
+					generateNbt(region, startPos.add(0, y * layerHeight + 1, 0),
 							nbtGroup.nbtId("pillars", "pillars_1"));
 				}
 			}
 		} else if (biome.matchesKey(CubliminalBiomes.REDROOMS_BIOME)) {
-			for (int y = 0; y < floors; y++) {
+			for (int y = 0; y < layerCount; y++) {
 				for (int x = 0; x < 2; x++) {
 					for (int z = 0; z < 2; z++) {
-						decorateRedRooms(region, startPos.add(spacing * x, y * cellHeight + 1, spacing * z));
+						decorateRedRooms(region, startPos.add(spacing * x, y * layerHeight + 1, spacing * z));
 					}
 				}
 			}
 		}
+
+		 */
 
 		return CompletableFuture.completedFuture(chunk);
 	}
@@ -258,11 +285,21 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
+	public int getMinimumY() {
+		return this.level.min_y;
+	}
+
+	@Override
 	public int getWorldHeight() {
-		return 32;
+		return this.level.world_height;
 	}
 
 	@Override
 	public void appendDebugHudText(List<String> text, NoiseConfig noiseConfig, BlockPos pos) {
+	}
+
+	@Override
+	public Level getLevel() {
+		return this.level;
 	}
 }

@@ -5,15 +5,18 @@ import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.limit.cubliminal.init.CubliminalPackets;
+import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import java.util.Optional;
@@ -21,22 +24,18 @@ import java.util.Optional;
 public class SanityManager {
 
 	public static void run(ServerPlayerEntity player) {
-		NbtCompound nbt = IEntityDataSaver.cast(player);
 		Random random = player.getRandom();
-		int bound = player.isSprinting() ? 18 : 16;
+		int bound = player.isSprinting() ? 20 : 16;
 
 		// days without sleeping and light level
+		World world = player.getWorld();
 		int daysSinceRest = player.getStatHandler().getStat(Stats.CUSTOM.getOrCreateStat(Stats.TIME_SINCE_REST)) / 24000;
-		if (player.getWorld().getLightLevel(player.getBlockPos()) < 4 || daysSinceRest > 2) {
+		if (world.getLightLevel(player.getBlockPos()) < 3 || daysSinceRest > 2) {
 			bound -= 3;
 		}
-		// biomes that drop sanity even faster
-		Optional<RegistryKey<Biome>> registryKey = player.getWorld().getBiome(player.getBlockPos()).getKey();
-		if (registryKey.isPresent() && registryKey.get().equals(CubliminalBiomes.REDROOMS_BIOME)) {
-			bound -= 5;
-		}
+
 		// difficulty
-		Difficulty difficulty = player.getWorld().getDifficulty();
+		Difficulty difficulty = world.getDifficulty();
 		if (difficulty.equals(Difficulty.HARD)) {
 			bound -= 3;
 		} else if (difficulty.equals(Difficulty.EASY)) {
@@ -44,13 +43,21 @@ public class SanityManager {
 		}
 		bound *= 2;
 
+		// biomes that drop sanity even faster
+		RegistryEntry<Biome> biome = world.getBiome(player.getBlockPos());
+		RegistryNoisePreset noisePreset = RegistryNoisePreset.getPreset(world.getRegistryKey());
+		double globalDecayFactor = noisePreset.globalSettings().decayFactor();
+		double decayFactor = noisePreset.noiseParameters(biome).decayFactor();
+
 		// decrease sanity if needed
-		if (random.nextInt(bound) == 0) {
-			decrease(player, nbt, random);
+		double result = random.nextInt(bound) * (1 - decayFactor);
+		if (result * result < bound * globalDecayFactor) {
+			SanityManager.decrease(player, random);
 		}
 	}
 
-	public static void decrease(ServerPlayerEntity player, NbtCompound nbt, Random random) {
+	public static void decrease(ServerPlayerEntity player, Random random) {
+		NbtCompound nbt = IEntityDataSaver.cast(player);
 		int sanity = nbt.getInt("sanity");
 		int mentalFatigue = nbt.getInt("mentalFatigue") + 1;
 

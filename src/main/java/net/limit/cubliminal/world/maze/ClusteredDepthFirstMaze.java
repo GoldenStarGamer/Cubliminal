@@ -48,7 +48,6 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
 
         // Generate randomly a ramp
         if (!parkingSpots.isEmpty() && horizontalRandom.nextFloat() > 0.6) {
-            //Vec2i rampBeginning = this.maze[horizontalRandom.nextInt(this.maze.length)].getPosition();
             Vec2i rampBeginning = parkingSpots.get(horizontalRandom.nextInt(parkingSpots.size()));
             Face randomDir = Face.values()[horizontalRandom.nextInt(Face.values().length)];
 
@@ -65,7 +64,26 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
         this.visitedCells++;
         this.stack.push(cell);
 
-        while (true) {
+        while (!this.stack.isEmpty()) {
+            // Reassign current cell
+            cell = this.stack.peek();
+            // If it is the desired end, reassign and remove the new one
+            if (cell.equals(end)) {
+                if (checkpoints.isEmpty()) {
+                    break;
+                }
+
+                end = checkpoints.remove(random.nextInt(checkpoints.size()));
+
+                for (CellState cellState : this.maze) {
+                    if (!cellState.getExtra().containsKey("elevator")) {
+                        this.visit(cellState.getPosition(), false);
+                    }
+                }
+            } else {
+                checkpoints.remove(cell);
+            }
+
             List<Face> neighbours = new ArrayList<>();
             List<Face> optNeighbours = new ArrayList<>();
             int smallestDistance = Integer.MAX_VALUE;
@@ -122,29 +140,6 @@ public class ClusteredDepthFirstMaze extends DepthLikeMaze {
                 this.visitedCells++;
             } else {
                 this.stack.pop();
-                if (this.stack.isEmpty()) {
-                    break;
-                }
-            }
-
-            // Reassign current cell
-            cell = this.stack.peek();
-
-            // If it is the desired end, reassign and remove the new one
-            if (cell.equals(end)) {
-                if (checkpoints.isEmpty()) {
-                    break;
-                }
-
-                end = checkpoints.remove(random.nextInt(checkpoints.size()));
-
-                for (CellState cellState : this.maze) {
-                    if (!cellState.getExtra().containsKey("elevator")) {
-                        this.visit(cellState.getPosition(), false);
-                    }
-                }
-            } else {
-                checkpoints.remove(cell);
             }
         }
     }

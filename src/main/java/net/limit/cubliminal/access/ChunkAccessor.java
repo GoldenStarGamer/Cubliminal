@@ -5,4 +5,5 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
 public interface ChunkAccessor {
     void cubliminal$populateBiomes(BiomeSupplier biomeSupplier, MultiNoiseUtil.MultiNoiseSampler sampler);
+    void cubliminal$levelOne(BiomeSupplier biomeSupplier);
 }

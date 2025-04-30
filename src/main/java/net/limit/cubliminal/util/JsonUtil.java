@@ -29,7 +29,7 @@ public class JsonUtil {
      * Deserializes JSON files stored inside a directory from the "data" folder of this mod.
      *
      * @param ops      The ops to use instead of the default JSON ops
-     * @param codec    The coded to use to deserialize the JSON
+     * @param codec    The codec to use to deserialize the JSON
      * @param directory The directory from the "data" folder
      * @param <T>      The type of data to deserialize
      * @return A list with the deserialized JSON objects

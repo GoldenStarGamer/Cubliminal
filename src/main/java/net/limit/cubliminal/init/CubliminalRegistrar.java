@@ -2,13 +2,15 @@ package net.limit.cubliminal.init;
 
 import com.mojang.datafixers.util.Pair;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.level.LevelWithClusteredMaze;
+import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.RedroomsBiome;
 import net.limit.cubliminal.world.biome.PillarBiome;
 import net.limit.cubliminal.world.biome.TheLobbyBiome;
 import net.limit.cubliminal.world.biome.HabitableZoneBiome;
 import net.limit.cubliminal.world.biome.ParkingZoneBiome;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
-import net.limit.cubliminal.world.biome.source.ClusteredBiomeSource;
+import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
 import net.limit.cubliminal.world.chunk.LevelOneChunkGenerator;
 import net.limit.cubliminal.world.chunk.LevelZeroChunkGenerator;
@@ -86,7 +88,8 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(THE_LOBBY)))
 										.get(),
 								new LevelZeroChunkGenerator(
-										new SimplexBiomeSource(THE_LOBBY_KEY, 0.007f), LevelZeroChunkGenerator.createGroup(), 1))));
+										new SimplexBiomeSource(THE_LOBBY_KEY, Levels.LEVEL_0.getLevel(), 0.007f),
+										LevelZeroChunkGenerator.createGroup(), Levels.LEVEL_0.getLevel()))));
 
 		getWorld(HABITABLE_ZONE,
 				new LimlibWorld(
@@ -99,7 +102,8 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(HABITABLE_ZONE)))
 										.get(),
 								new LevelOneChunkGenerator(
-										new ClusteredBiomeSource(HABITABLE_ZONE_KEY,  6.9f, 4), LevelOneChunkGenerator.createGroup(), 16, 16, 0))));
+										new LevelOneBiomeSource(6.9f),
+										LevelOneChunkGenerator.createGroup(), (LevelWithClusteredMaze) Levels.LEVEL_1.getLevel()))));
 
 
 		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT));

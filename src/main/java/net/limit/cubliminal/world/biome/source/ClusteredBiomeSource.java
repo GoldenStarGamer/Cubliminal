@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.level.Level;
+import net.limit.cubliminal.level.LevelWithClusteredMaze;
 import net.limit.cubliminal.world.biome.noise.NoiseParameters;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
 import net.minecraft.registry.RegistryKey;
@@ -21,18 +23,21 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class ClusteredBiomeSource extends BiomeSource implements SpecialBiomeSource {
+public class ClusteredBiomeSource extends BiomeSource implements LiminalBiomeSource {
     public static final MapCodec<ClusteredBiomeSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             World.CODEC.fieldOf("dimension").forGetter(biomeSource -> biomeSource.world),
-            Codec.FLOAT.optionalFieldOf("scale", 0.1f).forGetter(biomeSource -> biomeSource.scale),
-            Codec.INT.optionalFieldOf("cluster_size", 1).forGetter(biomeSource -> biomeSource.clusterSize)
+            LevelWithClusteredMaze.LEVEL_WITH_CLUSTERED_MAZE_CODEC.fieldOf("level").forGetter(biomeSource -> biomeSource.level),
+            Codec.FLOAT.optionalFieldOf("scale", 5f).forGetter(biomeSource -> biomeSource.scale)
     ).apply(instance, instance.stable(ClusteredBiomeSource::new)));
 
     private final RegistryKey<World> world;
     private final RegistryNoisePreset noisePreset;
     private final Set<RegistryEntry<Biome>> biomeList;
     private final float scale;
-    private final int clusterSize;
+    private final LevelWithClusteredMaze level;
+    public final int clusterSizeX;
+    public final int clusterSizeZ;
+    public final int blockOffset;
     private boolean initialized;
     private SimplexNoiseSampler raritySampler;
     private final double rarityScale;
@@ -41,12 +46,15 @@ public class ClusteredBiomeSource extends BiomeSource implements SpecialBiomeSou
     private SimplexNoiseSampler safetySampler;
     private final double levelSafety;
 
-    public ClusteredBiomeSource(RegistryKey<World> world, float scale, int clusterSize) {
+    public ClusteredBiomeSource(RegistryKey<World> world, LevelWithClusteredMaze level, float scale) {
         this.world = world;
         this.noisePreset = RegistryNoisePreset.getPreset(world);
         this.biomeList = this.noisePreset.biomes().keySet();
         this.scale = scale;
-        this.clusterSize = clusterSize;
+        this.level = level;
+        this.clusterSizeX = level.cluster_size_x;
+        this.clusterSizeZ = level.cluster_size_z;
+        this.blockOffset = level.biome_block_offset;
         this.rarityScale = this.noisePreset.globalSettings().rarity();
         this.maxSpacing = this.noisePreset.globalSettings().spacing();
         this.levelSafety = this.noisePreset.globalSettings().safety();
@@ -62,20 +70,25 @@ public class ClusteredBiomeSource extends BiomeSource implements SpecialBiomeSou
             this.safetySampler = new SimplexNoiseSampler(new ChunkRandom(random));
             initialized = true;
         }
-        BlockPos grandPos = new BlockPos(x - Math.floorMod(x, this.clusterSize * 4), 0, z - Math.floorMod(z, this.clusterSize * 4));
+        BlockPos grandPos = new BlockPos(x - Math.floorMod(x, this.clusterSizeX * 4), 0, z - Math.floorMod(z, this.clusterSizeZ * 4));
         double dx = grandPos.getX() * this.scale;
         double dz = grandPos.getZ() * this.scale;
 
         double rarityValue = this.sampleRarity(dx, dz);
         double spacingValue = this.sampleSpacing(grandPos.getX(), grandPos.getZ(), dx, dz);
         double safetyValue = this.sampleSafety(dx, dz);
-        Cubliminal.LOGGER.info("Noise: " + rarityValue + "; " + spacingValue + "; " + safetyValue);
+        //Cubliminal.LOGGER.info("Noise: " + rarityValue + "; " + spacingValue + "; " + safetyValue);
 
         return getBiome(rarityValue, spacingValue, safetyValue);
     }
 
     @Override
-    public RegistryEntry<Biome> calcBiome(BlockPos startPos) {
+    public RegistryEntry<Biome> calcBiome(BlockPos pos) {
+        return this.calcBiome(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    @Override
+    public RegistryEntry<Biome> calcBiome(int blockX, int blockY, int blockZ) {
         if (!initialized) {
             Random random = Random.create(Cubliminal.SERVER.getSeed());
             this.raritySampler = new SimplexNoiseSampler(new ChunkRandom(random).split());
@@ -83,9 +96,9 @@ public class ClusteredBiomeSource extends BiomeSource implements SpecialBiomeSou
             this.safetySampler = new SimplexNoiseSampler(new ChunkRandom(random));
             initialized = true;
         }
-        int x = BiomeCoords.fromBlock(startPos.getX());
-        int z = BiomeCoords.fromBlock(startPos.getZ());
-        BlockPos grandPos = new BlockPos(x - Math.floorMod(x, this.clusterSize * 4), 0, z - Math.floorMod(z, this.clusterSize * 4));
+        int x = BiomeCoords.fromBlock(blockX + this.blockOffset);
+        int z = BiomeCoords.fromBlock(blockZ + this.blockOffset);
+        BlockPos grandPos = new BlockPos(x - Math.floorMod(x, this.clusterSizeX * 4), 0, z - Math.floorMod(z, this.clusterSizeZ * 4));
         double dx = grandPos.getX() * this.scale;
         double dz = grandPos.getZ() * this.scale;
 
@@ -103,7 +116,7 @@ public class ClusteredBiomeSource extends BiomeSource implements SpecialBiomeSou
 
     private double sampleSpacing(double x, double z, double dx, double dz) {
         double spacingValue = (this.spacingSampler.sample(dx, dz) + 1) / 2;
-        double mx = (maxLoc(x / (4 * this.clusterSize)) + maxLoc(z / (4 * this.clusterSize))) / 2;
+        double mx = (maxLoc(x / (4 * this.clusterSizeX)) + maxLoc(z / (4 * this.clusterSizeZ))) / 2;
         return spacingValue * mx;
     }
 
@@ -132,6 +145,11 @@ public class ClusteredBiomeSource extends BiomeSource implements SpecialBiomeSou
             }
         }
         return chosenBiome;
+    }
+
+    @Override
+    public Level getLevel() {
+        return this.level;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package net.limit.cubliminal.world.chunk;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
@@ -10,8 +9,10 @@ import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.access.ChunkAccessor;
-import net.limit.cubliminal.util.Manip;
-import net.limit.cubliminal.world.biome.source.ClusteredBiomeSource;
+import net.limit.cubliminal.level.Level;
+import net.limit.cubliminal.level.LevelWithClusteredMaze;
+import net.limit.cubliminal.util.MazeUtil;
+import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.maze.ClusteredDepthFirstMaze;
 import net.limit.cubliminal.world.maze.MultiFloorMazeGenerator;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
@@ -28,6 +29,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -39,40 +41,40 @@ import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
+public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements BackroomsLevel {
 	public static final MapCodec<LevelOneChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			ClusteredBiomeSource.CODEC.fieldOf("biome_source").stable().forGetter(chunkGenerator -> chunkGenerator.biomeSource),
-					NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup),
-					Codec.INT.fieldOf("maze_width").stable().forGetter(chunkGenerator -> chunkGenerator.mazeWidth),
-					Codec.INT.fieldOf("maze_height").stable().forGetter(chunkGenerator -> chunkGenerator.mazeHeight),
-					Codec.LONG.fieldOf("seed_modifier").stable().forGetter(chunkGenerator -> chunkGenerator.mazeSeedModifier)
-			).apply(instance, instance.stable(LevelOneChunkGenerator::new)));
+			LevelOneBiomeSource.CODEC.fieldOf("biome_source").stable().forGetter(chunkGenerator -> chunkGenerator.biomeSource),
+			NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup),
+			LevelWithClusteredMaze.LEVEL_WITH_CLUSTERED_MAZE_CODEC.fieldOf("level").stable().forGetter(chunkGenerator -> chunkGenerator.level)
+	).apply(instance, instance.stable(LevelOneChunkGenerator::new)));
 
-	private final ClusteredBiomeSource biomeSource;
+	private final LevelOneBiomeSource biomeSource;
 	private final MultiFloorMazeGenerator<MazeComponent> mazeGenerator;
-	private final int mazeWidth;
-	private final int mazeHeight;
+	private final LevelWithClusteredMaze level;
 	private final int thicknessX;
-	private final int layerThickness;
 	private final int thicknessZ;
-	private final long mazeSeedModifier;
+	private final int layerHeight;
+	private final int clusterSizeX;
+	private final int clusterSizeZ;
+	private final int cellOverheadX;
+	private final int cellOverheadZ;
 
-	public LevelOneChunkGenerator(ClusteredBiomeSource biomeSource, NbtGroup group, int mazeWidth, int mazeHeight, long mazeSeedModifier) {
+	public LevelOneChunkGenerator(LevelOneBiomeSource biomeSource, NbtGroup group, LevelWithClusteredMaze level) {
 		super(biomeSource, group);
 		this.biomeSource = biomeSource;
-		this.thicknessX = 16;
-		this.layerThickness = this.getWorldHeight() / 2;
-		this.thicknessZ = 16;
-		this.mazeWidth = mazeWidth;
-		this.mazeHeight = mazeHeight;
-		this.mazeSeedModifier = mazeSeedModifier;
-		this.mazeGenerator = new MultiFloorMazeGenerator<>(mazeWidth, mazeHeight, this.thicknessX, this.layerThickness, this.thicknessZ, 0);
+		this.level = level;
+		this.thicknessX = level.spacing_x;
+		this.thicknessZ = level.spacing_z;
+		this.layerHeight = level.layer_height;
+		this.clusterSizeX = level.cluster_size_x;
+		this.clusterSizeZ = level.cluster_size_z;
+		this.cellOverheadX = level.biome_block_offset / this.thicknessX;
+		this.cellOverheadZ = level.biome_block_offset / this.thicknessZ;
+		this.mazeGenerator = new MultiFloorMazeGenerator<>(level.maze_width, level.maze_height, this.thicknessX, this.layerHeight, this.thicknessZ, level.maze_seed_modifier);
 	}
 
 	public static NbtGroup createGroup() {
@@ -99,66 +101,96 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 		return CODEC;
 	}
 
-	public MazeComponent newMaze(ChunkRegion region, BlockPos mazePos, int width, int height, Random random) {
+	public MazeComponent optimizedNewMaze(ChunkRegion region, BlockPos mazePos, int width, int height, Random random) {
 
-        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)));
+		Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)));
 		Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)));
 		Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos));
 		Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)));
 
 		// Include 4 additional connections to other mazes
+		// Note that connections are saved for later use
 		List<Vec2i> connections = new ArrayList<>();
-
 		connections.add(new Vec2i(width - 1, randomUp.nextInt(height)));
 		connections.add(new Vec2i(0, randomDown.nextInt(height)));
 		connections.add(new Vec2i(randomLeft.nextInt(width), 0));
 		connections.add(new Vec2i(randomRight.nextInt(width), height - 1));
 
-        List<Vec2i> checkpoints = new ArrayList<>(connections);
+		List<Vec2i> checkpoints = new ArrayList<>(connections);
 
-		// Check 4x4 cell cluster biomes as well if no lists have been generated
+		// Check cell cluster biomes as well if no lists have been generated
 		Vec2i mazeVec = new Vec2i(mazePos.getX(), mazePos.getZ());
-		boolean areSpotsRegistered = this.mazeGenerator.isIn(mazeVec);
 		// All the parking cells within the maze
+		boolean areSpotsRegistered = this.mazeGenerator.isIn(mazeVec);
 		List<Vec2i> parkingSpots = areSpotsRegistered ? this.mazeGenerator.getParkingSpots(mazeVec) : new ArrayList<>();
+		Map<Vec2i, List<Vec2i>> parkingClusters = new HashMap<>();
 
-		for (int x = 0; x < width; x += 4) {
-			for (int y = 0; y < height; y += 4) {
-				if (!areSpotsRegistered) {
+		for (int x = -this.cellOverheadX; x < width + this.cellOverheadX; x+= this.clusterSizeX) {
+			for (int y = -this.cellOverheadZ; y < height + this.cellOverheadZ; y+= this.clusterSizeZ) {
 
+				Vec2i currentCell = new Vec2i(x, y);
+				boolean isParking = parkingSpots.contains(currentCell);
+				if (!isParking) {
+					// Retrieve the biome at that cluster if not already computed
 					RegistryEntry<Biome> biome = biomeSource.calcBiome(mazePos.add(x * thicknessX, 0, y * thicknessZ));
+					isParking = biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME);
+				}
 
-					if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
-						List<Vec2i> clusterSpots = new ArrayList<>();
-						// Add all the cells from the cluster to a temp list to later choose a random one
-						for (int dx = 0; dx < 4; dx++) {
-							for (int dy = 0; dy < 4; dy++) {
-								clusterSpots.add(new Vec2i(x + dx, y + dy));
+				if (isParking) {
+					// Add all the cells from the cluster to the list if they're inside the maze
+					List<Vec2i> clusterCells = new ArrayList<>();
+					for (int dx = 0; dx < this.clusterSizeX; dx++) {
+						for (int dy = 0; dy < this.clusterSizeZ; dy++) {
+							Vec2i component = currentCell.add(dx, dy);
+							if (MazeUtil.fits(component, width, height)) {
+								clusterCells.add(component);
 							}
 						}
-						parkingSpots.addAll(clusterSpots);
-
-						// Add a random cell from the 4x4 cluster
-						Vec2i randomCell = clusterSpots.get(random.nextInt(clusterSpots.size()));
-						if (!checkpoints.contains(randomCell)) {
-							checkpoints.add(randomCell);
-						}
 					}
-				} else if (parkingSpots.contains(new Vec2i(x, y))) {
-
-					List<Vec2i> clusterSpots = new ArrayList<>();
-					for (int dx = 0; dx < 4; dx++) {
-						for (int dy = 0; dy < 4; dy++) {
-							clusterSpots.add(new Vec2i(x + dx, y + dy));
-						}
+					if (!areSpotsRegistered) {
+						parkingSpots.addAll(clusterCells);
 					}
+					parkingClusters.putIfAbsent(currentCell, clusterCells);
+				}
+			}
+		}
 
-					// Add a random cell from the 4x4 cluster
-					Vec2i randomCell = clusterSpots.get(random.nextInt(clusterSpots.size()));
-					if (!checkpoints.contains(randomCell)) {
-						checkpoints.add(randomCell);
+		// Perform dfs for each parking zone to choose a few checkpoints
+		while (!parkingClusters.isEmpty()) {
+			Vec2i start = parkingClusters.keySet().stream().toList().getFirst();
+			Stack<Vec2i> stack = new Stack<>();
+			stack.push(start);
+			// Parking zone cells
+			List<Vec2i> parkingZone = new ArrayList<>(parkingClusters.remove(start));
+			Vec2i current;
+			while (!parkingClusters.isEmpty()) {
+				current = stack.peek();
+				List<Vec2i> neighbours = new ArrayList<>();
+				for (Face face : Face.values()) {
+					Direction.Axis adjAxis = MazeUtil.getDirection(face).getAxis();
+					Vec2i neighbour = current.go(face, adjAxis == Direction.Axis.X ? this.clusterSizeX : this.clusterSizeZ);
+					// If it's a parking cluster include as a valid neighbour
+					if (parkingClusters.containsKey(neighbour)) {
+						neighbours.add(neighbour);
 					}
 				}
+
+				if (!neighbours.isEmpty()) {
+					// Choose a random neighbour
+					Vec2i randomNeighbour = neighbours.get(random.nextInt(neighbours.size()));
+					parkingZone.addAll(parkingClusters.remove(randomNeighbour));
+					stack.push(randomNeighbour);
+				} else {
+					stack.pop();
+					// Break if we're back in the start and have no neighbours
+					if (stack.isEmpty()) {
+						break;
+					}
+				}
+			}
+			// Choose a random checkpoint to connect this parking zone
+			if (!parkingZone.isEmpty()) {
+				checkpoints.add(parkingZone.get(random.nextInt(parkingZone.size())));
 			}
 		}
 
@@ -185,7 +217,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 				if (pos.getY() == this.getMinimumY()) {
 
 					byte[] bytes = state.getExtra().get("ramp").getByteArray("ramp");
-					generateNbt(region, pos, nbtGroup.nbtId("ramp", Manip.rotString(Face.values()[bytes[1]]).concat("_" + bytes[0])));
+					generateNbt(region, pos, nbtGroup.nbtId("ramp", MazeUtil.rotString(Face.values()[bytes[1]]).concat("_" + bytes[0])));
 				}
 			} else {
 				generateNbt(region, pos, nbtGroup.pick("parking", random));
@@ -214,11 +246,11 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 				}
 			} else {
 				for (int x = 0; x < thicknessX; x++) {
-					for (int y = 0; y < layerThickness; y++) {
+					for (int y = 0; y < layerHeight; y++) {
 						for (int z = 0; z < thicknessZ; z++) {
 
 							BlockState state1 = Blocks.STONE.getDefaultState();
-							if (y == 0 || y == layerThickness - 1) {
+							if (y == 0 || y == layerHeight - 1) {
 								state1 = CubliminalBlocks.GABBRO.getDefaultState();
 							}
 
@@ -231,14 +263,9 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 			for (Face face : Face.values()) {
 				Vec2i adjCell = state.getPosition().go(face);
 				boolean parking = ((ClusteredDepthFirstMaze) maze).getParkingSpots().contains(adjCell);
-
-				if (!parking) {
-					BlockPos adjPos = mazePos.add(thicknessX * adjCell.getX(), 0, thicknessZ * adjCell.getY());
-					parking = this.biomeSource.calcBiome(adjPos).matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME);
-				}
 				if (parking) {
 					String key = state.goes(face) ? "entrance" : "e";
-					generateNbt(region, pos, nbtGroup.pick(key, random), Manip.get(face));
+					generateNbt(region, pos, nbtGroup.pick(key, random), MazeUtil.get(face));
 				}
 			}
 		}
@@ -248,7 +275,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
 												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		BlockPos startPos = chunk.getPos().getStartPos();
-		this.mazeGenerator.generateMaze(startPos, region, this.getWorldHeight(), this::newMaze, this::decorateCell);
+		this.mazeGenerator.generateMaze(startPos, region, this.getWorldHeight(), this::optimizedNewMaze, this::decorateCell);
 
 		return CompletableFuture.completedFuture(chunk);
 	}
@@ -256,7 +283,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	@Override
 	public CompletableFuture<Chunk> populateBiomes(NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
 		return CompletableFuture.supplyAsync(() -> {
-			((ChunkAccessor) chunk).cubliminal$populateBiomes(this.biomeSource, noiseConfig.getMultiNoiseSampler());
+			((ChunkAccessor) chunk).cubliminal$levelOne(this.biomeSource);
 			return chunk;
 		}, Util.getMainWorkerExecutor().named("init_biomes"));
 	}
@@ -321,11 +348,21 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
+	public int getMinimumY() {
+		return this.level.min_y;
+	}
+
+	@Override
 	public int getWorldHeight() {
-		return 32;
+		return this.level.world_height;
 	}
 
 	@Override
 	public void appendDebugHudText(List<String> text, NoiseConfig noiseConfig, BlockPos pos) {
+	}
+
+	@Override
+	public Level getLevel() {
+		return this.level;
 	}
 }

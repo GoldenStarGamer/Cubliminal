@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.limit.cubliminal.client.CubliminalRenderLayers;
+import net.limit.cubliminal.client.RenderLayers;
 import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
@@ -51,7 +51,7 @@ public class CubliminalClient implements ClientModInitializer {
 		EntityRendererRegistry
 				.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
 
-		CubliminalRenderLayers.init();
+		RenderLayers.init();
 		FogSettings.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(CubliminalPackets.NoClipSyncPayload.ID, (payload, context) -> {

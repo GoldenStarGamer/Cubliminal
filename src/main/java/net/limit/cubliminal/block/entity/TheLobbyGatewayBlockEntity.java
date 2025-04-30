@@ -5,6 +5,7 @@ import net.limit.cubliminal.advancements.AdvancementHelper;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
+import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.util.SanityManager;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
@@ -37,7 +38,7 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 	}
 
 	private long age;
-	private BlockPos exitPos = new BlockPos(7, 9, 3);
+	private BlockPos exitPos = Levels.MANILA_ROOM;
 
 	public void writeExitPos(BlockPos blockPos) {
 		this.exitPos = blockPos;

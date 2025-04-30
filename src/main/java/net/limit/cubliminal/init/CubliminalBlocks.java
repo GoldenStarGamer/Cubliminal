@@ -69,7 +69,7 @@ public class CubliminalBlocks {
 	public static final TagKey<Block> FLOOR_PALETTE = of("floor_palette");
 
 
-    public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
+	public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
