@@ -1,16 +1,18 @@
 package net.limit.cubliminal.init;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.limit.cubliminal.Cubliminal;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 
 public class CubliminalItemGroups {
-    public static final ItemGroup BACKROOMS_GROUP = Registry.register(Registries.ITEM_GROUP,
-            Cubliminal.id("backrooms"),
+    public static final ItemGroup BACKROOMS_GROUP = Registry.register(Registries.ITEM_GROUP, Cubliminal.id("backrooms"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.Backrooms"))
                     .icon(() -> new ItemStack(CubliminalBlocks.YELLOW_WALLPAPERS)).entries((displayContext, entries) -> {
 
@@ -64,5 +66,8 @@ public class CubliminalItemGroups {
                     }).build());
 
     public static void init() {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.OPERATOR).register(entries -> {
+            entries.addAfter(Blocks.STRUCTURE_BLOCK, CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK);
+        });
     }
 }

@@ -33,12 +33,17 @@ public class TheLobbyGatewayBlock extends BlockWithEntity implements BlockEntity
 
 	@Override
 	public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return this.getOutlineShape(state, world, pos, context);
+		return VoxelShapes.empty();
 	}
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return VoxelShapes.empty();
+	}
+
+	@Override
+	protected VoxelShape getCullingShape(BlockState state) {
+		return VoxelShapes.fullCube();
 	}
 
 	@Nullable

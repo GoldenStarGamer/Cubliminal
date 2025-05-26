@@ -97,7 +97,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 		Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(pos));
 		int randomInt = random.nextInt(15999);
 
-		if (pos.equals(new BlockPos(0, pos.getY(), 0)) || randomInt < 3200) {
+		if (randomInt < 3200) {
 			// 1 : 5
 			generateNbt(region, pos, nbtGroup.nbtId("0space", "0space_1"));
 		} else if (randomInt < 5760) {
@@ -138,7 +138,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 	@Override
 	public CompletableFuture<Chunk> populateBiomes(NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
 		return CompletableFuture.supplyAsync(() -> {
-			((ChunkAccessor) chunk).cubliminal$populateBiomes(this.biomeSource, noiseConfig.getMultiNoiseSampler());
+			((ChunkAccessor) chunk).cubliminal$populateBiomes(this.biomeSource);
 			return chunk;
 		}, Util.getMainWorkerExecutor().named("init_biomes"));
 	}

@@ -2,7 +2,7 @@ package net.limit.cubliminal.init;
 
 import com.mojang.datafixers.util.Pair;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.level.LevelWithClusteredMaze;
+import net.limit.cubliminal.level.LevelWithMaze;
 import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.*;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
@@ -67,7 +67,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// dim effects
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
 
-		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, true, 0.5f));
+		getDimEffects(HABITABLE_ZONE, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0.5f));
 
 		// post effects
 		getPostEffects("paranoia", new StaticPostEffect(Cubliminal.id("paranoia")));
@@ -82,7 +82,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 								registry
 										.get(RegistryKeys.DIMENSION_TYPE)
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(THE_LOBBY)))
-										.get(),
+										.orElseThrow(),
 								new LevelZeroChunkGenerator(
 										new SimplexBiomeSource(THE_LOBBY_KEY, Levels.LEVEL_0.getLevel(), 0.007f),
 										LevelZeroChunkGenerator.createGroup(), Levels.LEVEL_0.getLevel()))));
@@ -96,10 +96,10 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 								registry
 										.get(RegistryKeys.DIMENSION_TYPE)
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(HABITABLE_ZONE)))
-										.get(),
+										.orElseThrow(),
 								new LevelOneChunkGenerator(
 										new LevelOneBiomeSource(0.008f),
-										LevelOneChunkGenerator.createGroup(), (LevelWithClusteredMaze) Levels.LEVEL_1.getLevel()))));
+										LevelOneChunkGenerator.createGroup(), (LevelWithMaze) Levels.LEVEL_1.getLevel()))));
 
 
 		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT));
@@ -123,8 +123,8 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 
 		LimlibRegistryHooks.hook(RegistryKeys.BIOME, (infoLookup, registryKey, registry) -> {
-			RegistryEntryLookup<PlacedFeature> features = infoLookup.getRegistryInfo(RegistryKeys.PLACED_FEATURE).get().entryLookup();
-			RegistryEntryLookup<ConfiguredCarver<?>> carvers = infoLookup.getRegistryInfo(RegistryKeys.CONFIGURED_CARVER).get().entryLookup();
+			RegistryEntryLookup<PlacedFeature> features = infoLookup.getRegistryInfo(RegistryKeys.PLACED_FEATURE).orElseThrow().entryLookup();
+			RegistryEntryLookup<ConfiguredCarver<?>> carvers = infoLookup.getRegistryInfo(RegistryKeys.CONFIGURED_CARVER).orElseThrow().entryLookup();
 
 			registry.add(CubliminalBiomes.THE_LOBBY_BIOME, TheLobbyBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
@@ -142,7 +142,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 			registry.add(CubliminalBiomes.OUROBOROS_SECTOR_BIOME, OuroborosSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.DEEP_OUROBOROS_SECTOR_BIOME, DeepOuroborosSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 
-			RegistryNoisePreset.initNoisePresets(registry);
+			RegistryNoisePreset.initNoisePresets(infoLookup);
 
 		});
 	}

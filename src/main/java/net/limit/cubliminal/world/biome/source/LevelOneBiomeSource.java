@@ -65,13 +65,12 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
             }
             return false;
         }).collect(Collectors.toSet());
-        Cubliminal.LOGGER.info("Biomes: {}; {}", this.biomes, this.biomeMap);
         this.rarityScale = this.noisePreset.globalSettings().rarity();
         this.maxSpacing = this.noisePreset.globalSettings().spacing();
         this.levelSafety = this.noisePreset.globalSettings().safety();
     }
 
-    public void initSamplers() {
+    private void initSamplers() {
         if (!initialized) {
             Random random = Random.create(Cubliminal.SERVER.getSeed());
             this.raritySampler = new SimplexNoiseSampler(new ChunkRandom(random.split()));
@@ -103,7 +102,7 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
         double spacingValue = this.sampleSpacing(x, z, dx, dz);
         double safetyValue = this.sampleSafety(dx, dz);
 
-        return getBiomeReference(rarityValue, spacingValue, safetyValue);
+        return this.getBiomeReference(rarityValue, spacingValue, safetyValue);
     }
 
     private double sampleRarity(double dx, double dz) {
@@ -132,25 +131,30 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
 
         for (RegistryEntry<Biome> biome : this.biomes) {
             NoiseParameters parameters = this.noisePreset.noiseParameters(biome);
-            double totalDifference = 0;
-            totalDifference += Math.abs(rarityValue - parameters.rarity()) / 8;
-            totalDifference += Math.abs(spacingValue - parameters.spacing()) / this.maxSpacing;
-            totalDifference += Math.abs(safetyValue - parameters.safety()) / this.levelSafety;
+            double distance = this.distanceTo(parameters, rarityValue, spacingValue, safetyValue);
 
-            if (totalDifference < smallestDifference) {
+            if (distance < smallestDifference) {
                 chosenBiome = biome;
                 prevSmallestDifference = smallestDifference;
-                smallestDifference = totalDifference;
-            } else if (totalDifference < prevSmallestDifference) {
-                prevSmallestDifference = totalDifference;
+                smallestDifference = distance;
+            } else if (distance < prevSmallestDifference) {
+                prevSmallestDifference = distance;
             }
         }
 
-        // 0.25 atm; proportional to the distance between deep biomes and their base biome boundaries
-        if (prevSmallestDifference - smallestDifference > 0.25) {
+        // 0.15 atm; proportional to the distance between deep biomes and their base biome boundaries
+        if (prevSmallestDifference - smallestDifference > 0.15) {
             return this.biomeMap.getOrDefault(chosenBiome, chosenBiome);
         }
         return chosenBiome;
+    }
+
+    // FIXME: TRY USING SQUARED DISTANCE
+    public double distanceTo(NoiseParameters parameters, double rarityValue, double spacingValue, double safetyValue) {
+        double rarity = (parameters.rarity() - rarityValue) / 8;
+        double spacing = (parameters.spacing() - spacingValue) / this.maxSpacing;
+        double safety = (parameters.safety() - safetyValue) / this.levelSafety;
+        return Math.sqrt(rarity * rarity + spacing * spacing + safety * safety);
     }
 
     @Override

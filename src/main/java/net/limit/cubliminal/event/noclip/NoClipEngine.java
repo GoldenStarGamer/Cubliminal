@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.init.*;
+import net.limit.cubliminal.networking.s2c.NoClipSyncPayload;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -96,7 +97,7 @@ public class NoClipEngine {
 
     public static void syncNoClip(ServerPlayerEntity playerEntity) {
         int ticks = IEntityDataSaver.cast(playerEntity).getInt("ticksToNc");
-        ServerPlayNetworking.send(playerEntity, new CubliminalPackets.NoClipSyncPayload(ticks));
+        ServerPlayNetworking.send(playerEntity, new NoClipSyncPayload(ticks));
     }
 
     public static void afterNoCLip(Entity entity) {

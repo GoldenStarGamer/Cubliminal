@@ -5,7 +5,6 @@ import net.ludocrypt.limlib.api.world.maze.DepthLikeMaze;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
 import java.util.List;

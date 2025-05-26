@@ -10,27 +10,25 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.event.ServerTickHandler;
 import net.limit.cubliminal.event.command.NoClipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
-import net.limit.cubliminal.access.IEntityDataSaver;
-import net.limit.cubliminal.level.Levels;
-import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.limit.cubliminal.event.noclip.NoclipDestination;
+import net.limit.cubliminal.networking.s2c.S2CPackets;
+import net.limit.cubliminal.world.room.RoomRegistry;
+import net.limit.cubliminal.world.room.RoomType;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -55,7 +53,7 @@ public class Cubliminal implements ModInitializer {
 	public void onInitialize() {
 		AutoConfig.register(CubliminalConfig.class, GsonConfigSerializer::new);
 
-		Levels.init();
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new RoomRegistry());
 		CubliminalItemGroups.init();
 		CubliminalItems.init();
 		CubliminalBlocks.init();
@@ -66,19 +64,8 @@ public class Cubliminal implements ModInitializer {
 		CubliminalEffects.init();
 		CubliminalBlockEntities.init();
 		NoclipDestination.init();
-
-		PayloadTypeRegistry.playC2S().register(CubliminalPackets.NoClipC2SPayload.ID, CubliminalPackets.NoClipC2SPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(CubliminalPackets.NoClipSyncPayload.ID, CubliminalPackets.NoClipSyncPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(CubliminalPackets.SanitySyncPayload.ID, CubliminalPackets.SanitySyncPayload.CODEC);
-
-		ServerPlayNetworking.registerGlobalReceiver(CubliminalPackets.NoClipC2SPayload.ID, (payload, context) -> {
-			ServerPlayerEntity player = context.player();
-			NbtCompound nbt = IEntityDataSaver.cast(player);
-			if (NoClipEngine.canNoCLip(player)) {
-				if (payload.reset()) nbt.putInt("ticksToNc", 0);
-				else NoClipEngine.noClip(player);
-			}
-		});
+		S2CPackets.init();
+		RoomType.init();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 		ServerTickEvents.START_SERVER_TICK.register(new ServerTickHandler());

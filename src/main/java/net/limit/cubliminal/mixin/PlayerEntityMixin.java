@@ -1,5 +1,7 @@
 package net.limit.cubliminal.mixin;
 
+import net.limit.cubliminal.access.PlayerEntityAccessor;
+import net.limit.cubliminal.block.entity.USBlockBlockEntity;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.minecraft.entity.Entity;
@@ -16,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = PlayerEntity.class, priority = 1500)
-public abstract class PlayerEntityMixin extends LivingEntity {
+public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEntityAccessor {
 
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> type, World world) {
 		super(type, world);
@@ -59,4 +61,9 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 				.equals(CubliminalRegistrar.THE_LOBBY_KEY) && this.getBlockY() < 8) ci.cancel();
 	}
 	//cancel player interactions below level 0 gabbro ceiling
+
+
+	@Override
+	public void openUSBlockScreen(USBlockBlockEntity blockEntity) {
+	}
 }

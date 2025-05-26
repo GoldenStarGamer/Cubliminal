@@ -73,10 +73,6 @@ public class MultiFloorMazeGenerator<M extends MazeComponent> {
         return this.parkingSpots.get(mazePos);
     }
 
-    public List<Vec2i> getParkingSpotsOrDefault(Vec2i mazePos, List<Vec2i> def) {
-        return this.parkingSpots.getOrDefault(mazePos, def);
-    }
-
     public void setParkingSpots(Vec2i mazePos, List<Vec2i> spots) {
         this.parkingSpots.put(mazePos, spots);
     }

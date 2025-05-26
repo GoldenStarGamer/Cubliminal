@@ -25,7 +25,7 @@ public class RenderLayers {
 
     private static final RenderLayer MANILA = RenderLayer.of(
             "manila",
-            VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL,
+            VertexFormats.POSITION,
             VertexFormat.DrawMode.QUADS,
             1536,
             false,
@@ -33,6 +33,7 @@ public class RenderLayers {
             RenderLayer.MultiPhaseParameters.builder()
                     .program(MANILA_PROGRAM)
                     .texture(createCubemap(Cubliminal.id("manila"), false, false))
+                    .cull(RenderPhase.ENABLE_CULLING)
                     .build(false));
 
     private static final RenderLayer FLUX_CAPACITOR = RenderLayer.of(

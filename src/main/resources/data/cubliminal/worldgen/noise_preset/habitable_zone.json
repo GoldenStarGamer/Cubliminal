@@ -9,48 +9,48 @@
   "biomes": {
     "cubliminal:aquila_sector": {
       "rarity": -4.0,
-      "spacing": -60.0,
+      "spacing": 60.0,
       "safety": 4.0,
       "decay_factor": 0.24
     },
     "cubliminal:guild_sector": {
-      "rarity": -4.0,
-      "spacing": 60.0,
+      "rarity": -4.5,
+      "spacing": -60.0,
       "safety": 4.2,
       "decay_factor": 0.15
     },
     "cubliminal:gothic_sector": {
-      "rarity": 5.0,
+      "rarity": 6.0,
       "spacing": -80.0,
       "safety": 3.8,
       "decay_factor": 0.3
     },
     "cubliminal:ouroboros_sector": {
-      "rarity": 7.5,
+      "rarity": 8.0,
       "spacing": 90.0,
       "safety": 3.6,
       "decay_factor": 0.4
     },
     "cubliminal:deep_aquila_sector": {
       "rarity": -4.0,
-      "spacing": -60.0,
+      "spacing": 60.0,
       "safety": 4.0,
       "decay_factor": 0.24
     },
     "cubliminal:deep_guild_sector": {
-      "rarity": -4.0,
-      "spacing": 60.0,
+      "rarity": -4.5,
+      "spacing": -60.0,
       "safety": 4.2,
       "decay_factor": 0.15
     },
     "cubliminal:deep_gothic_sector": {
-      "rarity": 5.0,
+      "rarity": 6.0,
       "spacing": -80.0,
       "safety": 3.8,
       "decay_factor": 0.3
     },
     "cubliminal:deep_ouroboros_sector": {
-      "rarity": 7.5,
+      "rarity": 8.0,
       "spacing": 90.0,
       "safety": 3.6,
       "decay_factor": 0.4

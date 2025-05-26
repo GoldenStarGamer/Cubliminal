@@ -5,9 +5,9 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.util.JsonUtil;
-import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryElementCodec;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.World;
@@ -79,14 +79,12 @@ public record RegistryNoisePreset(RegistryKey<World> world, NoiseParameters glob
         }
     }
 
-    public static void initNoisePresets(MutableRegistry<Biome> mutableRegistry) {
-        List<NoisePresetHolder> decodedResults = JsonUtil.deserializeDataJsonArray(JsonOps.INSTANCE, NoisePresetHolder.CODEC, Cubliminal.id("noise_preset"));
+    public static void initNoisePresets(RegistryOps.RegistryInfoGetter infoGetter) {
+        List<RegistryNoisePreset> decodedResults = JsonUtil.deserializeDataJsonArray(RegistryOps.of(JsonOps.INSTANCE, infoGetter), CODEC, Cubliminal.id("worldgen/noise_preset"));
         if (!decodedResults.isEmpty()) {
             RegistryNoisePreset.clear();
-            for (NoisePresetHolder decoded : decodedResults) {
-                RegistryNoisePreset.Builder builder = new RegistryNoisePreset.Builder(decoded.world(), decoded.globalSettings());
-                decoded.biomes().forEach((biomeKey, noiseParameters) -> builder.with(mutableRegistry.getOptional(biomeKey).get(), noiseParameters));
-                RegistryNoisePreset.register(builder.build());
+            for (RegistryNoisePreset decoded : decodedResults) {
+                RegistryNoisePreset.register(decoded);
             }
         }
     }

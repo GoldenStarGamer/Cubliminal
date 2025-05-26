@@ -3,6 +3,8 @@
     "cubliminal:the_lobby",
     "cubliminal:pillar_biome",
     "cubliminal:aquila_sector",
-    "cubliminal:deep_aquila_sector"
+    "cubliminal:deep_aquila_sector",
+    "cubliminal:guild_sector",
+    "cubliminal:deep_guild_sector"
   ]
 }

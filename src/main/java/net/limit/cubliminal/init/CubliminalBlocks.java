@@ -12,6 +12,7 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.OperatorOnlyBlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -21,6 +22,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Rarity;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -68,6 +70,9 @@ public class CubliminalBlocks {
 
 	public static final TagKey<Block> FLOOR_PALETTE = of("floor_palette");
 
+
+	public static final Block UNLIMITED_STRUCTURE_BLOCK = register("unlimited_structure_block", UnlimitedStructureBlock::new,
+			AbstractBlock.Settings.copy(Blocks.STRUCTURE_BLOCK), OperatorOnlyBlockItem::new, new Item.Settings().rarity(Rarity.EPIC));
 
 	public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
 			AbstractBlock.Settings.create()

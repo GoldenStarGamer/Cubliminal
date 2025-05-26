@@ -3,11 +3,16 @@ package net.limit.cubliminal.mixin.client;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.limit.cubliminal.access.PlayerEntityAccessor;
+import net.limit.cubliminal.block.entity.USBlockBlockEntity;
+import net.limit.cubliminal.client.screen.blockentity.USBlockScreen;
 import net.limit.cubliminal.event.noclip.NoClipEngine;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,9 +23,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayerEntity.class)
-public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
+public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity implements PlayerEntityAccessor {
+
 	@Shadow
 	public Input input;
+
+	@Shadow
+	@Final
+	protected MinecraftClient client;
 
 	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
 		super(world, profile);
@@ -39,5 +49,10 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@ModifyArg(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;clamp(III)I", ordinal = 0), index = 0)
 	private int onSubmerged(int perTick) {
 		return NoClipEngine.isNoClipping(this) ? perTick + (this.isSpectator() ? 0 : 10 - 1) : perTick;
+	}
+
+	@Override
+	public void openUSBlockScreen(USBlockBlockEntity blockEntity) {
+		this.client.setScreen(new USBlockScreen(blockEntity));
 	}
 }

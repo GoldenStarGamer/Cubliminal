@@ -3,7 +3,7 @@ package net.limit.cubliminal.event.sanity;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.init.CubliminalEffects;
-import net.limit.cubliminal.init.CubliminalPackets;
+import net.limit.cubliminal.networking.s2c.SanitySyncPayload;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -94,6 +94,6 @@ public class SanityManager {
 
 	public static void syncSanity(ServerPlayerEntity playerEntity) {
 		int sanity = IEntityDataSaver.cast(playerEntity).getInt("sanity");
-		ServerPlayNetworking.send(playerEntity, new CubliminalPackets.SanitySyncPayload(sanity));
+		ServerPlayNetworking.send(playerEntity, new SanitySyncPayload(sanity));
 	}
 }
