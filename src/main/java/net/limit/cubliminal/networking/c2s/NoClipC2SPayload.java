@@ -2,9 +2,7 @@ package net.limit.cubliminal.networking.c2s;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.access.IEntityDataSaver;
-import net.limit.cubliminal.event.noclip.NoClipEngine;
-import net.minecraft.nbt.NbtCompound;
+import net.limit.cubliminal.access.PEAccessor;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -27,12 +25,11 @@ public record NoClipC2SPayload(boolean reset) implements CustomPayload {
 
     public static void receive(NoClipC2SPayload payload, ServerPlayNetworking.Context context) {
         ServerPlayerEntity player = context.player();
-        if (NoClipEngine.canNoCLip(player)) {
+        if (((PEAccessor) player).getNoclipEngine().canClip() && player.isOnGround()) {
             if (payload.reset()) {
-                NbtCompound nbt = IEntityDataSaver.cast(player);
-                nbt.putInt("ticksToNc", 0);
+                ((PEAccessor) player).getNoclipEngine().setTicksToNc(0);
             } else {
-                NoClipEngine.noClip(player);
+                ((PEAccessor) player).getNoclipEngine().noclip(player);
             }
         }
     }

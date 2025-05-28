@@ -1,10 +1,10 @@
 package net.limit.cubliminal.block.entity;
 
+import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.block.custom.FluxCapacitorBlock;
 import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalSounds;
-import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -71,7 +71,7 @@ public class FluxCapacitorBlockEntity extends BlockEntity {
 					NoClippingHudOverlay.INSTANCE.setAux_renderOverlay(false);
 				} else {
 					for (PlayerEntity player : world.getPlayers().stream().filter(Predicate.not(PlayerEntity::isSpectator)).toList()) {
-						NoClipEngine.noClip(player);
+						((PEAccessor) player).getNoclipEngine().noclip(player);
 					}
 				}
 			} else if (world.isClient && this.realityTicks == 100 &&

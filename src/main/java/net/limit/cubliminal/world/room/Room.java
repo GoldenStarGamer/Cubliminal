@@ -19,6 +19,8 @@ public interface Room {
 
     Codec<Room> CODEC = RoomType.REGISTRY.getCodec().dispatch("type", Room::type, RoomType::codec);
 
+    Room DEFAULT = new SingleRoom("default", (byte) 2, (byte) 2, "");
+
     byte width();
 
     byte height();
@@ -35,19 +37,21 @@ public interface Room {
         String[] rawData = doorData.split(":");
         Byte2ObjectArrayMap<ArrayList<Door>> doors = new Byte2ObjectArrayMap<>();
         for (String wall : rawData) {
-            char direction = wall.charAt(0);
-            if ("ewns".indexOf(direction) != -1) {
-                String[] wallData = wall.split("_");
-                byte dir = MazeUtil.ordinal(MazeUtil.getDirection(direction));
-                for (int n = 1; n < wallData.length; n++) {
-                    if (wallData[n].equals("1") && this.isDoorValid(dir, n)) {
-                        Door door = switch (dir) {
-                            case 0 -> new Door((byte) (this.height() - 1), (byte) (n - 1), dir);
-                            case 1 -> new Door((byte) 0, (byte) (n - 1), dir);
-                            case 2 -> new Door((byte) (n - 1), (byte) 0, dir);
-                            default -> new Door((byte) (n - 1), (byte) (this.width() - 1), dir);
-                        };
-                        doors.computeIfAbsent(dir, key -> new ArrayList<>()).add(door);
+            if (!wall.isEmpty()) {
+                char direction = wall.charAt(0);
+                if ("ewns".indexOf(direction) != -1) {
+                    String[] wallData = wall.split("_");
+                    byte dir = MazeUtil.ordinal(MazeUtil.getDirection(direction));
+                    for (int n = 1; n < wallData.length; n++) {
+                        if (wallData[n].equals("1") && this.isDoorValid(dir, n)) {
+                            Door door = switch (dir) {
+                                case 0 -> new Door((byte) (this.height() - 1), (byte) (n - 1), dir);
+                                case 1 -> new Door((byte) 0, (byte) (n - 1), dir);
+                                case 2 -> new Door((byte) (n - 1), (byte) 0, dir);
+                                default -> new Door((byte) (n - 1), (byte) (this.width() - 1), dir);
+                            };
+                            doors.computeIfAbsent(dir, key -> new ArrayList<>()).add(door);
+                        }
                     }
                 }
             }

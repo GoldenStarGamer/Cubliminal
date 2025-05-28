@@ -1,13 +1,13 @@
 package net.limit.cubliminal.event.sanity;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.limit.cubliminal.access.IEntityDataSaver;
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.limit.cubliminal.networking.s2c.SanitySyncPayload;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,7 +19,10 @@ import net.minecraft.world.biome.Biome;
 
 public class SanityManager {
 
-	public static void run(ServerPlayerEntity player) {
+	private int sanity = 100;
+	private int mentalFatigue = 0;
+
+	public void update(ServerPlayerEntity player) {
 		Random random = player.getRandom();
 		int bound = player.isSprinting() ? 20 : 16;
 
@@ -48,27 +51,24 @@ public class SanityManager {
 		// decrease sanity if needed
 		double result = random.nextInt(bound) * (1 - decayFactor);
 		if (result * result < bound * globalDecayFactor) {
-			SanityManager.decrease(player, random);
+			this.decrease(player, random);
 		}
+
+		ServerPlayNetworking.send(player, new SanitySyncPayload(this.sanity));
 	}
 
-	public static void decrease(ServerPlayerEntity player, Random random) {
-		NbtCompound nbt = IEntityDataSaver.cast(player);
-		int sanity = nbt.getInt("sanity");
-		int mentalFatigue = nbt.getInt("mentalFatigue") + 1;
-
-		if (mentalFatigue > 10) {
-			mentalFatigue = 0;
-			sanity = Math.max(sanity - 1, 0);
-			nbt.putInt("sanity", sanity);
-
-			if (sanity < 20) {
-				if (sanity < 5) {
+	public void decrease(ServerPlayerEntity player, Random random) {
+		++this.mentalFatigue;
+		if (this.mentalFatigue > 10) {
+			this.mentalFatigue = 0;
+			this.sanity = Math.max(this.sanity - 1, 0);
+			if (this.sanity < 20) {
+				if (this.sanity < 5) {
 					player.addStatusEffect(new StatusEffectInstance(
 							Registries.STATUS_EFFECT.getEntry(CubliminalEffects.PARANOIA),
 							400, 0, true, false, true));
 				}
-				switch (random.nextInt(5 + sanity)) {
+				switch (random.nextInt(5 + this.sanity)) {
 					case 1:
 						player.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 60,
 								1, false, false, false));
@@ -83,17 +83,30 @@ public class SanityManager {
 				}
 			}
 		}
-
-		nbt.putInt("mentalFatigue", mentalFatigue);
 	}
 
-	public static void resetTimer(ServerPlayerEntity playerEntity) {
-		IEntityDataSaver.cast(playerEntity).putInt("sanity", 100);
-		IEntityDataSaver.cast(playerEntity).putInt("mentalFatigue", 0);
+	public void readNbt(NbtCompound nbt) {
+		if (nbt.contains("Sanity", NbtElement.NUMBER_TYPE)) {
+			this.sanity = nbt.getInt("Sanity");
+			this.mentalFatigue = nbt.getInt("MentalFatigue");
+		}
 	}
 
-	public static void syncSanity(ServerPlayerEntity playerEntity) {
-		int sanity = IEntityDataSaver.cast(playerEntity).getInt("sanity");
-		ServerPlayNetworking.send(playerEntity, new SanitySyncPayload(sanity));
+	public void writeNbt(NbtCompound nbt) {
+		nbt.putInt("Sanity", this.sanity);
+		nbt.putInt("MentalFatigue", this.mentalFatigue);
+	}
+
+	public int getSanity() {
+		return this.sanity;
+	}
+
+	public void setSanity(int sanity) {
+		this.sanity = sanity;
+	}
+
+	public void resetTimer() {
+		this.sanity = 100;
+		this.mentalFatigue = 0;
 	}
 }

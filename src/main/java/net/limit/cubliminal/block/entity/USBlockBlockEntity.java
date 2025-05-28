@@ -1,6 +1,6 @@
 package net.limit.cubliminal.block.entity;
 
-import net.limit.cubliminal.access.PlayerEntityAccessor;
+import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.block.custom.UnlimitedStructureBlock;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
@@ -158,7 +158,7 @@ public class USBlockBlockEntity extends BlockEntity {
             return false;
         } else {
             if (player.getEntityWorld().isClient) {
-                ((PlayerEntityAccessor) player).openUSBlockScreen(this);
+                ((PEAccessor) player).openUSBlockScreen(this);
             }
 
             return true;

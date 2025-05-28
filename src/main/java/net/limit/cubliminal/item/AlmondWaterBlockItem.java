@@ -1,5 +1,6 @@
 package net.limit.cubliminal.item;
 
+import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.block.custom.AlmondWaterBlock;
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.limit.cubliminal.event.sanity.SanityManager;
@@ -29,7 +30,7 @@ public class AlmondWaterBlockItem extends BlockItem {
             Criteria.CONSUME_ITEM.trigger(serverPlayerEntity, stack);
             serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
             if (!world.isClient) {
-                SanityManager.resetTimer(serverPlayerEntity);
+                ((PEAccessor) serverPlayerEntity).getSanityManager().resetTimer();
                 user.removeStatusEffect(Registries.STATUS_EFFECT.getEntry(CubliminalEffects.PARANOIA));
             }
         }

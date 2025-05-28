@@ -2,7 +2,7 @@ package net.limit.cubliminal.event.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.limit.cubliminal.event.noclip.NoClipEngine;
+import net.limit.cubliminal.access.PEAccessor;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -29,19 +29,16 @@ public class NoClipCommand {
     }
 
     private static int execute(ServerCommandSource source) {
-        if (source.getWorld().isClient()) return 0;
-        NoClipEngine.noClip(source.getPlayer());
-
+        if (source.getWorld().isClient() || source.getPlayer() == null) return 0;
+        ((PEAccessor) source.getPlayer()).getNoclipEngine().noclip(source.getPlayer());
         source.sendFeedback(() -> Text.translatable("commands.noclip.success.single", source.getDisplayName()), true);
-
         return 1;
     }
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
-
         for (ServerPlayerEntity entity : targets) {
             if (entity.getWorld().isClient()) return 0;
-            NoClipEngine.noClip(entity);
+            ((PEAccessor) entity).getNoclipEngine().noclip(entity);
         }
 
         if (targets.size() == 1) {
@@ -49,15 +46,13 @@ public class NoClipCommand {
         } else {
             source.sendFeedback(() -> Text.translatable("commands.noclip.success.multiple", targets.size()), true);
         }
-
         return targets.size();
     }
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets, ServerWorld world) {
-
         for (ServerPlayerEntity entity : targets) {
             if (entity.getWorld().isClient()) return 0;
-            NoClipEngine.noClip(entity, world.getRegistryKey());
+            ((PEAccessor) entity).getNoclipEngine().noclipTo(entity, world.getRegistryKey());
         }
 
         if (targets.size() == 1) {
@@ -65,7 +60,6 @@ public class NoClipCommand {
         } else {
             source.sendFeedback(() -> Text.translatable("commands.noclip.success.multiple", targets.size()), true);
         }
-
         return targets.size();
     }
 
@@ -77,7 +71,7 @@ public class NoClipCommand {
 
         for (ServerPlayerEntity entity : targets) {
             if (entity.getWorld().isClient()) return 0;
-            NoClipEngine.setTimer(entity, ticks);
+            ((PEAccessor) entity).getNoclipEngine().setTicksToNc(ticks);
         }
 
         if (targets.size() == 1) {

@@ -62,8 +62,8 @@ public record NoclipDestination (RegistryKey<World> destination, Function<Server
         return Pair.of(finalPos, finalPos.toCenterPos().add(0, 2.5, 0));
     });
 
-    public static Pair<RegistryKey<World>, NoclipDestination> fromPlayer(ServerPlayerEntity player) {
-        NoclipDestination des = DESTINATIONS.getOrDefault(player.getWorld().getRegistryKey(), DEFAULT);
+    public static Pair<RegistryKey<World>, NoclipDestination> from(RegistryKey<World> world) {
+        NoclipDestination des = DESTINATIONS.getOrDefault(world, DEFAULT);
         return Pair.of(des.destination(), des);
     }
 

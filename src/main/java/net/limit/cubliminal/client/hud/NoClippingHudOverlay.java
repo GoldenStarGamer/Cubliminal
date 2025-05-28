@@ -5,9 +5,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.client.NoClippingSoundInstance;
 import net.limit.cubliminal.config.CubliminalConfig;
-import net.limit.cubliminal.event.noclip.NoClipEngine;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -31,7 +31,7 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 		MinecraftClient client = MinecraftClient.getInstance();
 		ClientPlayerEntity player = client.player;
 		if (player != null && !CubliminalConfig.get().disableAggressiveGraphics) {
-			if (NoClipEngine.isNoClipping(player)) {
+			if (((PEAccessor) player).getNoclipEngine().isClipping()) {
 				for (int i = 0; i < 5; i++) {
 					if ((player.getWorld().getTime() + i) % 8 == 0) {
 						Random random = player.getRandom();

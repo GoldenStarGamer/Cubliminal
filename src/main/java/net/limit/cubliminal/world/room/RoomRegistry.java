@@ -60,6 +60,10 @@ public class RoomRegistry implements SimpleResourceReloadListener<Map<RegistryKe
         }, executor);
     }
 
+    public static boolean contains(RegistryKey<Biome> biome) {
+        return ROOMS.containsKey(biome);
+    }
+
     public static Room forBiome(RegistryKey<Biome> biome, Random random) {
         return ROOMS.get(biome).random(random);
     }

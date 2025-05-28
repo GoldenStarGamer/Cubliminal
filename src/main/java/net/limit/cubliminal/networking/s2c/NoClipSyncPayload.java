@@ -2,7 +2,7 @@ package net.limit.cubliminal.networking.s2c;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.access.IEntityDataSaver;
+import net.limit.cubliminal.access.PEAccessor;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -26,7 +26,7 @@ public record NoClipSyncPayload(int ticks) implements CustomPayload {
     public static void receive(NoClipSyncPayload payload, ClientPlayNetworking.Context context) {
         ClientPlayerEntity player = context.player();
         if (player != null) {
-            IEntityDataSaver.cast(player).putInt("ticksToNc", payload.ticks());
+            ((PEAccessor) player).getNoclipEngine().setTicksToNc(payload.ticks());
         }
     }
 }

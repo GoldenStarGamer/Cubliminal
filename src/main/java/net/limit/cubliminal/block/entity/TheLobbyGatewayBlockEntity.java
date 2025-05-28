@@ -1,12 +1,12 @@
 package net.limit.cubliminal.block.entity;
 
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.advancements.AdvancementHelper;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.level.Levels;
-import net.limit.cubliminal.event.sanity.SanityManager;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -71,7 +71,7 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 					.getDefaultState().with(Properties.LIT, false))) {
 
 					for (Entity entity : world.getEntitiesByClass(Entity.class, new Box(pos).expand(16, 2, 11), Entity::isPlayer)) {
-						SanityManager.resetTimer((ServerPlayerEntity) entity);
+						((PEAccessor) entity).getSanityManager().resetTimer();
 					}
 				}
 				List<Entity> list = world.getEntitiesByClass(Entity.class, new Box(pos), TheLobbyGatewayBlockEntity::canTeleport);

@@ -2,10 +2,9 @@ package net.limit.cubliminal.event.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.limit.cubliminal.access.IEntityDataSaver;
+import net.limit.cubliminal.access.PEAccessor;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,7 +30,7 @@ public class SanityCommand {
         for (ServerPlayerEntity entity : targets) {
             if (entity.getWorld().isClient()) return 0;
             message.append(entity.getNameForScoreboard()).append(": ")
-                    .append(IEntityDataSaver.cast(entity).getInt("sanity")).append("\n");
+                    .append(((PEAccessor) entity).getSanityManager().getSanity()).append("\n");
         }
         source.getPlayer().sendMessage(Text.literal(message.toString()));
 
@@ -51,8 +50,7 @@ public class SanityCommand {
         }
 
         for (ServerPlayerEntity entity : targets) {
-            NbtCompound nbt = IEntityDataSaver.cast(entity);
-            nbt.putInt("sanity", amount);
+            ((PEAccessor) entity).getSanityManager().setSanity(amount);
         }
 
         if (targets.size() == 1) {

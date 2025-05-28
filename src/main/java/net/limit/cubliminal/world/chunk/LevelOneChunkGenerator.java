@@ -70,7 +70,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		this.thicknessZ = level.spacing_z;
 		this.layerHeight = level.layer_height;
 		this.mazeGenerator = new MultiFloorMazeGenerator<>(level.maze_width, level.maze_height, this.thicknessX, this.layerHeight, this.thicknessZ, level.maze_seed_modifier);
-		this.poissonDiskSampler = new PoissonDiskSampler(4, level.maze_width, level.maze_height, 10);
+		this.poissonDiskSampler = new PoissonDiskSampler(level.maze_width, level.maze_height, 10, biome -> biome.isIn(CubliminalBiomes.DEEP_LEVEL_ONE));
 	}
 
 	public static NbtGroup createGroup() {
@@ -101,21 +101,21 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 	@SuppressWarnings("unchecked")
 	public MazeComponent poissonDisk(ChunkRegion region, BlockPos mazePos, int width, int height, Random random) {
 		SpecialMaze maze = new SpecialMaze(width, height);
-		RegistryKey<Biome>[][] biomeGrid = new RegistryKey[height][width];
-		for (int x = 0; x < height; x++) {
-			for (int z = 0; z < width; z++) {
-				biomeGrid[x][z] = this.biomeSource.calcBiome(x, 0, z).getKey().orElseThrow();
+		RegistryEntry<Biome>[][] biomeGrid = new RegistryEntry[width][height];
+		for (int x = 0; x < width; x++) {
+			for (int z = 0; z < height; z++) {
+				biomeGrid[x][z] = this.biomeSource.calcBiome(x * this.thicknessX + mazePos.getX(), mazePos.getY(), z * this.thicknessZ + mazePos.getZ());
 			}
 		}
 		List<Room.Instance> roomInstances = new ArrayList<>();
 		List<Vector2D> roomPositions = this.poissonDiskSampler.generate(roomInstances, biomeGrid, random);
-		if (!roomInstances.isEmpty()) {
+		if (roomInstances.size() == roomPositions.size()) {
 			for (int i = 0; i < roomInstances.size(); i++) {
 				Room.Instance instance = roomInstances.get(i);
 				Vector2D position = roomPositions.get(i);
 				instance.place(maze, (int) position.x, (int) position.y);
 			}
-		}
+		} else Cubliminal.LOGGER.error("Wtf why??: {}, {}", roomInstances.size(), roomPositions.size());
 		//maze.generateMaze();
 
 		return maze;

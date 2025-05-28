@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.access.IEntityDataSaver;
+import net.limit.cubliminal.access.PEAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -32,7 +32,7 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 
 		int x = drawContext.getScaledWindowWidth() / 2 + 95;
 		int l = drawContext.getScaledWindowHeight() - 34;
-		int i = IEntityDataSaver.cast(player).getInt("sanity");
+		int i = ((PEAccessor) player).getSanityManager().getSanity();
 		Identifier texture;
 		RenderSystem.enableBlend();
 
