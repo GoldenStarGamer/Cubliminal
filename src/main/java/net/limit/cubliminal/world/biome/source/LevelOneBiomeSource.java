@@ -34,7 +34,8 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
     private final Level level;
     private final float scale;
     private final RegistryNoisePreset noisePreset;
-    private final Set<RegistryEntry<Biome>> biomes;
+    private final Set<RegistryEntry<Biome>> levelBiomes;
+    private final Set<RegistryEntry<Biome>> deepBiomes;
     private boolean initialized;
     private SimplexNoiseSampler raritySampler;
     private final double rarityScale;
@@ -50,7 +51,8 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
         this.level = Levels.LEVEL_1.getLevel();
         this.scale = scale;
         this.noisePreset = RegistryNoisePreset.getPreset(CubliminalRegistrar.HABITABLE_ZONE_KEY);
-        this.biomes = this.noisePreset.biomes().keySet().stream().filter(biome -> {
+        this.levelBiomes = this.noisePreset.biomes().keySet();
+        this.deepBiomes = this.noisePreset.biomes().keySet().stream().filter(biome -> {
             String biomeStr = biome.getKey().orElseThrow().getValue().getPath();
             if (!biomeStr.startsWith("deep")) {
                 this.biomeMap.computeIfAbsent(biome, entry -> this.noisePreset.biomes().keySet()
@@ -129,7 +131,7 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
         double prevSmallestDifference = Double.MAX_VALUE;
         RegistryEntry<Biome> chosenBiome = null;
 
-        for (RegistryEntry<Biome> biome : this.biomes) {
+        for (RegistryEntry<Biome> biome : this.deepBiomes) {
             NoiseParameters parameters = this.noisePreset.noiseParameters(biome);
             double distance = this.distanceTo(parameters, rarityValue, spacingValue, safetyValue);
 
@@ -169,7 +171,7 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
 
     @Override
     protected Stream<RegistryEntry<Biome>> biomeStream() {
-        return this.noisePreset.biomes().keySet().stream();
+        return this.levelBiomes.stream();
     }
 
     // I had been half blind all this time...

@@ -14,6 +14,8 @@ public record Vec2b(byte x, byte y) {
             list -> Util.decodeFixedLengthList(list, 2).map(coords -> new Vec2b(coords.get(0), coords.get(1))),
             vec -> List.of(vec.x(), vec.y()));
 
+    public static Vec2b ZERO = new Vec2b((byte) 0, (byte) 0);
+
     public BlockPos toBlock() {
         return new BlockPos(x, 0, y);
     }

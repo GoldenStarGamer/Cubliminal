@@ -63,12 +63,31 @@ public class MazeUtil {
         return (byte) ("ewns".indexOf(direction.getName().charAt(0)));
     }
 
+    public static byte faceOrdinal(Face face) {
+        return switch (face) {
+            case UP -> (byte) 0;
+            case DOWN -> (byte) 1;
+            case LEFT -> (byte) 2;
+            case RIGHT -> (byte) 3;
+        };
+    }
+
     public static Direction byId(byte id) {
         return switch (id) {
             case 0 -> Direction.EAST;
             case 1 -> Direction.WEST;
             case 2 -> Direction.NORTH;
             default -> Direction.SOUTH;
+        };
+    }
+
+    public static Face getById(byte id) {
+        return switch (id) {
+            case 0 -> Face.UP;
+            case 1 -> Face.DOWN;
+            case 2 -> Face.LEFT;
+            case 3 -> Face.RIGHT;
+            default -> throw new IllegalArgumentException("Can't resolve face byte reference: " + id);
         };
     }
     // -------------------------------------------------------------

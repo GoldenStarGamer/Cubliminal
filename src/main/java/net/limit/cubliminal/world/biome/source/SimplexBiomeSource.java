@@ -32,7 +32,7 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
 
     private final RegistryKey<World> world;
     private final RegistryNoisePreset noisePreset;
-    private final Set<RegistryEntry<Biome>> biomes;
+    private final Set<RegistryEntry<Biome>> levelBiomes;
     private final float scale;
     private final Level level;
     private boolean initialized;
@@ -46,7 +46,7 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
     public SimplexBiomeSource(RegistryKey<World> world, Level level, float scale) {
         this.world = world;
         this.noisePreset = RegistryNoisePreset.getPreset(world);
-        this.biomes = this.noisePreset.biomes().keySet();
+        this.levelBiomes = this.noisePreset.biomes().keySet();
         this.level = level;
         this.scale = scale;
         this.rarityScale = this.noisePreset.globalSettings().rarity();
@@ -112,7 +112,7 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
         double smallestDifference = Double.MAX_VALUE;
         RegistryEntry<Biome> chosenBiome = null;
 
-        for (RegistryEntry<Biome> biome : this.biomes) {
+        for (RegistryEntry<Biome> biome : this.levelBiomes) {
             NoiseParameters parameters = this.noisePreset.noiseParameters(biome);
             double distance = this.distanceTo(parameters, rarityValue, spacingValue, safetyValue);
 
@@ -143,7 +143,7 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
 
     @Override
     protected Stream<RegistryEntry<Biome>> biomeStream() {
-        return this.biomes.stream();
+        return this.levelBiomes.stream();
     }
 
     // I had been half blind all this time...

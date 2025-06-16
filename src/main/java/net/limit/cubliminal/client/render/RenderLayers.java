@@ -1,4 +1,4 @@
-package net.limit.cubliminal.client;
+package net.limit.cubliminal.client.render;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

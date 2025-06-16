@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class USBlockBlockEntity extends BlockEntity {
+    // FIXME: STRUCTURES SIZED 48+ BLOCKS DON'T LOAD PROPERLY DURING WORLDGEN
     private static final int structure_size_limit = 128;
     public static final String AUTHOR_KEY = "author";
     @Nullable

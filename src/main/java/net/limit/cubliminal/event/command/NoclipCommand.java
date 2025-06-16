@@ -14,7 +14,7 @@ import net.minecraft.text.Text;
 
 import java.util.Collection;
 
-public class NoClipCommand {
+public class NoclipCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(CommandManager.literal("noclip").requires(source -> source.hasPermissionLevel(2))
                 .executes(context -> execute(context.getSource()))

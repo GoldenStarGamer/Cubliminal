@@ -10,7 +10,7 @@ public enum Levels {
             new Level(32, 0, 1, 7, 8, 8)),
 
     LEVEL_1(CubliminalRegistrar.HABITABLE_ZONE_KEY,
-            new LevelWithMaze(32, 0, 2, 16, 16,
+            new LevelWithMaze(16, 0, 2, 16, 16,
                     16, 16, 16, 0));
 
     final RegistryKey<World> key;

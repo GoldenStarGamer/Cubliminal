@@ -1,4 +1,4 @@
-package net.limit.cubliminal.client;
+package net.limit.cubliminal.client.sound;
 
 import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.client.MinecraftClient;
@@ -10,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class NoClippingSoundInstance extends MovingSoundInstance {
-    public static NoClippingSoundInstance CREATE = new NoClippingSoundInstance(
+public class NoclipSoundInstance extends MovingSoundInstance {
+    public static NoclipSoundInstance WALL_CLIPPING = new NoclipSoundInstance(
             Objects.requireNonNull(MinecraftClient.getInstance().player));
     private final PlayerEntity player;
 
-    private <T extends PlayerEntity> NoClippingSoundInstance(@NotNull T player) {
+    private <T extends PlayerEntity> NoclipSoundInstance(@NotNull T player) {
         super(CubliminalSounds.WALL_CLIPPING.value(), SoundCategory.PLAYERS, SoundInstance.createRandom());
         this.attenuationType = AttenuationType.NONE;
         this.repeat = false;
@@ -28,8 +28,6 @@ public class NoClippingSoundInstance extends MovingSoundInstance {
             this.x = (float) this.player.getX();
             this.y = (float) this.player.getY();
             this.z = (float) this.player.getZ();
-            this.volume = 1.0f;
-            this.pitch = 1.0f;
         } else {
             this.setDone();
         }

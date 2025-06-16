@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.limit.cubliminal.access.PEAccessor;
-import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
+import net.limit.cubliminal.client.hud.NoclipHudOverlay;
 import net.limit.cubliminal.networking.c2s.NoClipC2SPayload;
 
 @Environment(EnvType.CLIENT)
@@ -22,12 +22,12 @@ public class KeyInputHandler {
 					ClientPlayNetworking.send(new NoClipC2SPayload(false));
 				} else {
 					++ticksColliding;
-					NoClippingHudOverlay.INSTANCE.setClippingIntoWall(true);
+					NoclipHudOverlay.INSTANCE.setClippingIntoWall(true);
 					return;
 				}
 			}
 			ticksColliding = 0;
-			NoClippingHudOverlay.INSTANCE.setClippingIntoWall(false);
+			NoclipHudOverlay.INSTANCE.setClippingIntoWall(false);
 
 		});
 	}

@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.config.CubliminalConfig;
-import net.limit.cubliminal.event.command.NoClipCommand;
+import net.limit.cubliminal.event.command.NoclipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.event.noclip.NoclipDestination;
@@ -68,7 +68,7 @@ public class Cubliminal implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 		ServerPlayerEvents.AFTER_RESPAWN.register(Cubliminal::afterDeath);
-		CommandRegistrationCallback.EVENT.register(NoClipCommand::register);
+		CommandRegistrationCallback.EVENT.register(NoclipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
 
 		LootTableEvents.MODIFY.register(((key, tableBuilder, source, registries) -> {

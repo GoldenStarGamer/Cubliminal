@@ -6,7 +6,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.access.PEAccessor;
-import net.limit.cubliminal.client.NoClippingSoundInstance;
+import net.limit.cubliminal.client.sound.NoclipSoundInstance;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -14,12 +14,11 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
 
 @Environment(EnvType.CLIENT)
-public class NoClippingHudOverlay implements HudRenderCallback {
+public class NoclipHudOverlay implements HudRenderCallback {
 
-	public static NoClippingHudOverlay INSTANCE = new NoClippingHudOverlay();
+	public static NoclipHudOverlay INSTANCE = new NoclipHudOverlay();
 	private boolean clippingIntoWall = false;
 	private boolean aux_renderOverlay = false;
 
@@ -34,37 +33,19 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 			if (((PEAccessor) player).getNoclipEngine().isClipping()) {
 				for (int i = 0; i < 5; i++) {
 					if ((player.getWorld().getTime() + i) % 8 == 0) {
-						Random random = player.getRandom();
-						float a = 1.0f;
-
-						switch (random.nextInt(3)) {
-							case 0:
-							case 1:
-								this.renderOverlay(drawContext, GLITCH_OVERLAY_1, a);
-								break;
-							case 2:
-								this.renderOverlay(drawContext, GLITCH_OVERLAY_2, a);
-								break;
-						}
+						Identifier overlay = player.getRandom().nextInt(3) == 0 ? GLITCH_OVERLAY_2 : GLITCH_OVERLAY_1;
+						this.renderOverlay(drawContext, overlay, 1.0f);
 						break;
 					}
 				}
 			} else if (this.clippingIntoWall || this.aux_renderOverlay) {
 				for (int i = 0; i < 2; i++) {
 					if ((player.getWorld().getTime() + i) % 6 == 0) {
-						Random random = player.getRandom();
-						float a = 1.0f;
-						Identifier texture = GLITCH_OVERLAY_1;
-
-						if (random.nextInt(3) == 0) {
-							texture = GLITCH_OVERLAY_2;
+						if (!client.getSoundManager().isPlaying(NoclipSoundInstance.WALL_CLIPPING)) {
+							client.getSoundManager().play(NoclipSoundInstance.WALL_CLIPPING);
 						}
-
-						if (!client.getSoundManager().isPlaying(NoClippingSoundInstance.CREATE)) {
-							client.getSoundManager().play(NoClippingSoundInstance.CREATE);
-						}
-
-						this.renderOverlay(drawContext, texture, a);
+						Identifier overlay = player.getRandom().nextInt(3) == 0 ? GLITCH_OVERLAY_2 : GLITCH_OVERLAY_1;
+						this.renderOverlay(drawContext, overlay, 1.0f);
 						break;
 					}
 				}
@@ -87,11 +68,7 @@ public class NoClippingHudOverlay implements HudRenderCallback {
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-    public boolean isClippingIntoWall() {
-        return clippingIntoWall;
-    }
-
-    public void setClippingIntoWall(boolean clippingIntoWall) {
+	public void setClippingIntoWall(boolean clippingIntoWall) {
         this.clippingIntoWall = clippingIntoWall;
     }
 

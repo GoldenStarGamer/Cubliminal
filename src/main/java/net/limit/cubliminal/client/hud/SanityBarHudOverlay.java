@@ -15,11 +15,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class SanityBarHudOverlay implements HudRenderCallback {
-	private static final Identifier SANITY_BAR_0 = Cubliminal.id("textures/hud/sanity/sanity_bar_0.png");
-	private static final Identifier SANITY_BAR_1 = Cubliminal.id("textures/hud/sanity/sanity_bar_1.png");
-	private static final Identifier SANITY_BAR_2 = Cubliminal.id("textures/hud/sanity/sanity_bar_2.png");
-	private static final Identifier SANITY_BAR_3 = Cubliminal.id("textures/hud/sanity/sanity_bar_3.png");
-	private static final Identifier SANITY_BAR_4 = Cubliminal.id("textures/hud/sanity/sanity_bar_4.png");
+	private static final Identifier SANITY_BAR_0 = Cubliminal.id("textures/hud/sanity/sanity_bar.png");
 
 	@Override
 	public void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter) {
@@ -33,26 +29,28 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 		int x = drawContext.getScaledWindowWidth() / 2 + 95;
 		int l = drawContext.getScaledWindowHeight() - 34;
 		int i = ((PEAccessor) player).getSanityManager().getSanity();
-		Identifier texture;
 		RenderSystem.enableBlend();
-
+		int color1 = 0xffff8070;
+		int color2 = 0xffff3722;
 		if (i > 80) {
-			texture = SANITY_BAR_0;
+			color1 = -1;
+			color2 = -1;
 		} else if (i > 60) {
-			texture = SANITY_BAR_1;
+			color1 = 0xfff7ff86;
+			color2 = 0xfff4ff50;
 		} else if (i > 30) {
-			texture = SANITY_BAR_2;
+			color1 = 0xffffd777;
+			color2 = 0xffffc12b;
 		} else if (i > 10) {
-			texture = SANITY_BAR_3;
-		} else {
-			texture = SANITY_BAR_4;
+			color1 = 0xffffa269;
+			color2 = 0xffff7722;
 		}
 
-		drawContext.drawTexture(RenderLayer::getGuiTextured, texture, x, l, 2, 0, 12, 32, 32, 32);
+		drawContext.drawTexture(RenderLayer::getGuiTextured, SANITY_BAR_0, x, l, 2, 0, 12, 32, 32, 32, color1);
 
 		if (i > 0) {
 			int k = (int) (i * 0.01 * 28);
-			drawContext.drawTexture(RenderLayer::getGuiTextured, texture, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32);
+			drawContext.drawTexture(RenderLayer::getGuiTextured, SANITY_BAR_0, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32, color2);
 		}
 		int j = i > 90 ? 4 : 3;
 		String string = i + "%";

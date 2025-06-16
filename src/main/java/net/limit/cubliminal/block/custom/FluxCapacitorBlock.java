@@ -3,14 +3,12 @@ package net.limit.cubliminal.block.custom;
 import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.block.entity.FluxCapacitorBlockEntity;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
-import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -19,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,13 +90,5 @@ public class FluxCapacitorBlock extends BlockWithEntity implements BlockEntityPr
 	protected boolean shouldBePowered(World world, BlockPos pos) {
 		return world.isReceivingRedstonePower(pos) && world.getBlockState(pos.up())
 				.equals(Blocks.LIGHTNING_ROD.getDefaultState().with(LightningRodBlock.POWERED, true));
-	}
-
-	@Override
-	public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
-		if (!world.isClient()) {
-			CubliminalSounds.clientStopSound(world.getServer().getOverworld().getPlayers(),
-					SoundCategory.BLOCKS, CubliminalSounds.FLUX_CAPACITOR.value().id());
-		}
 	}
 }

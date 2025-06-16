@@ -5,7 +5,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.block.custom.TheLobbyGatewayBlock;
 import net.limit.cubliminal.block.entity.TheLobbyGatewayBlockEntity;
-import net.limit.cubliminal.client.RenderLayers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;

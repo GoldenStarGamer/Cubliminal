@@ -2,36 +2,34 @@
   "rooms": [
     {
       "type": "cubliminal:single_piece",
-      "id": "rooms:room_a",
-      "width": 3,
-      "height": 5,
-      "doors": "e_0_1:n_0_1:s_1",
+      "id": "rooms:small",
+      "width": 1,
+      "height": 1,
+      "doors": "w_1:s_1",
       "weight": 0.3
+    },
+    {
+      "type": "cubliminal:single_piece",
+      "id": "rooms:medium",
+      "width": 3,
+      "height": 2,
+      "doors": "n_0_1:e_0_0_1:s_0_1",
+      "weight": 0.45
     },
     {
       "type": "cubliminal:compound_set",
       "components": [
         {
-          "pos": [0,0],
-          "width": 2,
-          "height": 4,
-          "structures": {
-            "rooms:room_0_0": 0.1,
-            "rooms:room_0_1": 0.35,
-            "rooms:room_0_2": 0.55
-          }
-        },
-        {
-          "pos": [2,2],
+          "pos": [2,0],
           "width": 2,
           "height": 2,
           "structures": {
-            "rooms:room_2_0": 0.7,
-            "rooms:room_2_1": 0.2
+            "rooms:room_2_0": 0.5,
+            "rooms:room_2_1": 0.5
           }
         },
         {
-          "pos": [0,2],
+          "pos": [0,0],
           "width": 1,
           "height": 2,
           "structures": {
@@ -39,7 +37,7 @@
           }
         },
         {
-          "pos": [1,4],
+          "pos": [1,2],
           "width": 1,
           "height": 3,
           "structures": {
@@ -48,10 +46,10 @@
           }
         }
       ],
-      "width": 5,
+      "width": 3,
       "height": 4,
-      "doors": "n_0_0_1:w_0_1_1:e_0_0_1:s_0_0_1",
-      "weight": 0.8
+      "doors": "n_0_1:w_1:e_1:s_0_0_1",
+      "weight": 0.6
     }
   ]
 }

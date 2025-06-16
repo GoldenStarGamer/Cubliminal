@@ -4,10 +4,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.limit.cubliminal.client.RenderLayers;
-import net.limit.cubliminal.client.hud.NoClippingHudOverlay;
+import net.limit.cubliminal.client.render.RenderLayers;
+import net.limit.cubliminal.client.hud.NoclipHudOverlay;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
 import net.limit.cubliminal.client.render.ManilaGatewayRenderer;
@@ -46,13 +47,15 @@ public class CubliminalClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.FLUX_CAPACITOR_BLOCK_ENTITY, FluxCapacitorRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.USBLOCK_BLOCK_ENTITY, UnlimitedStructureBlockRenderer::new);
 
+		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> NoclipHudOverlay.INSTANCE.setAux_renderOverlay(false));
+
 		KeyInputHandler.registerKeyInputs();
 		EntityRendererRegistry.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
 		RenderLayers.init();
 		FogSettings.init();
 		C2SPackets.init();
 
-		HudRenderCallback.EVENT.register(NoClippingHudOverlay.INSTANCE);
+		HudRenderCallback.EVENT.register(NoclipHudOverlay.INSTANCE);
 		HudRenderCallback.EVENT.register(new SanityBarHudOverlay());
 	}
 

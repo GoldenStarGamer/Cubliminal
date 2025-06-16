@@ -1,16 +1,19 @@
 package net.limit.cubliminal.world.room;
 
 import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import net.limit.cubliminal.util.MazeUtil;
 import net.limit.cubliminal.world.maze.SpecialMaze;
 import net.limit.cubliminal.world.maze.Vec2b;
 import net.ludocrypt.limlib.api.world.Manipulation;
+import net.ludocrypt.limlib.api.world.maze.MazeComponent.*;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * The basic interface common to room-like objects.
@@ -33,9 +36,9 @@ public interface Room {
      * It is read from left to right, and leftmost data represent doors closest to the west-north relative coordinate.
      * Redundant data will be ignored e.g. non-existent walls.
      **/
-    default Byte2ObjectArrayMap<ArrayList<Door>> unpackDoors(String doorData) {
+    default List<Door> unpackDoors(String doorData) {
         String[] rawData = doorData.split(":");
-        Byte2ObjectArrayMap<ArrayList<Door>> doors = new Byte2ObjectArrayMap<>();
+        Set<Door> doors = new HashSet<>();
         for (String wall : rawData) {
             if (!wall.isEmpty()) {
                 char direction = wall.charAt(0);
@@ -45,18 +48,18 @@ public interface Room {
                     for (int n = 1; n < wallData.length; n++) {
                         if (wallData[n].equals("1") && this.isDoorValid(dir, n)) {
                             Door door = switch (dir) {
-                                case 0 -> new Door((byte) (this.height() - 1), (byte) (n - 1), dir);
-                                case 1 -> new Door((byte) 0, (byte) (n - 1), dir);
-                                case 2 -> new Door((byte) (n - 1), (byte) 0, dir);
-                                default -> new Door((byte) (n - 1), (byte) (this.width() - 1), dir);
+                                case 0 -> new Door(new Vec2b((byte) (this.height() - 1), (byte) (n - 1)), dir);
+                                case 1 -> new Door(new Vec2b((byte) 0, (byte) (n - 1)), dir);
+                                case 2 -> new Door(new Vec2b((byte) (n - 1), (byte) 0), dir);
+                                default -> new Door(new Vec2b((byte) (n - 1), (byte) (this.width() - 1)), dir);
                             };
-                            doors.computeIfAbsent(dir, key -> new ArrayList<>()).add(door);
+                            doors.add(door);
                         }
                     }
                 }
             }
         }
-        return doors;
+        return doors.stream().toList();
     }
 
     default boolean isDoorValid(byte dir, int index) {
@@ -66,24 +69,41 @@ public interface Room {
         };
     }
 
-    void place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation);
+    List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation);
 
-    default Function<Vec2b, Vec2b> transformPos(Vec2b roomDimensions, Manipulation manipulation) {
-        Function<Vec2b, Vec2b> rotation = switch (manipulation.getRotation()) {
+    static PosTransformation posTransformation(Vec2b roomDimensions, Manipulation manipulation) {
+        PosTransformation rotation = switch (manipulation.getRotation()) {
             case CLOCKWISE_90 -> pos -> new Vec2b((byte) (roomDimensions.x() - 1 - pos.y()), pos.x());
             case COUNTERCLOCKWISE_90 -> pos -> new Vec2b(pos.y(), (byte) (roomDimensions.y() - 1 - pos.x()));
             case CLOCKWISE_180 -> pos -> new Vec2b((byte) (roomDimensions.x() - 1 - pos.x()), (byte) (roomDimensions.y() - 1 - pos.y()));
             case NONE -> pos -> pos;
         };
 
-        return rotation.andThen(switch (manipulation.getMirror()) {
+        PosTransformation mirror = switch (manipulation.getMirror()) {
             case LEFT_RIGHT -> pos -> new Vec2b(pos.x(), (byte) (roomDimensions.y() - 1 - pos.y()));
             case FRONT_BACK -> pos -> new Vec2b((byte) (roomDimensions.x() - 1 - pos.x()), pos.y());
             case NONE -> pos -> pos;
-        });
+        };
+
+        return pos -> mirror.translate(rotation.translate(pos));
     }
 
-    default BiFunction<Vec2b, Vec2b, Vec2b> originCorner(Vec2b roomDimensions, Manipulation manipulation) {
+    static RotTransformation rotTransformation(Manipulation manipulation) {
+        RotTransformation rotation = switch (manipulation.getRotation()) {
+            case CLOCKWISE_90 -> Direction::rotateYClockwise;
+            case COUNTERCLOCKWISE_90 -> Direction::rotateYCounterclockwise;
+            case CLOCKWISE_180 -> Direction::getOpposite;
+            case NONE -> dir -> dir;
+        };
+
+        RotTransformation mirror = dir -> manipulation
+                .getMirror()
+                .getRotation(dir) == BlockRotation.CLOCKWISE_180 ? dir.getOpposite() : dir;
+
+        return dir -> mirror.rotate(rotation.rotate(dir));
+    }
+
+    static BiFunction<Vec2b, Vec2b, Vec2b> cornerTransformation(Vec2b roomDimensions, Manipulation manipulation) {
         boolean swap = false;
         BiFunction<Vec2b, Vec2b, Vec2b> rotation = switch (manipulation.getRotation()) {
             case CLOCKWISE_90 -> {
@@ -116,7 +136,20 @@ public interface Room {
         return new Instance(this, this.width(), this.height(), (byte) random.nextInt(8));
     }
 
-    record Door(byte relativeX, byte relativeY, byte facing) {
+    record Door(Vec2b relativePos, byte facing) {
+        public Door transform(PosTransformation translation, RotTransformation rotation) {
+            return new Door(translation.translate(relativePos()), MazeUtil.ordinal(rotation.rotate(MazeUtil.byId(facing()))));
+        }
+    }
+
+    record DoorInstance(Vec2i roomPos, Face facing) {
+        public static DoorInstance of(Vec2i roomPos, byte facing) {
+            return new DoorInstance(roomPos, MazeUtil.getById(facing));
+        }
+
+        public Vec2i entry(int x, int y) {
+            return (new Vec2i(x, y)).go(facing());
+        }
     }
 
     record Instance(Room parent, byte width, byte height, byte packedManipulation) {
@@ -135,8 +168,8 @@ public interface Room {
             this.packedManipulation = packedManipulation;
         }
 
-        public void place(SpecialMaze maze, int x, int y) {
-            this.parent.place(maze, x, y, new Vec2b(height(), width()), packedManipulation());
+        public List<Door> place(SpecialMaze maze, int x, int y) {
+            return this.parent.place(maze, x, y, new Vec2b(height(), width()), packedManipulation());
         }
     }
 }

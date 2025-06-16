@@ -3,12 +3,12 @@ package net.limit.cubliminal.world.room;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import net.limit.cubliminal.util.MazeUtil;
 import net.limit.cubliminal.util.WeightedHolderSet;
 import net.limit.cubliminal.world.maze.RoomCellState;
 import net.limit.cubliminal.world.maze.SpecialMaze;
 import net.limit.cubliminal.world.maze.Vec2b;
+import net.ludocrypt.limlib.api.world.Manipulation;
 import net.minecraft.util.math.random.Random;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class CompositeRoom implements Room {
     private final String doorData;
     private final List<Component> components;
     private final byte width, height;
-    private final Byte2ObjectArrayMap<ArrayList<Door>> doors;
+    private final List<Door> doors;
 
     public CompositeRoom(List<Component> components, byte width, byte height, String doorData) {
         this.doorData = doorData;
@@ -59,16 +59,18 @@ public class CompositeRoom implements Room {
     }
 
     @Override
-    public void place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation) {
-        BiFunction<Vec2b, Vec2b, Vec2b> transformation = this.originCorner(roomDimensions, MazeUtil.unpack(packedManipulation));
+    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation) {
+        Manipulation manipulation = MazeUtil.unpack(packedManipulation);
+        BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
         this.components.forEach(component -> {
             Vec2b transformed = transformation.apply(component.pos(), new Vec2b(component.height(), component.width()));
             maze.withState(x + transformed.x(), y + transformed.y(), new RoomCellState(new RoomPlacement(component::get, packedManipulation)));
         });
-    }
-
-    public Byte2ObjectArrayMap<ArrayList<Door>> doors() {
-        return this.doors;
+        PosTransformation translation = Room.posTransformation(roomDimensions, manipulation);
+        RotTransformation rotation = Room.rotTransformation(manipulation);
+        List<Door> transformed = new ArrayList<>(this.doors.size());
+        this.doors.forEach(door -> transformed.add(door.transform(translation, rotation)));
+        return transformed;
     }
 
     @Override
