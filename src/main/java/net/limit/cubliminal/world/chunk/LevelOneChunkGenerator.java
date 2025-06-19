@@ -14,7 +14,6 @@ import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.access.ChunkAccessor;
 import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.level.LevelWithMaze;
-import net.limit.cubliminal.util.MazeUtil;
 import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.maze.*;
 import net.limit.cubliminal.world.placement.MSTree;
@@ -72,7 +71,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		this.thicknessZ = level.spacing_z;
 		this.layerHeight = level.layer_height;
 		this.mazeGenerator = new MultiFloorMazeGenerator<>(level.maze_width, level.maze_height, this.thicknessX, this.layerHeight, this.thicknessZ, level.maze_seed_modifier);
-		this.poissonDiskSampler = new PoissonDiskSampler(level.maze_width, level.maze_height, 10, biome -> biome.isIn(CubliminalBiomes.DEEP_LEVEL_ONE));
+		this.poissonDiskSampler = new PoissonDiskSampler(level.maze_width, level.maze_height, 30);
 	}
 
 	public static NbtGroup createGroup() {
@@ -85,14 +84,11 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 				.with("t", 1, 1)
 				.with("e", 1, 1)
 				.with("parking", 1, 10)
-				.with("ramp",
-						"n_1", "n_2", "n_3",
-						"s_1", "s_2", "s_3",
-						"w_1", "w_2", "w_3",
-						"e_1", "e_2", "e_3")
+				.with("ramp", "n_1", "n_2", "n_3", "s_1", "s_2", "s_3", "w_1", "w_2", "w_3", "e_1", "e_2", "e_3")
 				.with("entrance")
-				.with("rooms", "room_0_0", "room_0_1", "room_0_2", "room_1_0", "room_2_0", "room_2_1", "room_3_0", "room_3_1", "room_a", "small", "medium")
-			.build();
+				.with("rooms", "room_1_0", "room_2_0", "room_2_1", "room_3_0", "room_3_1",
+						"small", "medium", "pk_0", "pk_1", "pk_2", "pk_3")
+				.build();
 	}
 
 	@Override
@@ -103,20 +99,26 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 	@SuppressWarnings("unchecked")
 	public MazeComponent generateMaze(ChunkRegion region, BlockPos mazePos, int width, int height, Random random) {
 		// Cache per-cell biome
-		RegistryEntry<Biome>[][] biomeGrid = new RegistryEntry[width][height];
+		RegistryEntry<Biome>[] biomeGrid = new RegistryEntry[width * height];
+		List<Vec2i> validPositions = new ArrayList<>(width * height);
 		for (int x = 0; x < width; x++) {
-			for (int z = 0; z < height; z++) {
-				biomeGrid[x][z] = this.biomeSource.calcBiome(x * this.thicknessX + mazePos.getX(), mazePos.getY(), z * this.thicknessZ + mazePos.getZ());
+			for (int y = 0; y < height; y++) {
+				RegistryEntry<Biome> biome = this.biomeSource.calcBiome(x * this.thicknessX + mazePos.getX(), mazePos.getY(), y * this.thicknessZ + mazePos.getZ());
+				if (biome.isIn(CubliminalBiomes.DEEP_LEVEL_ONE)) {
+					biomeGrid[y * width + x] = biome;
+					validPositions.add(new Vec2i(x, y));
+				}
 			}
 		}
+		Collections.shuffle(validPositions, new java.util.Random(LimlibHelper.blockSeed(mazePos)));
 
 		// Run poisson disk sampler to find a position for each room
 		List<Room.Instance> roomInstances = new ArrayList<>();
-		boolean[][] grid = new boolean[width][height];
-		List<Vec2i> roomPositions = this.poissonDiskSampler.generate(roomInstances, grid, biomeGrid, random);
+		boolean[] roomCache = new boolean[width * height];
+		List<Vec2i> roomPositions = this.poissonDiskSampler.generate(roomInstances, roomCache, biomeGrid, validPositions, random);
 		Set<Vector2D> nodes = new HashSet<>();
 		SetMultimap<Vec2i, Room.DoorInstance> doors = HashMultimap.create();
-		LevelOneMaze maze = new LevelOneMaze(width, height, grid, 0.2f, random);
+		LevelOneMaze maze = new LevelOneMaze(width, height, roomCache, 0.2f, random);
 
 		// Mark room origin cells for generation and add their doors' positions as nodes
 		if (roomInstances.size() == roomPositions.size()) {
@@ -151,7 +153,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 			DelaunayTriangulator triangulator = new DelaunayTriangulator(nodes.stream().toList());
 			triangulator.triangulate();
 			// Collect all the unique edges
-			List<Edge2D> mst = MSTree.buildCorridors(nodes, doors, triangulator.getTriangles(), random);
+			List<Edge2D> mst = MSTree.buildCorridors(nodes, doors, triangulator.getTriangles(), connections, random);
 			maze.setMst(mst);
 			maze.setDoors(doors);
 			maze.generateMaze();
@@ -186,69 +188,6 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 			Pair<MazePiece, Manipulation> piece = MazePiece.getFromCell(state, random);
 			if (piece.getFirst() != MazePiece.E) {
 				generateNbt(region, pos.up(), this.nbtGroup.pick(piece.getFirst().getAsLetter(), random), piece.getSecond());
-			}
-		}
-	}
-
-	public void decorateCell(ChunkRegion region, BlockPos pos, BlockPos mazePos, MazeComponent maze, CellState state, BlockPos thickness, Random random) {
-		Pair<MazePiece, Manipulation> piece = MazePiece.getFromCell(state, random);
-		RegistryEntry<Biome> biome = this.biomeSource.calcBiome(pos);
-
-		if (biome.matchesKey(CubliminalBiomes.PARKING_ZONE_BIOME)) {
-			if (state.getExtra().containsKey("ramp")) {
-				if (pos.getY() == this.getMinimumY()) {
-
-					byte[] bytes = state.getExtra().get("ramp").getByteArray("ramp");
-					generateNbt(region, pos, nbtGroup.nbtId("ramp", MazeUtil.rotString(Face.values()[bytes[1]]).concat("_" + bytes[0])));
-				}
-			} else {
-				generateNbt(region, pos, nbtGroup.pick("parking", random));
-			}
-		} else {
-			if (piece.getFirst() != MazePiece.E) {
-				generateNbt(region, pos.up(2), this.nbtGroup.pick(piece.getFirst().getAsLetter(), random), piece.getSecond());
-				if (state.getExtra().containsKey("elevatorHall")) {
-					Face face = Face.values()[state.getExtra().get("elevatorHall").getByte("elevatorHall")];
-					BlockState bState = Blocks.BLUE_CONCRETE.getDefaultState();
-					switch (face) {
-						case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
-						case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
-						case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
-						case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
-					}
-				}
-			} else if (state.getExtra().containsKey("elevator")) {
-				Face face = Face.values()[state.getExtra().get("elevator").getByte("elevator")];
-				BlockState bState = Blocks.RED_CONCRETE.getDefaultState();
-				switch (face) {
-					case UP -> region.setBlockState(pos.add(15, 0, 8), bState, 0);
-					case DOWN -> region.setBlockState(pos.add(0, 0, 8), bState, 0);
-					case LEFT -> region.setBlockState(pos.add(8, 0, 0), bState, 0);
-					case RIGHT -> region.setBlockState(pos.add(8, 0, 15), bState, 0);
-				}
-			} else {
-				for (int x = 0; x < thicknessX; x++) {
-					for (int y = 0; y < layerHeight; y++) {
-						for (int z = 0; z < thicknessZ; z++) {
-
-							BlockState state1 = Blocks.STONE.getDefaultState();
-							if (y == 0 || y == layerHeight - 1) {
-								state1 = CubliminalBlocks.GABBRO.getDefaultState();
-							}
-
-							region.setBlockState(pos.add(x, y, z), state1, 0);
-						}
-					}
-				}
-			}
-
-			for (Face face : Face.values()) {
-				Vec2i adjCell = state.getPosition().go(face);
-				boolean parking = ((ClusteredDepthFirstMaze) maze).getParkingSpots().contains(adjCell);
-				if (parking) {
-					String key = state.goes(face) ? "entrance" : "e";
-					generateNbt(region, pos, nbtGroup.pick(key, random), MazeUtil.get(face));
-				}
 			}
 		}
 	}

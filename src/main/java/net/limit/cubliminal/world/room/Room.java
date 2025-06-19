@@ -22,7 +22,7 @@ public interface Room {
 
     Codec<Room> CODEC = RoomType.REGISTRY.getCodec().dispatch("type", Room::type, RoomType::codec);
 
-    Room DEFAULT = new SingleRoom("default", (byte) 2, (byte) 2, "");
+    Room DEFAULT = new SingleRoom("default", (byte) 1, (byte) 1, "");
 
     byte width();
 

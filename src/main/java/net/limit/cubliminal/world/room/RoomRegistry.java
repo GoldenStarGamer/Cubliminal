@@ -1,5 +1,6 @@
 package net.limit.cubliminal.world.room;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -23,23 +24,21 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class RoomRegistry implements SimpleResourceReloadListener<Map<RegistryKey<Biome>, WeightedHolderSet<Room>>> {
+public class RoomRegistry implements SimpleResourceReloadListener<Map<RegistryKey<Biome>, RoomRegistry.RoomPreset>> {
 
-    public static final Codec<WeightedHolderSet<Room>> CODEC = WeightedHolderSet.createCodec(Room.CODEC).fieldOf("rooms").codec();
-
-    private static final Map<RegistryKey<Biome>, WeightedHolderSet<Room>> ROOMS = new HashMap<>();
+    private static final Map<RegistryKey<Biome>, RoomPreset> ROOMS = new HashMap<>();
 
     @Override
-    public CompletableFuture<Map<RegistryKey<Biome>, WeightedHolderSet<Room>>> load(ResourceManager resourceManager, Executor executor) {
+    public CompletableFuture<Map<RegistryKey<Biome>, RoomPreset>> load(ResourceManager resourceManager, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            Map<RegistryKey<Biome>, WeightedHolderSet<Room>> roomPresets = new HashMap<>();
+            Map<RegistryKey<Biome>, RoomPreset> roomPresets = new HashMap<>();
 
             for (Map.Entry<Identifier, Resource> entry : resourceManager.findResources("worldgen/room", id -> id.getPath().endsWith(".json")).entrySet()) {
                 try (Reader reader = entry.getValue().getReader()) {
                     RegistryKey<Biome> biome = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(
                             entry.getKey().getNamespace(), FilenameUtils.getBaseName(entry.getKey().getPath())));
                     roomPresets.computeIfAbsent(biome, key -> {
-                        DataResult<WeightedHolderSet<Room>> rooms = CODEC.parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader));
+                        DataResult<RoomPreset> rooms = RoomPreset.CODEC.parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader));
                         return rooms.getOrThrow();
                     });
                 } catch (IOException e) {
@@ -52,11 +51,11 @@ public class RoomRegistry implements SimpleResourceReloadListener<Map<RegistryKe
     }
 
     @Override
-    public CompletableFuture<Void> apply(Map<RegistryKey<Biome>, WeightedHolderSet<Room>> rooms, ResourceManager resourceManager, Executor executor) {
+    public CompletableFuture<Void> apply(Map<RegistryKey<Biome>, RoomPreset> rooms, ResourceManager resourceManager, Executor executor) {
         return CompletableFuture.runAsync(() -> {
             ROOMS.clear();
             ROOMS.putAll(rooms);
-            ROOMS.values().forEach(holder -> holder.getValues().forEach(room -> Cubliminal.LOGGER.info("Room: {}", room.toString())));
+            ROOMS.values().forEach(preset -> preset.holder().getValues().forEach(room -> Cubliminal.LOGGER.info("Room: {}", room.toString())));
         }, executor);
     }
 
@@ -64,12 +63,29 @@ public class RoomRegistry implements SimpleResourceReloadListener<Map<RegistryKe
         return ROOMS.containsKey(biome);
     }
 
+    public static RoomPreset getPreset(RegistryKey<Biome> biome) {
+        return ROOMS.get(biome);
+    }
+
+    public static float getSpacing(RegistryKey<Biome> biome) {
+        return ROOMS.get(biome).spacing();
+    }
+
     public static Room forBiome(RegistryKey<Biome> biome, Random random) {
-        return ROOMS.get(biome).random(random);
+        return ROOMS.get(biome).holder().random(random);
     }
 
     @Override
     public Identifier getFabricId() {
         return Cubliminal.id("room_preset_loader");
+    }
+
+    public record RoomPreset(float spacing, WeightedHolderSet<Room> holder) {
+
+        public static final Codec<WeightedHolderSet<Room>> SET_CODEC = WeightedHolderSet.createCodec(Room.CODEC).fieldOf("rooms").codec();
+
+        public static final Codec<RoomPreset> CODEC = Codec
+                .pair(Codec.floatRange(0.0f, Float.MAX_VALUE).optionalFieldOf("spacing", 1.0f).codec(), SET_CODEC)
+                .xmap(pair -> new RoomPreset(pair.getFirst(), pair.getSecond()), preset -> Pair.of(preset.spacing(), preset.holder()));
     }
 }

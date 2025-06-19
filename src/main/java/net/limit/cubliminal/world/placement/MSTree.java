@@ -12,16 +12,17 @@ import java.util.*;
 
 public class MSTree {
 
-    public static List<Edge2D> buildCorridors(Collection<Vector2D> nodes, SetMultimap<Vec2i, DoorInstance> doors, List<Triangle2D> triangleSoup, Random random) {
+    public static List<Edge2D> buildCorridors(Collection<Vector2D> nodes, SetMultimap<Vec2i, DoorInstance> doors,
+                                              List<Triangle2D> triangleSoup, List<Vector2D> connections, Random random) {
         // Build unique edges
         List<Edge2D> edges = new ArrayList<>();
         for (Triangle2D triangle : triangleSoup) {
             Vector2D a = triangle.a;
             Vector2D b = triangle.b;
             Vector2D c = triangle.c;
-            addEdge(a, b, nodes, edges, doors, random);
-            addEdge(b, c, nodes, edges, doors, random);
-            addEdge(c, a, nodes, edges, doors, random);
+            addEdge(a, b, edges, doors, connections, random);
+            addEdge(b, c, edges, doors, connections, random);
+            addEdge(c, a, edges, doors, connections, random);
         }
         // Sort edges by length
         edges.sort(Comparator.comparingDouble(MSTree::sqEdgeLength));
@@ -42,15 +43,15 @@ public class MSTree {
         return mst;
     }
 
-    public static void addEdge(Vector2D a, Vector2D b, Collection<Vector2D> nodes, List<Edge2D> edges, SetMultimap<Vec2i, DoorInstance> doors, Random random) {
+    public static void addEdge(Vector2D a, Vector2D b, List<Edge2D> edges, SetMultimap<Vec2i, DoorInstance> doors,
+                               List<Vector2D> connections, Random random) {
         DoorInstance doorA = doors.get(new Vec2i((int) a.x, (int) a.y)).stream().toList().getFirst();
         DoorInstance doorB = doors.get(new Vec2i((int) b.x, (int) b.y)).stream().toList().getFirst();
         if (!doorA.roomPos().equals(doorB.roomPos())) {
             add(a, b, edges);
         } else {
-            List<Vector2D> list = nodes.stream().toList();
-            add(a, list.get(random.nextInt(list.size())), edges);
-            add(b, list.get(random.nextInt(list.size())), edges);
+            add(a, connections.get(random.nextInt(connections.size())), edges);
+            add(b, connections.get(random.nextInt(connections.size())), edges);
         }
     }
 

@@ -130,9 +130,6 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.REDROOMS_BIOME, RedroomsBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 
-			registry.add(CubliminalBiomes.HABITABLE_ZONE_BIOME, HabitableZoneBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
-			registry.add(CubliminalBiomes.PARKING_ZONE_BIOME, ParkingZoneBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
-
 			registry.add(CubliminalBiomes.AQUILA_SECTOR_BIOME, AquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.DEEP_AQUILA_SECTOR_BIOME, DeepAquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.GUILD_SECTOR_BIOME, GuildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);

@@ -28,7 +28,7 @@ public class WeightedHolderSet<T> {
     }
 
     public void validateWeight(float weight) {
-        if (weight < 0 || weight > 1) throw new IllegalArgumentException("Weight must be a number between 0 and 1");
+        if (weight < 0) throw new IllegalArgumentException("Weight must be a number greater than 0");
     }
 
     public List<Pair<Float, T>> getValues() {
@@ -74,19 +74,19 @@ public class WeightedHolderSet<T> {
     }
 
     public static <T> Codec<WeightedHolderSet<T>> createCodec(Codec<T> typeCodec) {
-        return Codec.pair(Codec.floatRange(0f, 1f).fieldOf("weight").codec(), typeCodec)
+        return Codec.pair(Codec.floatRange(0f, Float.MAX_VALUE).fieldOf("weight").codec(), typeCodec)
                 .listOf()
                 .xmap(WeightedHolderSet::new, set -> set.values);
     }
 
     public static <T> Codec<WeightedHolderSet<T>> createCodec(Codec<T> typeCodec, String fieldName) {
-        return Codec.pair(Codec.floatRange(0f, 1f).fieldOf("weight").codec(), typeCodec.fieldOf(fieldName).codec())
+        return Codec.pair(Codec.floatRange(0f, Float.MAX_VALUE).fieldOf("weight").codec(), typeCodec.fieldOf(fieldName).codec())
                 .listOf()
                 .xmap(WeightedHolderSet::new, set -> set.values);
     }
 
     public static <T> Codec<WeightedHolderSet<T>> createHashCodec(Codec<T> typeCodec) {
-        return Codec.unboundedMap(typeCodec, Codec.floatRange(0f, 1f))
+        return Codec.unboundedMap(typeCodec, Codec.floatRange(0f, Float.MAX_VALUE))
                 .xmap(map -> new WeightedHolderSet<>(map.entrySet().stream().map(entry -> Pair.of(entry.getValue(), entry.getKey())).collect(Collectors.toSet())),
                         holderSet -> holderSet.getValues().stream().collect(Collectors.toMap(Pair::getSecond, Pair::getFirst)));
     }
